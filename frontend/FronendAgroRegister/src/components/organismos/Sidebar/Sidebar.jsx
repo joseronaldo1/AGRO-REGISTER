@@ -14,7 +14,7 @@ function Sidebar() {
             <img className='imagenpersonal' src={v.Imagepersona} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '100px' }} />
             <h1 style={{ textAlign:'center', fontSize:'29px', paddingTop:'20px' }}>Sergio C</h1>
               <ul className="navbar-nav ">
-                <NavItem icon={v.iconoPerfilUsuario} text="Perfil" href="/Perfilprincipal" />
+                {/* <NavItem icon={v.iconoPerfilUsuario} text="Perfil" href="/Perfilprincipal" /> */}
                 <NavItem icon={v.iconoFinca} text="Finca" href="/finca" />
                 <NavItem icon={v.iconoCultivo} text="Cultivos" href="/cultivo" />
                 <NavItem icon={v.iconoTractor} text="Lotes" href="/lotes" />
@@ -22,8 +22,8 @@ function Sidebar() {
                 <NavItem icon={v.iconoActividad} text="Actividad" href="/actividad" />
                 <NavItem icon={v.iconoTractor} text="Recursos" href="/recursos" />
                 <NavItem icon={v.iconoReporte} text="Reportes" href="/reportes" />
-                <NavItem icon={v.iconoSoporte} text="Soporte" href="/soport" />
-                <NavItem icon={v.iconoSalir} text="Salir" href="/" />
+               {/*  <NavItem icon={v.iconoSoporte} text="Soporte" href="/soport" /> */}
+                {/* <NavItem icon={v.iconoSalir} text="Salir" href="/" /> */}
               </ul>
 
             </div>

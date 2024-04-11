@@ -12,7 +12,7 @@ import ImgSlider1 from '../assets/imagen1.png'
 import ImgSlider2 from '../assets/CafeSpecial.png'
 import ImgSlider3 from '../assets/SENA-AZUL.jpg'
 import Logo from '../assets/logoOrigi.png'
-import Personal from '../assets/imagen-persona.png'
+import Personal from '../assets/personaaa.webp'
 
 const v = {
 

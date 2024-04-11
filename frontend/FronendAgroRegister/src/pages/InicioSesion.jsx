@@ -6,7 +6,7 @@ import HeaderInicio from '../components/organismos/Header/HeaderInicio.jsx';
 
 export const IniciarSesion = () => {
     const campos = [
-        { name: 'correo', type: 'text', placeholder: 'Correo Electronico' },
+        { name: 'correo', type: 'text', placeholder: 'Correo Electrónico' },
         { name: 'password', type: 'password', placeholder: 'Contraseña' },
     ];
     
@@ -18,26 +18,31 @@ export const IniciarSesion = () => {
         maxWidth: '400px' 
     };
 
+    const tituloStyle = {
+        fontSize: '1.3em', // Tamaño de fuente más grande
+        fontWeight: 'bold', // Negrita
+        textAlign: 'center', // Alineación centrada del texto
+        padding: '1.25rem 0', // Espaciado interior superior e inferior
+    };
+
     return (
-        <div className='flex' style={{margin:'150px'}}>
-            <HeaderInicio/>
+        <div className='flex' style={{ margin: '150px' }}>
+            <HeaderInicio />
             <div className='flex items-center justify-center'>
-                <form style={formularioStyle}>
-                    <label className="text-xl font-bold flex justify-center items-center p-8">Inicio de Sesion</label>
-                    <div style={{marginTop :'100px'}}>
+                <form style={{ textAlign: 'center', ...formularioStyle }}>
+                    <label style={tituloStyle}>Inicio de Sesión</label>
+                    <div style={{ marginTop: '100px' }}>
                         <Formulario campos={campos} />
                     </div>
-                    <div className="text-xl font-bold justify-center items-center p-10">
-                        <Link to='/olvidocontra1'>Olvido Su contraseña?</Link>
+                    <div className="text-xl font-bold justify-center items-center p-10" style={{ textAlign: 'center' }}>
+                        <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
                     </div>
                     <div className='flex flex-col m-5 justify-center items-center'>
                         <Link to='/dashboard'>
-                        <Botones children='Enviar' />
+                            <Botones children='Iniciar' />
                         </Link>
                     </div>
-                   
                 </form>
-                
             </div>
         </div>
     );

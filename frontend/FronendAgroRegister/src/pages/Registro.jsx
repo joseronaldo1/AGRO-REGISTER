@@ -17,20 +17,27 @@ export const Registro = () => {
         borderRadius: '5px', 
         padding: '20px', 
         margin: '20px auto', 
-        maxWidth: '400px' 
+        maxWidth: '400px',
+        textAlign: 'center' // Alineación centrada del contenido del formulario
+    };
+    const tituloStyle = {
+        fontSize: '1.3em', // Tamaño de fuente más grande
+        fontWeight: 'bold', // Negrita
+        textAlign: 'center', // Alineación centrada del texto
+        padding: '1.25rem 0', // Espaciado interior superior e inferior
     };
     return (
-        <div className='flex' style={{margin:'150px'}}>
+        <div className='flex' style={{ margin: '150px', justifyContent: 'center' }}>
             <HeaderInicio/>
             <div className='flex items-center justify-center'>
-                <form style={formularioStyle}>
-                    <label className="text-xl font-bold flex justify-center items-center p-10">Registro de Usuario</label>
+                <form style={formularioStyle}>      
+                    <label style={tituloStyle}>Registro de Usuario</label>
                     <div style={{marginTop :'100px'}}>
                         <Formulario campos={campos} />
                     </div>
                     <div className='flex flex-col m-5 justify-center items-center'>
                         <Link to='/iniciosesion'>
-                        <Botones children='Enviar' />
+                            <Botones children='Enviar' />
                         </Link>
                     </div>
                 </form>
