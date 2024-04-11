@@ -1,0 +1,15 @@
+
+  /* Contenedor Menu hamburguesa */
+  .bgMenu{
+    background-color: #e0e0e0;
+    height: auto;
+    width: 280px !important;
+    top: 0;
+  }
+  
+  .imagenpersonal{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin-left: 80px;
+  }
