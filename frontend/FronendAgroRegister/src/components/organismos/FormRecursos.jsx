@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Importa Axios
-import Boton from '../atomos/BotonRegistrar';
+import axios from 'axios';
 
 const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
@@ -23,25 +22,31 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
   const handleFormSubmit = async e => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/RegistroRecurso', formData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      console.log(response.data); // Manejar la respuesta según necesites
+      if (mode === 'registro') {
+        const response = await axios.post('http://localhost:3000/RegistroRecurso', formData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log(response.data);
+      } else if (mode === 'update') { // Corrección: cambiar 'actualizacion' a 'update'
+        const { id } = initialData;
+        await axios.put(`http://localhost:3000/actualizarRecurso/${id}`, formData);
+      }
+
       onSubmit(formData);
-      cerrarModal(); // Cerrar el modal después de enviar el formulario
+      cerrarModal();
     } catch (error) {
-      console.error('Error al registrar el recurso:', error);
+      console.error('Error al procesar el formulario:', error);
     }
   };
 
   return (
-    <form className={className} onSubmit={handleFormSubmit} style={{justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-      <div className="flex flex-col" >
-        <label className="text-x1 font-bold w-80" style={{fontWeight: 'bold'}}>Nombre Recursos: </label>
+    <form className={className} onSubmit={handleFormSubmit} style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Nombre Recursos: </label>
         <br />
-        <input  style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height:'40px' }}
+        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
           type="text"
           name="nombre_recursos"
           placeholder="Nombre de Recursos"
@@ -50,9 +55,9 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
         />
       </div>
       <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{fontWeight: 'bold'}}>Cantidad Medida: </label>
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Cantidad Medida: </label>
         <br />
-        <input  style={{borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height:'40px' }}
+        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
           type="text"
           name="cantidad_medida"
           placeholder="Cantidad de Medida"
@@ -61,9 +66,9 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
         />
       </div>
       <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{fontWeight: 'bold'}}>Unidades Medida: </label>
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Unidades Medida: </label>
         <br />
-        <input  style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height:'40px' }}
+        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
           type="text"
           name="unidades_medida"
           placeholder="Unidades de Medida"
@@ -72,9 +77,9 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
         />
       </div>
       <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{fontWeight: 'bold'}}>Extras: </label>
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Extras: </label>
         <br />
-        <input style={{borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height:'40px' }}
+        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
           type="text"
           name="extras"
           placeholder="Extras"
@@ -82,10 +87,9 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
           onChange={handleChange}
         />
       </div>
-      <button className="boton" type="submit" style={{backgroundColor: '#1bc12e', 
-      borderRadius: '10px', color: 'white', 
-      border: 'none', marginLeft: '3%', width: '20%', fontSize: '17px', marginTop: '20px', height: '40px'}} >
-        Registrar</button>
+      <button className="boton" type="submit" style={{ backgroundColor: '#1bc12e', borderRadius: '10px', color: 'white', border: 'none', marginLeft: '3%', width: '20%', fontSize: '17px', marginTop: '20px', height: '40px' }}>
+        {mode === 'registro' ? 'Registrar' : 'Actualizar'}
+      </button>
     </form>
   );
 };
