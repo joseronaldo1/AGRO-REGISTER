@@ -69,11 +69,11 @@ function Login() {
                         value={formData.extras}
                         onChange={handleChange}
                     />
-                    
+
                     <button className="boton" type="submit">Registrarse</button>
                 </form>
             </div>
-            
+
         </div>
     );
 }

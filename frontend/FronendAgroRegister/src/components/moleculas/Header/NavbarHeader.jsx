@@ -55,17 +55,17 @@ function NavbarHeader() {
           <div style={{ marginBottom: '10px', marginLeft: '70px' }}> {/* Div para separar el primer botón */}
             <Botones onClick={handlePerfil} children="Perfil" href="/Perfilprincipal" /> {/* Botón para ir al perfil */}
           </div>
-          <div style={{ marginBottom: '10px',  marginRight: '20px',textAlign: 'center', fontWeight: 'bold' }}>
+          <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold' }}>
             <p>Configura tu cuenta:</p>
           </div>
           <div style={{ marginBottom: '10px', marginLeft: '70px' }}> {/* Div para separar el segundo botón */}
             <Botones onClick={handleSoporte} children="Soporte" tipo="secundario" href="/Soport" /> {/* Botón para soporte */}
           </div>
-          <div style={{ marginBottom: '10px',  marginRight: '20px',textAlign: 'center', fontWeight: 'bold' }}>
+          <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold' }}>
             <p>¿Deseas cerrar sesión?</p>
           </div>
           <div style={{ marginBottom: '10px', marginLeft: '70px' }}> {/* Div para separar el tercer botón */}
-            <Boton onClick={handleCerrarSesion} children="Salir" tipo="secundario" href="/iniciosesion"  />
+            <Boton onClick={handleCerrarSesion} children="Salir" tipo="secundario" href="/iniciosesion" />
           </div>
         </Modal.Body>
       </Modal>

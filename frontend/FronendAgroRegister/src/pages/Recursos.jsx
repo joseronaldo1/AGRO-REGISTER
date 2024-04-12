@@ -4,7 +4,6 @@ import Botones from '../components/atomos/Botones';
 import { Datatable } from '../components/moleculas/Datatable';
 import ModalRecuRegeContrasenia from '../components/organismos/ModalRecur';
 import Header from '../components/organismos/Header/Header';
-import Formulario from '../components/organismos/Formulario';
 
 function Recursos() {
   const baseURL = 'http://localhost:3000/listarRecurso';
@@ -33,7 +32,6 @@ function Recursos() {
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
   const handleOpenActualizacionModal = (rowData) => {
-    // Asegurarse de que initialData contenga el campo id_tipo_recursos
     const updatedInitialData = { ...rowData, id: rowData.id_tipo_recursos };
     setInitialData(updatedInitialData);
     setMode('update');
@@ -48,13 +46,9 @@ function Recursos() {
   const handleActualizacionFormSubmit = async (formData) => {
     try {
       console.log('Actualización de recurso:', formData);
-      // Obtener el ID del recurso
       const { id } = formData;
-      // Realizar la solicitud PUT para actualizar los datos
       await axios.put(`http://localhost:3000/actualizarRecurso/${id}`, formData);
-      // Actualizar los datos en la interfaz
       fetchData();
-      // Cerrar el modal de actualización
       setShowActualizacionModal(false);
     } catch (error) {
       console.error('Error al actualizar el recurso:', error);
@@ -91,7 +85,7 @@ function Recursos() {
       name: 'Acciones',
       cell: (row) => (
         <button
-          className="btn btn-warning p-2 rounded-lg text-sm font-bold" style={{ marginLeft: '-8px' }}
+          className="btn btn-warning p-2 rounded-lg text-sm font-bold"
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
@@ -116,6 +110,7 @@ function Recursos() {
         actionLabel="Registrar"
         initialData={registroFormData}
         mode="registro"
+        handleSubmit={() => setShowRegistroModal(false)}
       />
 
       <ModalRecuRegeContrasenia
