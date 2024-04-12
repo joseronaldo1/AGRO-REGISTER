@@ -18,6 +18,7 @@ import Variedad from './pages/Variedad.jsx';
 import Lotes from './pages/Lotes.jsx';
 import Recursos from './pages/Recursos.jsx';
 import Actividad from './pages/Actividades.jsx';
+import Login from './pages/nada.jsx'
 import { Perfilprincipal } from './pages/Perfil.jsx';
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route path="/cultivo" element={<Cultivos/>} />
           <Route path="/actividad" element={<Actividad/>} />
           <Route path="/lotes" element={<Lotes/>} />
+          <Route path="/prueba" element={<Login/>} />
           <Route path="/recursos" element={<Recursos/>} />
           <Route path="/Soport" element={<Soporte />} />
           <Route path="/dashboard" element={<Dashboardkev />} />
