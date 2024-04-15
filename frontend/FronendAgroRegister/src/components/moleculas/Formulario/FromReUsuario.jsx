@@ -33,6 +33,7 @@ const FormularioRegistroUsuario = () => {
         rol: '',
         estado: ''
       });
+      window.location.href = "/iniciosesion";
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.length > 0) {
         const errorMessage = error.response.data.errors[0].msg;
@@ -80,11 +81,12 @@ const FormularioRegistroUsuario = () => {
           <InputAtom label="Contraseña:" id="password" name="password" type="password" value={formData.password} onChange={handleChange} />
           <InputAtom label="Rol:" id="rol" name="rol" value={formData.rol} onChange={handleChange} />
           <InputAtom label="Estado:" id="estado" name="estado" value={formData.estado} onChange={handleChange} />
-          {/* Utiliza el componente Button para el botón de envío */}
+          
           <Botones type="submit" disabled={!allowSubmit}>Registrarse</Botones>
-          {/* Enlace para ir a la página de inicio de sesión */}
+          
           <Link to='/iniciosesion'>Ya tienes cuenta</Link>
         </form>
+        
       </div>
     </div>
   );
