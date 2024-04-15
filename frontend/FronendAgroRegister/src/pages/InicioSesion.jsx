@@ -56,10 +56,10 @@ export const IniciarSesion = () => {
           <InputAtom label="Contraseña:" id="password" name="password" type="password" value={formData.password} onChange={handleChange} />
           <Botones type="submit" disabled={loading}>Iniciar Sesión</Botones>
           {loading && <span>Cargando...</span>}
-        </form>
-        
         <Link to='/olvidocontra1'>Olvide Contraseña</Link>
-      </div>
+      </form>
+        
+        </div>
     </div>
   );
 }
