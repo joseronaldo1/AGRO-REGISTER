@@ -1,119 +1,144 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import Botones from "../components/atomos/Botones";
 import { Datatable } from "../components/moleculas/Datatable";
-import ModalRecuRegeContrasenia from "../components/organismos/Modal";
 import Header from "../components/organismos/Header/Header";
-import Formulario from '../components/organismos/Formulario.jsx';
+import ModalActividad from "../components/moleculas/Modal/ModalActividad";
 
 function Actividad() {
-  const [showModal, setShowModal] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [formData, setFormData] = useState({
-    nombreActividad: "",
-    tiempo: "",
-    valorActividad: "",
-    observaciones: "",
-    tipoCultivo: "",
-  });
+  const baseURL = "http://localhost:3000/listaraAC";
 
-  const handleOpenModal = (title) => {
-    setShowModal(true);
-    setModalTitle(title);
+  const [data, setData] = useState([]);
+  const [showRegistroModal, setShowRegistroModal] = useState(false);
+  const [showActualizacionModal, setShowActualizacionModal] = useState(false);
+  const [registroFormData, setRegistroFormData] = useState({});
+  const [mode, setMode] = useState("create");
+  const [initialData, setInitialData] = useState(null);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(baseURL);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleOpenRegistroModal = () => setShowRegistroModal(true);
+  const handleCloseRegistroModal = () => setShowRegistroModal(false);
+
+  const handleOpenActualizacionModal = (rowData) => {
+    const updatedInitialData = { ...rowData, id: rowData.id_tipo_recursos };
+    setInitialData(updatedInitialData);
+    setMode("update");
+    setShowActualizacionModal(true);
   };
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    console.log(formData);
-    setFormData({
-      nombreActividad: "",
-      tiempo: "",
-      valorActividad: "",
-      observaciones: "",
-      tipoCultivo: "",
-    });
-    handleCloseModal();
+  const handleCloseActualizacionModal = () => {
+    setInitialData(null);
+    setShowActualizacionModal(false);
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  const handleActualizacionFormSubmit = async (formData) => {
+    try {
+      console.log("Actualización de recurso:", formData);
+      const { id } = formData;
+      await axios.put(
+        `http://localhost:3000/Actualizara/actividad/${id}`,
+        formData
+      );
+      fetchData();
+      setShowActualizacionModal(false);
+    } catch (error) {
+      console.error("Error al actualizar el recurso:", error);
+    }
   };
 
-  const handleDesactivarClick = (fechaInicio) => {
-    alert(`¿Quieres desactivar el cultivo con fecha de inicio ${fechaInicio}?`);
+  const handleSearch = async (searchTerm) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/Buscar/actividad/${searchTerm}`
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error searching for resources:", error);
+    }
   };
 
   const columns = [
-    { name: "Nombre Actividad", selector: (row) => row.nombreActividad, sortable: true },
-    { name: "Tiempo", selector: (row) => row.tiempo, sortable: true },
-    { name: "Valor Actividad", selector: (row) => row.valorActividad, sortable: true },
-    { name: "Observaciones", selector: (row) => row.observaciones, sortable: true },
-    { name: "Tipo de Cultivo", selector: (row) => row.tipoCultivo, sortable: true },
-    { 
-      name: "Acciones", 
+    {
+      name: "ID",
+      selector: (row) => row.id_actividad,
+      sortable: true,
+    },
+    {
+      name: "Nombre Actividad",
+      selector: (row) => row.nombre_actividad,
+      sortable: true,
+    },
+    {
+      name: "Tiempo",
+      selector: (row) => row.tiempo,
+      sortable: true,
+    },
+    {
+      name: "Observaciones",
+      selector: (row) => row.observaciones,
+      sortable: true,
+    },
+    {
+      name: "Valor Actividad",
+      selector: (row) => row.valor_actividad,
+      sortable: true,
+    },
+    {
+      name: "fk_variedad",
+      selector: (row) => row.id_variedad,
+      sortable: true,
+    },
+    {
+      name: "Estado",
+      selector: (row) => row.estado,
+      sortable: true,
+    },
+    
+    {
+      name: "Acciones",
       cell: (row) => (
-        <div>
-          <button className="btn btn-danger p-2 rounded-lg text-sm font-bold mt-2" type="button" onClick={() => handleDesactivarClick(row.fecha_inicio)}>
-            Desactivar
-          </button>
-          <br /> {/* Agregar un salto de línea para separar los botones */}
-          <button className="btn btn-warning p-2 rounded-lg text-sm font-bold mt-2" type="button" onClick={() => handleOpenModal("Actualizar")}>
-            Actualizar
-          </button>
-        </div>
+        <button
+          className="btn btn-warning p-2 rounded-lg text-sm font-bold"
+          style={{ marginLeft: "-29px" }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          Editar
+        </button>
       ),
     },
-  ];
-
-  const data = [
-    {
-      nombreActividad: "Guadañar",
-      tiempo: "2:00",
-      valorActividad: 20000,
-      observaciones: "Bien",
-      tipoCultivo:"Cebolla"
-    }
-  ];
-
-  const camposRegistro = [
-    { name: "Nombre Actividad", placeholder: "Nombre actividad", type: "text" },
-    { name: "Tiempo", placeholder: "tiempo", type: "date"},
-    { name: "Valor Actividad", placeholder: "Valor actividad", type: "number" },
-    { name: "Observaciones", placeholder: "Observaciones", type: "text" },
-    { name: "Tipo de Cultivo", placeholder: "tipo de cultivos", type: "text" },
   ];
 
   return (
     <div style={{ marginTop: "8%" }}>
       <Header />
       <div className="container mt-5">
-        <Botones children="Registrar" onClick={() => handleOpenModal("Registrar")} />
-        <Datatable columns={columns} data={data} title="Actividad" />
+        {/* <SearchBar onSearch={handleSearch} /> */}
+        <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+        <Datatable columns={columns} data={data} title="Recursos" />
       </div>
 
-      {/* Modal de Cultivos */}
-      <ModalRecuRegeContrasenia
-        mostrar={showModal}
-        cerrarModal={handleCloseModal}
-        titulo={modalTitle}
-      >
-        <Formulario
-          campos={camposRegistro}
-          onSubmit={handleFormSubmit}
-          className="form-cultivos"
-        />
-        <Botones
-          children="Registrar"
-          onClick={() => handleFormSubmit()}
-        />
-      </ModalRecuRegeContrasenia>
+      <ModalActividad
+        mostrar={showRegistroModal}
+        cerrarModal={handleCloseRegistroModal}
+        titulo="Registro"
+        actionLabel="Registrar"
+        initialData={registroFormData}
+        mode="registro"
+        handleSubmit={() => setShowRegistroModal(false)}
+      />
     </div>
   );
 }

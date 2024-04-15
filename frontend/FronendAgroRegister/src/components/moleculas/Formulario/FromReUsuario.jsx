@@ -14,6 +14,8 @@ const FormularioRegistroUsuario = () => {
     rol: '',
     estado: ''
   });
+  const [loading, setLoading] = useState(false); // Estado para indicar si se está procesando la solicitud
+
 
   const [allowSubmit, setAllowSubmit] = useState(true); // Estado para controlar si se permite enviar el formulario
 
@@ -70,6 +72,7 @@ const FormularioRegistroUsuario = () => {
   };
 
   return (
+  
     <div className='flex' style={{ margin: '150px', justifyContent: 'center' }}>
       <HeaderInicio />
       <div className='flex items-center justify-center'>
@@ -82,9 +85,13 @@ const FormularioRegistroUsuario = () => {
           <InputAtom label="Rol:" id="rol" name="rol" value={formData.rol} onChange={handleChange} />
           <InputAtom label="Estado:" id="estado" name="estado" value={formData.estado} onChange={handleChange} />
           
-          <Botones type="submit" disabled={!allowSubmit}>Registrarse</Botones>
+          <Botones type="submit" disabled={!allowSubmit || loading} >Registrarse</Botones>
+          <div className='flex items-center justify-center'>
+          {loading && <span>Cargando...</span>}
+          </div>
+
+          <div className='flex items-center justify-center'><Link to='/iniciosesion'>Ya tienes cuenta</Link></div>
           
-          <Link to='/iniciosesion'>Ya tienes cuenta</Link>
         </form>
         
       </div>

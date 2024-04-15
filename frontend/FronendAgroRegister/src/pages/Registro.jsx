@@ -6,6 +6,7 @@ import HeaderInicio from '../components/organismos/Header/HeaderInicio.jsx';
 export const Registro = () => {
     return (
         <div>
+          
           {/* <HeaderInicio/> */}
           <FormularioRegistroUsuario />
         </div>

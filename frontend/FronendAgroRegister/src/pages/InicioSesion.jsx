@@ -55,8 +55,14 @@ export const IniciarSesion = () => {
           <InputAtom label="Correo:" id="correo" name="correo" type="email" value={formData.correo} onChange={handleChange} />
           <InputAtom label="Contraseña:" id="password" name="password" type="password" value={formData.password} onChange={handleChange} />
           <Botones type="submit" disabled={loading}>Iniciar Sesión</Botones>
+          <div className='flex items-center justify-center'>
           {loading && <span>Cargando...</span>}
-        <Link to='/olvidocontra1'>Olvide Contraseña</Link>
+          </div>
+
+        <div className={'flex items-center justify-center'}>
+        <Link to='/olvidocontra1' className='flex items-center justify-center'>Olvide Contraseña</Link>
+        </div >
+        <div className={'flex items-center justify-center'}><Link to='/registrarse' className='flex items-center justify-center'>Registrarse</Link></div>
       </form>
         
         </div>

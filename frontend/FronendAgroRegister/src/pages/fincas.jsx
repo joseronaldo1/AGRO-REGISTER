@@ -127,6 +127,7 @@ function Finca() {
 
   return (
     <div style={{ marginTop: "8%" }}>
+      
       <Header />
       <div className="container mt-5">
         <Botones

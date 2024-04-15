@@ -17,8 +17,10 @@ import { EditarPerfilusuario } from './pages/EditarPerfilUsuario.jsx';
 import Variedad from './pages/Variedad.jsx';
 import Lotes from './pages/Lotes.jsx';
 import Recursos from './pages/Recursos.jsx';
-import Actividad from './pages/Actividades.jsx';
+
 import { Perfilprincipal } from './pages/Perfil.jsx';
+import Actividad from './pages/Actividades.jsx';
+
 
 function App() {
 
@@ -37,7 +39,7 @@ function App() {
           <Route path="/usuarios" element={<Usuario/>} />
           <Route path="/variedad" element={<Variedad/>} />
           <Route path="/cultivo" element={<Cultivos/>} />
-          <Route path="/actividad" element={<Actividad/>} />
+          <Route path="/actividad" element={<Actividad    />} />
           <Route path="/lotes" element={<Lotes/>} />
           <Route path="/recursos" element={<Recursos/>} />
           <Route path="/Soport" element={<Soporte />} />
