@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
-import Formulario from '../organismos/FormRecursos';
+import FormVariedad from '../organismos/FormVariedad';
 
 
 function ModalRecuRegeContrasenia({ titulo, mostrar, cerrarModal, handleSubmit, actionLabel, initialData, mode }) {
@@ -17,7 +17,7 @@ function ModalRecuRegeContrasenia({ titulo, mostrar, cerrarModal, handleSubmit, 
       </Modal.Header>
       <Modal.Body>
         {mostrar && ( // Asegura que el contenido se renderice solo cuando mostrar es true
-          <Formulario
+          <FormVariedad
             onSubmit={(data, e) => {
               handleSubmit(data, e);
               cerrarModal(); // Llama a cerrarModal después de enviar el formulario

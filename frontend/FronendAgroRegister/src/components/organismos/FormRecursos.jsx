@@ -10,6 +10,7 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
   };
 
   const [formData, setFormData] = useState(initialFormData);
+  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -22,16 +23,38 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
   const handleFormSubmit = async e => {
     e.preventDefault();
     try {
+      // Convertir cantidad_medida a número
+      const cantidad_medida = parseFloat(formData.cantidad_medida);
+
+      // Verificar si algún campo está vacío
+      if (
+        !formData.nombre_recursos ||
+        !formData.cantidad_medida ||
+        !formData.unidades_medida ||
+        !formData.extras
+      ) {
+        setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+        return;
+      }
+
+      // Si todos los campos están completos, continuar con el envío del formulario
       if (mode === 'registro') {
-        const response = await axios.post('http://localhost:3000/RegistroRecurso', formData, {
-          headers: {
-            'Content-Type': 'application/json'
+        const response = await axios.post(
+          'http://localhost:3000/RegistroRecurso',
+          { ...formData, cantidad_medida },
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
-        });
+        );
         console.log(response.data);
-      } else if (mode === 'update') { // Corrección: cambiar 'actualizacion' a 'update'
+      } else if (mode === 'update') {
         const { id } = initialData;
-        await axios.put(`http://localhost:3000/actualizarRecurso/${id}`, formData);
+        await axios.put(
+          `http://localhost:3000/actualizarRecurso/${id}`,
+          formData
+        );
       }
 
       onSubmit(formData);
@@ -43,8 +66,13 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
 
   return (
     <form className={className} onSubmit={handleFormSubmit} style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+      {showWarning && ( // Mostrar advertencia si showWarning es true
+        <p style={{ color: 'red', marginBottom: '10px' }}>
+          Por favor complete todos los campos
+        </p>
+      )}
       <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Nombre Recursos: </label>
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Nombre Recurso: </label>
         <br />
         <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
           type="text"
@@ -68,13 +96,18 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Unidades Medida: </label>
         <br />
-        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
-          type="text"
+        <select
+          style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
           name="unidades_medida"
-          placeholder="Unidades de Medida"
           value={formData.unidades_medida}
           onChange={handleChange}
-        />
+        >
+          <option value="">Seleccione...</option>
+          <option value="ml">ml</option>
+          <option value="litro">litro</option>
+          <option value="g">g</option>
+          <option value="kg">kg</option>
+        </select>
       </div>
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Extras: </label>

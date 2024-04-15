@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Botones from '../components/atomos/Botones';
+import Botones from '../components/atomos/BotonRegiApi';
 import { Datatable } from '../components/moleculas/Datatable';
 import ModalRecuRegeContrasenia from '../components/organismos/ModalRecur';
 import Header from '../components/organismos/Header/Header';
+import SearchBar from '../components/moleculas/SearchBar'; // Importamos el componente de búsqueda
 
 function Recursos() {
   const baseURL = 'http://localhost:3000/listarRecurso';
@@ -55,6 +56,16 @@ function Recursos() {
     }
   };
 
+  // Función para buscar recursos por ID
+  const handleSearch = async (searchTerm) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/buscarRecurso/${searchTerm}`);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+    }
+  };
+
   const columns = [
     {
       name: 'ID',
@@ -86,6 +97,7 @@ function Recursos() {
       cell: (row) => (
         <button
           className="btn btn-warning p-2 rounded-lg text-sm font-bold"
+          style={{ marginLeft: '-10px' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
@@ -99,7 +111,8 @@ function Recursos() {
     <div style={{ marginTop: '8%' }}>
       <Header />
       <div className="container mt-5">
-        <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+        <SearchBar onSearch={handleSearch} /> {/* Componente de búsqueda */}
+        <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
         <Datatable columns={columns} data={data} title="Recursos" />
       </div>
 
