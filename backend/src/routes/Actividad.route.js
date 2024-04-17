@@ -7,11 +7,11 @@ import {validarToken} from "../controllers/autenticacion.js";
 const rutaDeActividad = Router()
 
 //localhost:4000/VariedadCultivo
-rutaDeActividad.get("/listara",validarToken, listarA);
-rutaDeActividad.post("/Registrara",validarToken, validarRR, RegistrarA);
-rutaDeActividad.put("/Actualizara/actividad/:id",validarToken, validarRA, ActualizarA);
-rutaDeActividad.put("/Desactivara/actividad/:id", validarToken ,validarD, DesactivarA);
-rutaDeActividad.get("/Buscar/actividad/:id",validarToken, BuscarA);
+rutaDeActividad.get("/listara", listarA);
+rutaDeActividad.post("/Registrara",validarRR, RegistrarA);
+rutaDeActividad.put("/Actualizara/actividad/:id", validarRA, ActualizarA);
+rutaDeActividad.put("/Desactivara/actividad/:id", validarD, DesactivarA); 
+rutaDeActividad.get("/Buscar/actividad/:id", BuscarA);
 
 export { rutaDeActividad };
 //crud

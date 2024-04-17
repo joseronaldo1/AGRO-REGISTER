@@ -7,8 +7,7 @@ const FormActividad= ({ onSubmit, className, initialData, mode, cerrarModal }) =
     tiempo: initialData ? initialData.tiempo : '',
     observaciones: initialData ? initialData.observaciones : '',
     valor_actividad: initialData ? initialData.valor_actividad : '',
-    fk_id_variedad: initialData ? initialData.fk_id_variedad : '',
-    estado: initialData ? initialData.estado : ''
+    fk_id_variedad: initialData ? initialData.fk_id_variedad : ''
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -26,7 +25,7 @@ const FormActividad= ({ onSubmit, className, initialData, mode, cerrarModal }) =
     e.preventDefault();
     try {
       if (!formData.nombre_actividad || !formData.tiempo || !formData.observaciones || !formData.valor_actividad 
-        || !formData.fk_id_variedad || !formData.estado) {
+        || !formData.fk_id_variedad) {
         setShowWarning(true); // Mostrar advertencia si algún campo está vacío
         return;
       }
@@ -119,20 +118,7 @@ const FormActividad= ({ onSubmit, className, initialData, mode, cerrarModal }) =
           onChange={handleChange}
         />
       </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Estado: </label>
-        <br />
-        <select
-          style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
-          name="estado"
-          value={formData.estado}
-          onChange={handleChange}
-        >
-          <option value="">Seleccione...</option>
-          <option value="activo">activo</option>
-          <option value="inactivo">inactivo</option>
-        </select>
-      </div>
+      
       <button className="boton" type="submit" style={{ backgroundColor: '#1bc12e', borderRadius: '10px', color: 'white', border: 'none', marginLeft: '3%', width: '20%', fontSize: '17px', marginTop: '20px', height: '40px' }}>
         {mode === 'registro' ? 'Registrar' : 'Actualizar'}
       </button>
