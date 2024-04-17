@@ -13,7 +13,7 @@ const BotonRegistrar = ({ onClick, children, className, variant }) => {
       className={className}
       variant={variant}
       onClick={handleClick} // Usa la función handleClick para manejar el evento onClick
-      style={{ width: '90px', height: '40px', background: '#121212', marginLeft: '12px', borderColor: "#121212" }}
+      style={{ width: '90px', height: '40px', background: '#009100', marginLeft: '12px', borderColor: "#121212" }}
     >
       {children}
     </Button>
