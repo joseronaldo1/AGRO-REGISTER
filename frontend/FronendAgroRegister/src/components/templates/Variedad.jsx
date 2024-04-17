@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
+import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalVariedad.jsx";
@@ -29,7 +30,6 @@ function Variedad() {
     }
   };
 
-
   const handleOpenRegistroModal = () => setShowRegistroModal(true);
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
@@ -39,7 +39,6 @@ function Variedad() {
     setMode('update');
     setShowActualizacionModal(true);
   };
-
 
   const handleCloseActualizacionModal = () => {
     setInitialData(null);
@@ -58,57 +57,57 @@ function Variedad() {
     }
   };
 
-// Función para buscar recursos por ID
-const handleSearch = async (searchTerm) => {
-  try {
-    const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
-    setData(response.data);
-  } catch (error) {
-    console.error('Error searching for resources:', error);
-  }
-};
+  // Función para buscar recursos por ID
+  const handleSearch = async (searchTerm) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+    }
+  };
 
-const columns = [
-  {
-    name: 'ID',
-    selector: (row) => row.id_variedad,
-    sortable: true,
-  },
-  {
-    name: 'Nombre Variedad',
-    selector: (row) => row.nombre_variedad,
-    sortable: true,
-  },
-  {
-    name: 'Tipo Cultivo',
-    selector: (row) => row.tipo_cultivo,
-    sortable: true,
-  },
-  {
-    name: 'Acciones',
-    cell: (row) => (
-      <button
-        className="btn btn-warning p-2 rounded-lg text-sm font-bold"
-        style={{ marginLeft: '-10px' }}
-        type="button"
-        onClick={() => handleOpenActualizacionModal(row)}
-      >
-        Editar
-      </button>
-    ),
-  },
-];
+  const columns = [
+    {
+      name: 'ID',
+      selector: (row) => row.id_variedad,
+      sortable: true,
+    },
+    {
+      name: 'Nombre Variedad',
+      selector: (row) => row.nombre_variedad,
+      sortable: true,
+    },
+    {
+      name: 'Tipo Cultivo',
+      selector: (row) => row.tipo_cultivo,
+      sortable: true,
+    },
+    {
+      name: 'Acciones',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#ffc107', borderColor: '#ffc107', marginLeft: '10px' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: '#343a40' }} /> {/* Icono de edición */}
+        </button>
+      ),
+    },
+  ];
 
-return (
-  <div style={{ marginTop: '8%' }}>
-    <Header />
-    <div className="container mt-5">
-      <SearchBar onSearch={handleSearch} /> {/* Componente de búsqueda */}
-      <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
-      <Datatable columns={columns} data={data} title="Variedad" />
-    </div>
+  return (
+    <div style={{ marginTop: '8%' }}>
+      <Header />
+      <div className="container mt-5">
+        <SearchBar onSearch={handleSearch} />
+        <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
+        <Datatable columns={columns} data={data} title="Variedad" />
+      </div>
 
-    <ModalRecuRegeContrasenia
+      <ModalRecuRegeContrasenia
         mostrar={showRegistroModal}
         cerrarModal={handleCloseRegistroModal}
         titulo="Registro"
@@ -131,7 +130,4 @@ return (
   );
 }
 
-    
-
-  
 export default Variedad;

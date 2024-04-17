@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
 import Botones from '../atomos/BotonRegiApi';
 import { Datatable } from '../moleculas/Datatable';
 import ModalRecuRegeContrasenia from '../organismos/ModalRecur';
 import Header from '../organismos/Header/Header';
-import SearchBar from '../moleculas/SearchBar'; // Importamos el componente de búsqueda
+import SearchBar from '../moleculas/SearchBar';
 
 function Recursos() {
   const baseURL = 'http://localhost:3000/listarRecurso';
@@ -56,7 +57,6 @@ function Recursos() {
     }
   };
 
-  // Función para buscar recursos por ID
   const handleSearch = async (searchTerm) => {
     try {
       const response = await axios.get(`http://localhost:3000/buscarRecurso/${searchTerm}`);
@@ -96,12 +96,12 @@ function Recursos() {
       name: 'Acciones',
       cell: (row) => (
         <button
-          className="btn btn-warning p-2 rounded-lg text-sm font-bold"
-          style={{ marginLeft: '-10px' }}
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#ffc107', borderColor: '#ffc107', marginLeft: '18px' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          Editar
+          <FaEdit style={{ color: '#343a40' }} /> {/* Icono de edición */}
         </button>
       ),
     },
@@ -111,8 +111,8 @@ function Recursos() {
     <div style={{ marginTop: '8%' }}>
       <Header />
       <div className="container mt-5">
-        <SearchBar onSearch={handleSearch} /> {/* Componente de búsqueda */}
-        <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
+        <SearchBar onSearch={handleSearch} />
+        <Botones children="Registrar" onClick={handleOpenRegistroModal} />
         <Datatable columns={columns} data={data} title="Recursos" />
       </div>
 
