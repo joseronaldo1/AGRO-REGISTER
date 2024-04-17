@@ -1,0 +1,21 @@
+
+export { default as App} from './App';
+export { InicioPage } from './pages/inicio';
+export { InicioSesionPage } from './pages/inicio_sesion';
+export { RegistroPage } from './pages/registro';
+export { EditarPerfilUsuarioPage } from './pages/editar_perfil_usuario';
+export { OlvidopassonePage } from './pages/olvido_contrase1';
+export { OlvidopasstwoPage } from './pages/olvido_contrase2';
+export { OlvidopasstreePage } from './pages/olvido_contrase3';
+export { FincaPage } from './pages/fincas';
+export { UsuarioPage } from './pages/usuarios';
+export { VariedadPage } from './pages/variedad';
+export { CultivosPage } from './pages/cultivos';
+export { ActividadPage } from './pages/actividades';
+export { LotesPage } from './pages/lotes';
+export { RecursosPage } from './pages/recursos';
+export { SoportePage } from './pages/soporte';
+export { DashboardPage } from './pages/dashboar';
+export { ReportesPage } from './pages/reportes';
+export { ProgramacionPage } from './pages/programacion';
+export { PerfilprincipalPage } from './pages/perfil';
