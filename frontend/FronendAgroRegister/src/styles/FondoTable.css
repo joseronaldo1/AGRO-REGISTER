@@ -1,9 +1,10 @@
 .recursos-container {
-    background-color: #9b9b9bcc;
+    background-color: #d4cfcfcc;
     padding: 20px;
     border-radius: 10px;
     margin-top: 20px;
-    min-height: 100vh; /* Establece la altura mínima del contenedor al 100% del alto de la ventana */
+    min-height: 100vh;
+    /* Establece la altura mínima del contenedor al 100% del alto de la ventana */
 }
 
 .white-container {
