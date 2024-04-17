@@ -99,11 +99,13 @@ function Variedad() {
   ];
 
   return (
-    <div style={{ marginTop: '8%' }}>
+    <div className="recursos-container">
       <Header />
       <div className="container mt-5">
-        <SearchBar onSearch={handleSearch} />
-        <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
+        <div className="white-container">
+          <SearchBar onSearch={handleSearch} />
+          <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
+        </div>
         <Datatable columns={columns} data={data} title="Variedad" />
       </div>
 

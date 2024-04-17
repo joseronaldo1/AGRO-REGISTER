@@ -6,6 +6,7 @@ import { Datatable } from '../moleculas/Datatable';
 import ModalRecuRegeContrasenia from '../organismos/ModalRecur';
 import Header from '../organismos/Header/Header';
 import SearchBar from '../moleculas/SearchBar';
+import '../../styles/FondoTable.css'; // Importa el archivo CSS para los estilos personalizados
 
 function Recursos() {
   const baseURL = 'http://localhost:3000/listarRecurso';
@@ -108,11 +109,13 @@ function Recursos() {
   ];
 
   return (
-    <div style={{ marginTop: '8%' }}>
+    <div className="recursos-container">
       <Header />
       <div className="container mt-5">
-        <SearchBar onSearch={handleSearch} />
-        <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+        <div className="white-container">
+          <SearchBar onSearch={handleSearch} />
+          <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+        </div>
         <Datatable columns={columns} data={data} title="Recursos" />
       </div>
 
