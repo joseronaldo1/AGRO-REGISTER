@@ -1,5 +1,7 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { InicioSesionPage } from './pages';
 import { RegistroPage } from './pages';
@@ -19,13 +21,17 @@ import { DashboardPage } from './pages';
 import { ReportesPage } from './pages';
 import { ProgramacionPage } from './pages';
 import { PerfilprincipalPage } from './pages';
+ 
+
 
 function App() {
   return (
     <BrowserRouter>    
+
+
       <Routes>
         <Route path="/" element={<InicioSesionPage />} />
-        <Route path="/registrarse" element={<RegistroPage />} />
+        <Route path="/Registrarse" element={<RegistroPage />} />
         <Route path="/perfil" element={<EditarPerfilUsuarioPage />} />
         <Route path="/olvidocontra1" element={<OlvidopassonePage />} />
         <Route path="/olvidocontra2" element={<OlvidopasstwoPage />} />

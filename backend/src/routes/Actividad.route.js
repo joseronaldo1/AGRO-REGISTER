@@ -10,8 +10,8 @@ const rutaDeActividad = Router()
 rutaDeActividad.get("/listara", listarA);
 rutaDeActividad.post("/Registrara",validarRR, RegistrarA);
 rutaDeActividad.put("/Actualizara/actividad/:id", validarRA, ActualizarA);
+
 rutaDeActividad.put("/Desactivara/actividad/:id", validarD, DesactivarA); 
 rutaDeActividad.get("/Buscar/actividad/:id", BuscarA);
 
 export { rutaDeActividad };
-//crud

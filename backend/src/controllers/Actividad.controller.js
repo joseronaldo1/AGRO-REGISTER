@@ -86,11 +86,12 @@ export const ActualizarA = async (req, res) => {
         }
 
         const { id } = req.params;
-        const { nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad  } = req.body;
-        if (!nombre_actividad && !tiempo && !observaciones && !fk_id_variedad && !valor_actividad) {
+        const { nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado } = req.body;
+        if (!nombre_actividad && !tiempo && !observaciones && !fk_id_variedad && !valor_actividad && !estado) {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad) debe estar presente en la solicitud para realizar la actualización.' });
         }
-        // Realiza una consulta para obtener la variedad de cultivo antes de actualizarla
+
+        // Realiza una consulta para obtener la actividad antes de actualizarla
         const [oldActividad] = await pool.query("SELECT * FROM actividad WHERE id_actividad=?", [id]);
 
         if (oldActividad.length === 0) {
@@ -104,27 +105,28 @@ export const ActualizarA = async (req, res) => {
         const [result] = await pool.query(
             `UPDATE actividad
             SET nombre_actividad = ${nombre_actividad ? `'${nombre_actividad}'` : `'${oldActividad[0].nombre_actividad}'`}, 
-            tiempo = ${tiempo !== undefined ? `'${tiempo}'` : 'tiempo'},
+            tiempo = ${tiempo !== undefined ? `'${tiempo}'` : `'${oldActividad[0].tiempo}'`},
             observaciones = ${observaciones ? `'${observaciones}'` : `'${oldActividad[0].observaciones}'`},
             fk_id_variedad = ${fk_id_variedad ? `'${fk_id_variedad}'` : `'${oldActividad[0].fk_id_variedad}'`},
-            valor_actividad = ${valor_actividad ? `'${valor_actividad}'` : `'${oldActividad[0].valor_actividad}'`}
+            valor_actividad = ${valor_actividad ? `'${valor_actividad}'` : `'${oldActividad[0].valor_actividad}'`},
+            estado = ${estado !== undefined ? `'${estado}'` : `'${oldActividad[0].estado}'`}
             WHERE id_actividad = ?`,
             [id]
         );
      
         if (result.affectedRows > 0) {
-            res.status(200).json({
+            return res.status(200).json({
                 status: 200,
                 message: 'Actividad actualizada con éxito',
             });
         } else {
-            res.status(403).json({
+            return res.status(403).json({
                 status: 403,
-                message: 'No se pudo actualizar la Actividad ',
+                message: 'No se pudo actualizar la Actividad',
             });
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             status: 500,
             message: error.message || 'Error en el sistema'
         });
