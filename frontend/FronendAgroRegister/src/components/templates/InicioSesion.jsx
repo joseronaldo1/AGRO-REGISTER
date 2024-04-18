@@ -1,36 +1,64 @@
-import React from 'react';
-import Formulario from '../organismos/Formulario.jsx';
-import Botones from '../atomos/Botones.jsx';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
-import Logo from '../../assets/logoOrigi.png';
-import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Importa la imagen de fondo
+import InputAtom from '../atomos/Inputs.jsx';
+import Botones from '../atomos/Botones.jsx';
+import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Import the background image if not already imported
+import Logo from '../../assets/logoOrigi.png';// Import the logo image if not already imported
 
 const IniciarSesion = () => {
-    const campos = [
-        { name: 'correo', type: 'text', placeholder: 'Correo Electrónico' },
-        { name: 'password', type: 'password', placeholder: 'Contraseña' },
-    ];
-    
+    const [formData, setFormData] = useState({
+        correo: '',
+        password: ''
+    });
+
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const response = await axios.post('http://localhost:3000/validacion', formData);
+            const responseData = response.data;
+
+            localStorage.setItem('token', responseData.token);
+            alert('Inicio de sesión exitoso');
+            window.location.href = "/dashboard";
+        } catch (error) {
+            alert('Error al iniciar sesión: ' + error.response.data.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+
     const formularioStyle = {
         border: '1px solid #ccc',
-        borderRadius: '15px', 
-        padding: '40px', 
-        margin: '20px auto',  
+        borderRadius: '15px',
+        padding: '40px',
+        margin: '20px auto',
         maxWidth: '400px',
-        backgroundColor: 'rgba(255, 255, 255, 0.9)', // Cambia el color de fondo para hacerlo semitransparente
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
     };
 
     const fondoStyle = {
         backgroundImage: `url(${fondo})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height: '100vh', // Establece la altura del fondo como el 100% de la altura de la ventana
-        width: '100%', // Establece el ancho del fondo como el 100% del ancho de la ventana
-        position: 'fixed', // Fija la posición del fondo para que no se desplace con el contenido
+        height: '100vh',
+        width: '100%',
+        position: 'fixed',
         top: 0,
         left: 0,
-        zIndex: -1, // Coloca el fondo detrás del contenido
+        zIndex: -1,
     };
 
     const tituloStyle = {
@@ -42,26 +70,39 @@ const IniciarSesion = () => {
 
     return (
         <div style={fondoStyle}>
-            <div className='flex' style={{ margin: '130px'}}>
+            <div className='flex' style={{ margin: '130px' }}>
                 <HeaderInicio />
                 <div className='flex items-center justify-center'>
-                    <form style={{ textAlign: 'center', ...formularioStyle }}>
+                    <form style={{ textAlign: 'center', ...formularioStyle }} onSubmit={handleSubmit}>
                         <label style={tituloStyle}>Inicio de Sesión</label>
-                        <img src={Logo} alt="" style={{ maxWidth: '160px'}} />
+                        <img src={Logo} alt="Logo" style={{ maxWidth: '160px' }} />
                         <div style={{ marginTop: '20px' }}>
-                            <Formulario campos={campos} />
+                            <InputAtom
+                                type="email"
+                                placeholder="Correo Electrónico"
+                                name="correo"
+                                value={formData.correo}
+                                onChange={handleChange}
+                            />
+                            <InputAtom
+                                type="password"
+                                placeholder="Contraseña"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                            />
                         </div>
+                                <div className='flex items-center justify-center'>
+                                    {loading && <span>Cargando...</span>}
+                                </div>
                         <div style={{ textAlign: 'center'}}>
                             <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', margin:'15px',  marginTop:'60px' }}>
-                            <div >
-                                <Link to='/dashboard'>
-                                    <Botones children='Iniciar' />
-                                </Link>
-                            </div>
-                            <div >
-                                <Link to='/registrarse'>
+                        <div style={{ display: 'flex', justifyContent: 'center', margin: '15px', marginTop: '60px' }}>
+                                <Botones children='Iniciar'  type="sudmi" disabled={loading}/>
+                                
+                            <div>
+                                <Link to='/registrarse' disabled={loading}>
                                     <Botones children='Registrarse' />
                                 </Link>
                             </div>
@@ -72,4 +113,5 @@ const IniciarSesion = () => {
         </div>
     );
 };
+
 export default IniciarSesion;

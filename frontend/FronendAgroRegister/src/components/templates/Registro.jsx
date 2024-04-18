@@ -1,67 +1,101 @@
- import React from 'react';
- import Formulario from '../organismos/Formulario.jsx';
- import Botones from '../atomos/Botones.jsx';
- import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
- import { Link } from 'react-router-dom';
- import Logo from '../../assets/logoOrigi.png';
- import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png';
+import React, { useState } from 'react';
+import axios from 'axios';
+import InputAtom from '../atomos/Inputs.jsx';
+import Botones from '../atomos/Botones.jsx';
+import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
+import { Link } from 'react-router-dom';
 
  const Registro = () => {
-    const campos = [
-        { name: 'nombre', type: 'text', placeholder: 'Nombres' },
-        { name: 'apellidos', type: 'text', placeholder: 'Apellidos' },
-        { name: 'correo', type: 'text', placeholder: 'Correo Electronico' },
-        { name: 'password', type: 'password', placeholder: 'Contraseña' },
-    ];
-    const formularioStyle = {
-        border: '1px solid #ccc', 
-        borderRadius: '15px', 
-        padding: '40px', 
-        margin: '20px auto', 
+    const [formData, setFormData] = useState({
+        nombre: '',
+        apellido: '',
+        correo: '',
+        password: '',
+        rol: '',
+        estado: ''
+      });
+      const [loading, setLoading] = useState(false); // Estado para indicar si se está procesando la solicitud
+    
+    
+      const [allowSubmit, setAllowSubmit] = useState(true); // Estado para controlar si se permite enviar el formulario
+    
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+          const response = await axios.post('http://localhost:3000/registrarUsuario', formData);
+          const responseData = JSON.stringify(response.data);
+          alert('Registro exitoso:', response.data);
+          
+          // Limpiar el formulario después de enviar los datos
+          setFormData({
+            nombre: '',
+            apellido: '',
+            correo: '',
+            password: '',
+            rol: '',
+            estado: ''
+          });
+          window.location.href = "/";
+        } catch (error) {
+          if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.length > 0) {
+            const errorMessage = error.response.data.errors[0].msg;
+            alert(errorMessage);
+          }
+          console.log(error);
+          // alert('Error al registrar:', error);
+          setAllowSubmit(true); // Permitir el envío del formulario nuevamente después de mostrar el mensaje de error
+        }
+      };
+    
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+          ...formData,
+          [name]: value
+        });
+      };
+    
+      const formularioStyle = {
+        border: '1px solid #ccc',
+        borderRadius: '5px',
+        padding: '20px',
+        margin: '20px auto',
         maxWidth: '400px',
+        textAlign: 'center'
+      };
+    
+      const tituloStyle = {
+        fontSize: '1.3em',
+        fontWeight: 'bold',
         textAlign: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.9)' // Alineación centrada del contenido del formulario
-    };
-
-    const fondoStyle = {
-        backgroundImage: `url(${fondo})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        height: '100vh', // Establece la altura del fondo como el 100% de la altura de la ventana
-        width: '100%', // Establece el ancho del fondo como el 100% del ancho de la ventana
-        position: 'fixed', // Fija la posición del fondo para que no se desplace con el contenido
-        top: 0,
-        left: 0,
-        zIndex: -1, // Coloca el fondo detrás del contenido
-    };
-
-    const tituloStyle = {
-        fontSize: '1.6em', // Tamaño de fuente más grande
-        fontWeight: 'bold', // Negrita
-        textAlign: 'center', // Alineación centrada del texto
-        padding: '1.30rem', // Espaciado interior superior e inferior
-    };
-    return (
-    <div style={fondoStyle}>
-        <div className='flex' style={{ margin: '130px', justifyContent: 'center' }}>
-            <HeaderInicio/>
-            <div className='flex items-center justify-center'>
-                <form style={formularioStyle}>      
-                    <label style={tituloStyle}>Registro de Usuario</label>
-                    <img src={Logo} alt="" style={{ maxWidth: '160px'}} />
-                    <div style={{marginTop :'20px'}}>
-                        <Formulario campos={campos} />
-                    </div>
-                    <div className='m-3'>
-                        <Link to='/'>
-                            <Botones children='Enviar' />
-                        </Link>
-                    </div>
-                </form>
-            </div>
+        padding: '1.25rem 0',
+      };
+    
+      return (
+      
+        <div className='flex' style={{ margin: '150px', justifyContent: 'center' }}>
+          <HeaderInicio />
+          <div className='flex items-center justify-center'>
+            <h2 style={tituloStyle}>Formulario de Registro</h2>
+            <form style={formularioStyle} onSubmit={allowSubmit ? handleSubmit : null} method="post">
+              <InputAtom label="Nombre:" id="nombre" name="nombre" value={formData.nombre} onChange={handleChange} />
+              <InputAtom label="Apellido:" id="apellido" name="apellido" value={formData.apellido} onChange={handleChange} />
+              <InputAtom label="Correo:" id="correo" name="correo" type="email" value={formData.correo} onChange={handleChange} />
+              <InputAtom label="Contraseña:" id="password" name="password" type="password" value={formData.password} onChange={handleChange} />
+              <InputAtom label="Rol:" id="rol" name="rol" value={formData.rol} onChange={handleChange} />
+              <InputAtom label="Estado:" id="estado" name="estado" value={formData.estado} onChange={handleChange} />
+              
+              <Botones type="submit" disabled={!allowSubmit || loading} >Registrarse</Botones>
+              <div className='flex items-center justify-center'>
+              {loading && <span>Cargando...</span>}
+              </div>
+    
+              <div className='flex items-center justify-center'><Link to='/iniciosesion'>Ya tienes cuenta</Link></div>
+              
+            </form>
+            
+          </div>
         </div>
-    </div>
-    );
-};
-
+      );
+    }
 export default Registro;
