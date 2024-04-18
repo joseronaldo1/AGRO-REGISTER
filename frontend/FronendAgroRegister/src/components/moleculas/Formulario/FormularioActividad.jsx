@@ -1,94 +1,143 @@
-import React, { useState } from 'react'; // Added useState import
+import React, { useState } from 'react';
 import axios from 'axios';
-import InputAtom from '../../atomos/Inputs';
-import Botones from '../../atomos/Botones';
-import HeaderInicio from '../../organismos/Header/HeaderInicio';
-import { Link } from 'react-router-dom';
 
-const FormularioActividad = () => {
-  const [formData, setFormData] = useState({
-    nombre_actividad: '',
-    tiempo: '',
-    observaciones: '',
-    fk_id_variedad: '',
-    valor_actividad: '',
-    estado: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [allowSubmit, setAllowSubmit] = useState(true);
+const FormActividad= ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+  const initialFormData = {
+    nombre_actividad: initialData ? initialData.nombre_actividad : '',
+    tiempo: initialData ? initialData.tiempo : '',
+    observaciones: initialData ? initialData.observaciones : '',
+    valor_actividad: initialData ? initialData.valor_actividad : '',
+    fk_id_variedad: initialData ? initialData.fk_id_variedad : '',
+    estado: initialData ? initialData.estado : ''
+  };
 
-  const handleSubmit = async (e) => {
+  const [formData, setFormData] = useState(initialFormData);
+  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleFormSubmit = async e => {
     e.preventDefault();
     try {
-      setLoading(true);
-      const response = await axios.post('http://localhost:3000/RegistraraAC', formData);
-      alert('Registro exitoso: ' + response.data); // Concatenated message properly
-      setFormData({
-        nombre_actividad: '',
-        tiempo: '',
-        observaciones: '',
-        fk_id_variedad: '',
-        valor_actividad: '',
-        estado: ''
-      });
-      window.location.href = "/iniciosesion";
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.length > 0) {
-        const errorMessage = error.response.data.errors[0].msg;
-        alert(errorMessage);
-      } else {
-        alert('Error al registrar: ' + error.message); // Concatenated message properly
+      if (!formData.nombre_actividad || !formData.tiempo || !formData.observaciones || !formData.valor_actividad 
+        || !formData.fk_id_variedad || !formData.estado) {
+        setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+        return;
       }
-      console.log(error);
-    } finally {
-      setLoading(false);
-      setAllowSubmit(true);
+
+      if (mode === 'registro') {
+        const response = await axios.post(
+          'http://localhost:3000/Registrara',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        console.log(response.data);
+      } else if (mode === 'update') {
+        const { id } = initialData;
+        await axios.put(
+          `http://localhost:3000/Actualizara/actividad/${id}`,
+          formData
+        );
+      }
+
+      onSubmit(formData);
+      cerrarModal();
+    } catch (error) {
+      console.error('Error al procesar el formulario:', error);
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const formularioStyle = {
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-    padding: '20px',
-    margin: '20px auto',
-    maxWidth: '400px',
-    textAlign: 'center'
-  };
-
-  const tituloStyle = {
-    fontSize: '1.3em',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    padding: '1.25rem 0',
-  };
-
   return (
-    <div className='flex' style={{ margin: '150px', justifyContent: 'center' }}>
-      <HeaderInicio />
-      <div className='flex items-center justify-center'>
-        <h2 style={tituloStyle}>Formulario de Registro</h2>
-        <form style={formularioStyle} onSubmit={allowSubmit ? handleSubmit : null} method="post">
-          <InputAtom label="Nombre de la Actividad:" id="nombre_actividad" name="nombre_actividad" value={formData.nombre_actividad} onChange={handleChange} />
-          <InputAtom label="Tiempo:" id="tiempo" name="tiempo" value={formData.tiempo} onChange={handleChange} />
-          <InputAtom label="Observaciones:" id="observaciones" name="observaciones" value={formData.observaciones} onChange={handleChange} />
-          <InputAtom label="ID de Variedad:" id="fk_id_variedad" name="fk_id_variedad" value={formData.fk_id_variedad} onChange={handleChange} />
-          <InputAtom label="Valor de la Actividad:" id="valor_actividad" name="valor_actividad" value={formData.valor_actividad} onChange={handleChange} />
-          <InputAtom label="Estado:" id="estado" name="estado" value={formData.estado} onChange={handleChange} />
-          <Botones type="submit" disabled={!allowSubmit || loading}>Registrarse</Botones>
-          {loading && <div className='flex items-center justify-center'><span>Cargando...</span></div>}
-          <div className='flex items-center justify-center'><Link to='/iniciosesion'>Ya tienes cuenta</Link></div>
-        </form>
+    <form className={className} onSubmit={handleFormSubmit} style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+      {showWarning && ( // Mostrar advertencia si showWarning es true
+        <p style={{ color: 'red', marginBottom: '10px' }}>
+          Por favor complete todos los campos
+        </p>
+      )}
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Nombre Actividad: </label>
+        <br />
+        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
+          type="text"
+          name="nombre_actividad"
+          placeholder="Nombre de Actividad"
+          value={formData.nombre_actividad}
+          onChange={handleChange}
+        />
       </div>
-    </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Tiempo: </label>
+        <br />
+        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
+          type="time"
+          name="tiempo"
+          placeholder="Tiempo"
+          value={formData.tiempo}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Observaciones: </label>
+        <br />
+        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
+          type="text"
+          name="observaciones"
+          placeholder="Observaciones"
+          value={formData.observaciones}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Valor actividad: </label>
+        <br />
+        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
+          type="text"
+          name="valor_actividad"
+          placeholder="Valor actividad"
+          value={formData.valor_actividad}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>fk_id_variedad: </label>
+        <br />
+        <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
+          type="text"
+          name="fk_id_variedad"
+          placeholder="fk_id_variedad"
+          value={formData.fk_id_variedad}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Estado: </label>
+        <br />
+        <select
+          style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
+          name="estado"
+          value={formData.estado}
+          onChange={handleChange}
+        >
+          <option value="">Seleccione...</option>
+          <option value="activo">activo</option>
+          <option value="inactivo">inactivo</option>
+        </select>
+      </div>
+      <button className="boton" type="submit" style={{ backgroundColor: '#1bc12e', borderRadius: '10px', color: 'white', border: 'none', marginLeft: '3%', width: '20%', fontSize: '17px', marginTop: '20px', height: '40px' }}>
+        {mode === 'registro' ? 'Registrar' : 'Actualizar'}
+      </button>
+    </form>
   );
-}
+};
 
-export default FormularioActividad;
+export default FormActividad;

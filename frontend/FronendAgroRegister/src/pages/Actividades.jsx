@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import Botones from "../components/atomos/Botones";
-import { Datatable } from "../components/moleculas/Datatable";
-import Header from "../components/organismos/Header/Header";
-import ModalActividad from "../components/moleculas/Modal/ModalActividad";
+// import SearchBar from "../components/SearchBar"; // Asumiendo que tienes un componente SearchBar
+import Botones from "../components/atomos/Botones"; // Asumiendo que tienes un componente Botones
+import { Datatable } from "../components/moleculas/Datatable"; // Asumiendo que tienes un componente Datatable
+import Header from "../components/organismos/Header/Header"; // Asumiendo que tienes un componente Header
+import ModalActividad from "../components/moleculas/Modal/ModalActividad"; // Asumiendo que tienes un componente ModalActividad
 
 function Actividad() {
-  const baseURL = "http://localhost:3000/listaraAC";
+  const baseURL = "http://localhost:3000/listara";
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
@@ -32,7 +33,7 @@ function Actividad() {
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
   const handleOpenActualizacionModal = (rowData) => {
-    const updatedInitialData = { ...rowData, id: rowData.id_tipo_recursos };
+    const updatedInitialData = { ...rowData, id: rowData.id_actividad };
     setInitialData(updatedInitialData);
     setMode("update");
     setShowActualizacionModal(true);
@@ -47,10 +48,7 @@ function Actividad() {
     try {
       console.log("Actualización de recurso:", formData);
       const { id } = formData;
-      await axios.put(
-        `http://localhost:3000/Actualizara/actividad/${id}`,
-        formData
-      );
+      await axios.put(`http://localhost:3000/Actualizara/actividad/${id}`,formData);
       fetchData();
       setShowActualizacionModal(false);
     } catch (error) {
@@ -60,9 +58,7 @@ function Actividad() {
 
   const handleSearch = async (searchTerm) => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/Buscar/actividad/${searchTerm}`
-      );
+      const response = await axios.get( `http://localhost:3000/Buscar/actividad/${searchTerm}`);
       setData(response.data);
     } catch (error) {
       console.error("Error searching for resources:", error);
@@ -111,7 +107,7 @@ function Actividad() {
       cell: (row) => (
         <button
           className="btn btn-warning p-2 rounded-lg text-sm font-bold"
-          style={{ marginLeft: "-29px" }}
+          style={{ width: '100px' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
@@ -122,12 +118,12 @@ function Actividad() {
   ];
 
   return (
-    <div style={{ marginTop: "8%" }}>
+    <div style={{ marginTop: '8%' }}>
       <Header />
       <div className="container mt-5">
-        {/* <SearchBar onSearch={handleSearch} /> */}
-        <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-        <Datatable columns={columns} data={data} title="Recursos" />
+        
+        <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
+        <Datatable columns={columns} data={data} title="Actividades" />
       </div>
 
       <ModalActividad
@@ -139,8 +135,20 @@ function Actividad() {
         mode="registro"
         handleSubmit={() => setShowRegistroModal(false)}
       />
+
+      <ModalActividad
+        mostrar={showActualizacionModal}
+        cerrarModal={handleCloseActualizacionModal}
+        titulo="Actualización"
+        handleSubmit={handleActualizacionFormSubmit}
+        actionLabel="Actualizar"
+        initialData={initialData}
+        mode={mode}
+      />
     </div>
   );
 }
+
+
 
 export default Actividad;
