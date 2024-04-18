@@ -1,10 +1,5 @@
-import React, { useState } from "react";
-import Botones from "../components/atomos/Botones";
-import { Datatable } from "../components/moleculas/Datatable";
-import ModalRecuRegeContrasenia from "../components/organismos/Modal";
-import Header from "../components/organismos/Header/Header";
-import Formulario from '../components/organismos/Formulario.jsx';
 
+<<<<<<< HEAD
 function Finca() {
   const [showRegistroModal, setShowRegistroModal] = useState(false);
   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
@@ -175,3 +170,9 @@ function Finca() {
 }
 
 export default Finca;
+
+import { default as Finca } from "../components/templates/Fincas";
+export const FincaPage = () => {
+  return (<Finca/>);
+}
+

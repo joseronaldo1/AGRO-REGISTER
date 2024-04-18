@@ -9,7 +9,7 @@
   .nav-item:hover{
     cursor: pointer;
     border-radius: 15px;
-    background-color: black;
+    background-color: rgb(46, 165, 46);
     width: 200px;
   }
   .navbar-nav {

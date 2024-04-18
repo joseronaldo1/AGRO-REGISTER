@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 // import SearchBar from "../components/SearchBar"; // Asumiendo que tienes un componente SearchBar
@@ -152,3 +153,10 @@ function Actividad() {
 
 
 export default Actividad;
+=======
+
+import { default as Actividad } from "../components/templates/Actividades";
+export function ActividadPage() {
+  return (<Actividad/>);
+}
+>>>>>>> 47df5508d50b2fe2e60452fb6748bb8c75628ab8
