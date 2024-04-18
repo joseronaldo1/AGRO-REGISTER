@@ -1,175 +1,140 @@
-import React, { useState } from "react";
-import Botones from "../atomos/Botones";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
-import ModalRecuRegeContrasenia from "../organismos/Modal";
+import ModalRecuRegeContrasenia from "../organismos/ModalFincas.jsx";
 import Header from "../organismos/Header/Header";
-import Formulario from '../organismos/Formulario.jsx';
+import SearchBar from '../moleculas/SearchBar';
 
-function Finca() {
-   const [showRegistroModal, setShowRegistroModal] = useState(false);
-   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
-   const [registroFormData, setRegistroFormData] = useState({
-     nombre_variedad: "",
-     nombre_actividad: "",
-     tipo_recurso: "",
-     tiempo: "",
-   });
-   const [actualizacionFormData, setActualizacionFormData] = useState({     nombre_variedad: "",
-     nombre_actividad: "",
-     tipo_recurso: "",
-     tiempo: "",
-   });
+function fincas() {
+  const baseURL = 'http://localhost:3000/listarFinca';
 
-   const handleOpenRegistroModal = () => {
-     setShowRegistroModal(true);
-   };
+  const [data, setData] = useState([]);
+  const [showRegistroModal, setShowRegistroModal] = useState(false);
+  const [showActualizacionModal, setShowActualizacionModal] = useState(false);
+  const [registroFormData, setRegistroFormData] = useState({});
+  const [mode, setMode] = useState('create');
+  const [initialData, setInitialData] = useState(null);
 
-   const handleCloseRegistroModal = () => {
-     setShowRegistroModal(false);
-   };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-   const handleOpenActualizacionModal = () => {
-     setShowActualizacionModal(true);
-   };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(baseURL);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
-   const handleCloseActualizacionModal = () => {
-     setShowActualizacionModal(false);
-   };
+  const handleOpenRegistroModal = () => setShowRegistroModal(true);
+  const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
-   const handleRegistroFormSubmit = (event) => {
-     event.preventDefault();
-     console.log("Datos de registro:", registroFormData);
-     setRegistroFormData({
-       nombre_finca: "",
-       direccion: "",
-       longitud: "",
-       latitud: "",
-     });
-     handleCloseRegistroModal();
-   };
+  const handleOpenActualizacionModal = (rowData) => {
+    const updatedInitialData = { ...rowData, id: rowData.id_finca };
+    setInitialData(updatedInitialData);
+    setMode('update');
+    setShowActualizacionModal(true);
+  };
 
-   const handleActualizacionFormSubmit = (event) => {
-     event.preventDefault();
-     console.log("Datos de actualización:", actualizacionFormData);
-     setActualizacionFormData({
-       nombre_finca: "",
-       direccion: "",
-       longitud: "",
-       latitud: "",
-     });
-     handleCloseActualizacionModal();
-   };
+  const handleCloseActualizacionModal = () => {
+    setInitialData(null);
+    setShowActualizacionModal(false);
+  };
 
-   const camposRegistro = [
-     { name: "nombre_finca", placeholder: "Nombre de la finca", type: "text" },
-     { name: "direccion", placeholder: "Dirección", type: "text" },
-     { name: "longitud", placeholder: "Longitud", type: "text" },
-     { name: "latitud", placeholder: "Latitud", type: "text" }
-   ];
+  const handleActualizacionFormSubmit = async (formData) => {
+    try {
+      console.log('Actualización de recurso:', formData);
+      const { id } = formData;
+      await axios.put(`http://localhost:3000/actualizarFinca/${id}`, formData);
+      fetchData();
+      setShowActualizacionModal(false);
+    } catch (error) {
+      console.error('Error al actualizar la variedad:', error);
+    }
+  };
 
-   const camposActualizacion = [
-     { name: "nombre_finca", placeholder: "Nombre de la finca", type: "text" },
-     { name: "direccion", placeholder: "Dirección", type: "text" },
-     { name: "longitud", placeholder: "Longitud", type: "text" },
-     { name: "latitud", placeholder: "Latitud", type: "text" }
-   ];
+  // Función para buscar recursos por ID
+  const handleSearch = async (searchTerm) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+    }
+  };
 
-   const columns = [
-     {
-       name: "Nombre finca",
-       selector: (row) => row.Nombrefinca,
-       sortable: true,
+  const columns = [
+    {
+      name: 'ID',
+      selector: (row) => row.id_finca,
+      sortable: true,
     },
-     {
-      name: "Direccion",
-       selector: (row) => row.Direccion,
-       sortable: true,
-     },
-     {
-       name: "Longitud",
-       selector: (row) => row.Longitud,
-       sortable: true,
-     },
-     {
-       name: "Latitud",
-       selector: (row) => row.Latitud,
-       sortable: true,
-     },
-     {
-       name: "Acciones",
-       cell: (row) => (
-         <button
-           className="btn btn-warning p-2 rounded-lg text-sm font-bold"
-           type="button"
-           onClick={() => handleOpenActualizacionModal()}
-         >
-           Editar
-         </button>
-       ),
+    {
+      name: 'Nombre finca',
+      selector: (row) => row.nombre_finca,
+      sortable: true,
     },
-   ];
+    {
+      name: 'Longitud',
+      selector: (row) => row.longitud,
+      sortable: true,
+    },
+    {
+      name: 'Latitud',
+      selector: (row) => row.latitud,
+      sortable: true,
+    },
+    {
+      name: 'Acciones',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#ffc107', borderColor: '#ffc107', marginLeft: '10px' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: '#343a40' }} /> {/* Icono de edición */}
+        </button>
+      ),
+    },
+  ];
 
-   const data = [
-     {
-       Nombrefinca: "Yamboro",
-       Direccion: "Pitalito Huila",
-       Longitud: 1346,
-       Latitud: 394435,
-     },
-     {
-       Nombrefinca: "Margaritas",
-       Direccion: "Pitalito Huila",
-       Longitud: 1202,
-       Latitud: 434438,
-     },
-   ];
+  return (
+    <div className="recursos-container">
+      <Header />
+      <div className="container mt-5">
+        <div className="white-container">
+          <SearchBar onSearch={handleSearch} />
+          <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
+        </div>
+        <Datatable columns={columns} data={data} title="Fincas" />
+      </div>
 
-   return (
-     <div style={{ marginTop: "8%" }}>
-       <Header />
-       <div className="container mt-5">
-         <Botones
-          children="Registrar"
-           onClick={() => handleOpenRegistroModal()}
-         />
-         <Datatable columns={columns} data={data} title="Fincas" />
-       </div>
-
-       {/* Modal de Registro */}
-       <ModalRecuRegeContrasenia
-         mostrar={showRegistroModal}
-         cerrarModal={handleCloseRegistroModal}
-         titulo="Registro"
-       >
-         <Formulario
-           campos={camposRegistro}
-           onSubmit={handleRegistroFormSubmit}
-           className="form-registro"
-         />
-         <Botones
-           children="Registrar"
-           onClick={() => handleRegistroFormSubmit()}
-         />
-       </ModalRecuRegeContrasenia>
-
-       {/* Modal de Actualización */}
       <ModalRecuRegeContrasenia
-         mostrar={showActualizacionModal}
-         cerrarModal={handleCloseActualizacionModal}
-         titulo="Actualización"
-       >
-         <Formulario
-           campos={camposActualizacion}
-           onSubmit={handleActualizacionFormSubmit}
-           className="form-actualizacion"
-        />
-           <Botones
-           children="Registrar"
-           onClick={() => handleRegistroFormSubmit()}
-         />
-       </ModalRecuRegeContrasenia>
-     </div>
-   );
- }
+        mostrar={showRegistroModal}
+        cerrarModal={handleCloseRegistroModal}
+        titulo="Registro"
+        actionLabel="Registrar"
+        initialData={registroFormData}
+        mode="registro"
+        handleSubmit={() => setShowRegistroModal(false)}
+      />
 
- export default Finca;
+      <ModalRecuRegeContrasenia
+        mostrar={showActualizacionModal}
+        cerrarModal={handleCloseActualizacionModal}
+        titulo="Actualización"
+        handleSubmit={handleActualizacionFormSubmit}
+        actionLabel="Actualizar"
+        initialData={initialData}
+        mode={mode}
+      />
+    </div>
+  );
+}
+
+export default fincas;
