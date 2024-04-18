@@ -54,7 +54,7 @@ const IniciarSesion = () => {
                         <div style={{ textAlign: 'center'}}>
                             <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', margin:'15px',  marginTop:'60px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', margin:'35px',  marginTop:'40px' }}>
                             <div >
                                 <Link to='/dashboard'>
                                     <Botones children='Iniciar' />

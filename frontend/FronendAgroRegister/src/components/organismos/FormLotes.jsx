@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
-    nombre_lote: initialData ? initialData.nombre_lote : '',
+    nombre: initialData ? initialData.nombre : '',
     longitud: initialData ? initialData.longitud : '',
     latitud: initialData ? initialData.latitud : '',
     fk_id_finca: initialData ? initialData.fk_id_finca : ''
@@ -23,7 +23,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
   const handleFormSubmit = async e => {
     e.preventDefault();
     try {
-      if (!formData.nombre_lote || !formData.longitud  || !formData.latitud || !formData.fk_id_finca) {
+      if (!formData.nombre || !formData.longitud || !formData.latitud || !formData.fk_id_finca) {
         setShowWarning(true); // Mostrar advertencia si algún campo está vacío
         return;
       }
@@ -82,9 +82,9 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
             height: '40px'
           }}
           type="text"
-          name="nombre_lote"
+          name="nombre"
           placeholder="Nombre del lote"
-          value={formData.nombre_lote}
+          value={formData.nombre}
           onChange={handleChange}
         />
       </div>

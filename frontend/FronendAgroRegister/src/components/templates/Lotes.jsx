@@ -6,7 +6,6 @@ import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalLotes.jsx";
 import Header from "../organismos/Header/Header";
 import SearchBar from '../moleculas/SearchBar';
-s
 function lotes() {
   const baseURL = 'http://localhost:3000/listarlote';
 
@@ -67,6 +66,7 @@ function lotes() {
     }
   };
 
+
   const columns = [
     {
       name: 'ID',
@@ -90,7 +90,7 @@ function lotes() {
     },
     {
       name: 'id finca',
-      selector: (row) => row.fk_id_finca,
+      selector: (row) => row.id_finca,
       sortable: true,
     },
     {
@@ -114,7 +114,7 @@ function lotes() {
       <div className="container mt-5">
         <div className="white-container">
           <SearchBar onSearch={handleSearch} />
-          <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
+          <Botones children="Registrar" onClick={handleOpenRegistroModal} />
         </div>
         <Datatable columns={columns} data={data} title="lotes" />
       </div>
