@@ -1,13 +1,14 @@
 // InputAtom.js
 import React from 'react';
 
-const InputAtom = ({ label, id, name, type, value, onChange }) => {
+const InputAtom = ({ label, id, name, type, value, onChange,placeholder,className }) => {
     return (
         <div>
           <label htmlFor={id}>{label}</label>
-          <input type={type || "text"} id={id} name={name} value={value} onChange={onChange}
-          className=" rounded px-2  mb-4 border border-success"
-      style={{  width:'350px', height:'40 px' }}/>
+          <input type={type || "text"} id={id} name={name} value={value} onChange={onChange} placeholder={placeholder}
+          className={className}
+          
+      style={ {  width:'320px', height:'31px' , borderColor: '#1bc12e', borderRadius: '6px',}}/>
         </div>
       );
 };
