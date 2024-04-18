@@ -104,7 +104,7 @@ function Variedad() {
       <div className="container mt-5">
         <div className="white-container">
           <SearchBar onSearch={handleSearch} />
-          <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
+          <Botones children="Registrar" onClick={handleOpenRegistroModal} />
         </div>
         <Datatable columns={columns} data={data} title="Variedad" />
       </div>

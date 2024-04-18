@@ -29,7 +29,7 @@ const Registro = () => {
     try {
       const response = await axios.post('http://localhost:3000/registrarUsuario', formData);
       alert('Registro exitoso:', response.data);
-      
+
       // Limpiar el formulario después de enviar los datos
       setFormData({
         nombre: '',
@@ -63,9 +63,9 @@ const Registro = () => {
 
   const formularioStyle = {
     border: '1px solid #ccc',
-    borderRadius: '15px', 
-    padding: '40px', 
-    margin: '130px auto 0',  
+    borderRadius: '15px',
+    padding: '40px',
+    margin: '130px auto 0',
     maxWidth: '400px',
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
@@ -104,7 +104,7 @@ const Registro = () => {
         <HeaderInicio />
       </div>
       <div className='flex items-center justify-center' style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} >
-        <form style={formularioStyle} onSubmit={handleSubmit}>      
+        <form style={formularioStyle} onSubmit={handleSubmit}>
           <h2 style={tituloStyle}>Registro de Usuario</h2>
           <img src={Logo} alt="Logo" style={imgStyle} />
           <div className='flex flex-col space-y-4'>
@@ -114,7 +114,7 @@ const Registro = () => {
             <InputAtom label="Contraseña:" id="password" name="password" type="password" value={formData.password} onChange={handleChange} />
             <InputAtom label="Rol:" id="rol" name="rol" value={formData.rol} onChange={handleChange} />
             <InputAtom label="Estado:" id="estado" name="estado" value={formData.estado} onChange={handleChange} />
-            {loading && <span>Cargando...</span>}
+            {loading && <span>Error al registrarse..</span>}
           </div>
           <div style={btnWrapperStyle}>
             <Botones type={'submit'} children={'Registrarse'} disabled={!allowSubmit} />
