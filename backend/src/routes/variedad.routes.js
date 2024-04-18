@@ -6,10 +6,10 @@ import {validarToken} from "../controllers/autenticacion.js";
 
 const rutaDeVariedad = Router();
 //rutas de variedad de cultivo
-rutaDeVariedad.post("/registrarVariedad",validarToken, validarRegistroVariedad, registrarVariedad);
-rutaDeVariedad.get("/listarVariedades",validarToken, listarVariedades);
-rutaDeVariedad.put("/actualizarVariedad/:id",validarToken, validarActualizacionVariedad, actualizarVariedad);
-rutaDeVariedad.get("/buscarVariedad/:id",validarToken, buscarVariedad);
+rutaDeVariedad.post("/registrarVariedad", validarRegistroVariedad, registrarVariedad);
+rutaDeVariedad.get("/listarVariedades",listarVariedades);
+rutaDeVariedad.put("/actualizarVariedad/:id",validarActualizacionVariedad, actualizarVariedad);
+rutaDeVariedad.get("/buscarVariedad/:id", buscarVariedad);
 
 export default rutaDeVariedad;
 
