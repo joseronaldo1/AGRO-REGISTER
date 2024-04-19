@@ -103,15 +103,16 @@ const IniciarSesion = () => {
                   />
                 </div>
                 <div className='flex items-center justify-center'>
-                  {loading && <span>Cargando...</span>}
+                  
                 </div>
                 <div style={{ textAlign: 'center'}}>
+                {loading && <span>Cargando...</span>}
                   <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', margin: '15px', marginTop: '60px' }}>
                   <Botones children='Iniciar' type="submit" disabled={loading}/>
                   <div>
-                    <Link to='/registrarse' disabled={loading}>
+                    <Link to='/registrarse'>
                       <Botones children='Registrarse' />
                     </Link>
                   </div>

@@ -140,7 +140,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
           }}
           type="number"
           name="fk_id_finca"
-          placeholder="id finca"
+          placeholder="Fk_id_finca"
           value={formData.fk_id_finca}
           onChange={handleChange}
         />
