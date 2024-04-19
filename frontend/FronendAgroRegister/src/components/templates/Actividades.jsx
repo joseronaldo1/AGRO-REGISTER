@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Botones from '../atomos/BotonRegiApi';
 import { FaEdit } from 'react-icons/fa';
-import { AiOutlineDelete } from 'react-icons/ai'; // Importar el ícono de eliminar
 import { Datatable } from '../moleculas/Datatable';
 import ModalRecuRegeContrasenia from '../organismos/ModalActividad';
 import Header from '../organismos/Header/Header';
-import SearchBar from '../moleculas/SearchBar'; // Importar el componente de búsqueda
+import SearchBar from '../moleculas/SearchBar'; // Importamos el componente de búsqueda
 
 function Actividad() {
   const baseURL = "http://localhost:3000/listara";
@@ -50,7 +49,7 @@ function Actividad() {
     try {
       console.log("Actualización de recurso:", formData);
       const { id } = formData;
-      await axios.put(`http://localhost:3000/Actualizara/actividad/${id}`, formData);
+      await axios.put(`http://localhost:3000/Actualizara/actividad/${id}`,formData);
       fetchData();
       setShowActualizacionModal(false);
     } catch (error) {
@@ -58,19 +57,9 @@ function Actividad() {
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: 'inactivo' });
-      fetchData();
-    } catch (error) {
-      console.error("Error al desactivar la actividad:", error);
-    }
-  };
-  
-
   const handleSearch = async (searchTerm) => {
     try {
-      const response = await axios.get(`http://localhost:3000/Buscar/actividad/${searchTerm}`);
+      const response = await axios.get( `http://localhost:3000/Buscar/actividad/${searchTerm}`);
       setData(response.data);
     } catch (error) {
       console.error("Error searching for resources:", error);
@@ -113,28 +102,18 @@ function Actividad() {
       selector: (row) => row.estado,
       sortable: true,
     },
+    
     {
       name: "Acciones",
       cell: (row) => (
-        <div style={{marginLeft: '13px'}}>
-          <button
-            className="btn p-2 rounded-lg mr-2"
-            style={{ backgroundColor: '#ffc107', borderColor: '#ffc107' }}
-            type="button"
-            onClick={() => handleOpenActualizacionModal(row)}
-          >
-            <FaEdit style={{ color: '#343a40' }} /> {/* Icono de edición */}
-          </button>
-          <button
-  className="btn p-2 rounded-lg"
-  style={{ backgroundColor: '#dc3545', borderColor: '#dc3545', marginLeft:'10px'}}
-  type="button"
-  onClick={() => handleDelete(row.id_actividad)} // Aquí pasamos el ID de la actividad
->
-  <AiOutlineDelete style={{ color: '#fff' }} /> {/* Icono de eliminar */}
-</button>
-
-        </div>
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#ffc107', borderColor: '#ffc107', marginLeft: '18px' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: '#343a40' }} /> {/* Icono de edición */}
+        </button>
       ),
     },
   ];

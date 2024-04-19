@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Image from '../../atomos/Logo';
+import { FaBars } from 'react-icons/fa'; 
 import { Modal } from 'react-bootstrap';
 import Boton from "../../atomos/BotonSalir";
 import Botones from "../../atomos/BotonesPerfil"; // Importa el componente de botones personalizado
@@ -37,7 +37,7 @@ function NavbarHeader() {
       <nav className="navbar bg-#00800 fixed-top p-1">
         <div className="d-flex container align-items-center">
           <button className="btn shadow-none navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-            <span><Image style={{ width: "60px", height: "60px" }} /></span>
+          <span><FaBars style={{ width: "40px", height: "40px", borderColor: '#009100' }} /></span>
           </button>
           <h1>AGRO-REGISTER</h1>
           <div className="d-flex align-items-center">
