@@ -51,7 +51,7 @@ function Recursos() {
       console.log('Actualización de recurso:', formData);
       const { id } = formData;
       await axios.put(`http://localhost:3000/actualizarRecurso/${id}`, formData);
-      fetchData();
+      fetchData(); // Actualizar los datos después de la actualización
       setShowActualizacionModal(false);
     } catch (error) {
       console.error('Error al actualizar el recurso:', error);
