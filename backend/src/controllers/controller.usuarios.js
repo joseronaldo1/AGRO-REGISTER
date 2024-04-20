@@ -69,6 +69,7 @@ export const registrarUsuarios = async (req, res) => {
             'status': 500,
             'message': 'Error del servidor' + error
         })
+        console.log(error);
     }
 }
 export const actualizarUsuario = async (req, res) => {

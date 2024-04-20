@@ -1,5 +1,6 @@
+import React from "react";
+import Actividad from "../components/templates/Actividades";
 
-import { default as Actividad } from "../components/templates/Actividades";
 export function ActividadPage() {
-  return (<Actividad/>);
+  return <Actividad />;
 }

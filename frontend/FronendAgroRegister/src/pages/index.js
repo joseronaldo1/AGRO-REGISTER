@@ -1,6 +1,6 @@
 
 export { InicioSesionPage } from './inicio_sesion';
-export { RegistroPage } from './registro';
+export { RegistroPage } from './Registro';
 export { EditarPerfilUsuarioPage } from './editar_perfil_usuario';
 export { OlvidopassonePage } from './olvido_contrase1';
 export { OlvidopasstwoPage } from './olvido_contrase2';
@@ -9,7 +9,7 @@ export { FincaPage } from './fincas';
 export { UsuarioPage } from './usuarios';
 export { VariedadPage } from './variedad';
 export { CultivosPage } from './cultivos';
-export { ActividadPage } from './actividades';
+export {ActividadPage}from './Actividades'
 export { LotesPage } from './lotes';
 export { RecursosPage } from './recursos';
 export { SoportePage } from './soporte';

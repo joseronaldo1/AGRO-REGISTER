@@ -83,12 +83,12 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
         />
       </div>
       <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Cantidad Medida: </label>
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Cantidad: </label>
         <br />
         <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
           type="text"
           name="cantidad_medida"
-          placeholder="Cantidad de Medida"
+          placeholder="Cantidad"
           value={formData.cantidad_medida}
           onChange={handleChange}
         />
