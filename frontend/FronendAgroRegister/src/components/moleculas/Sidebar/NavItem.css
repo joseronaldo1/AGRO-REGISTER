@@ -9,7 +9,7 @@
   .nav-item:hover{
     cursor: pointer;
     border-radius: 15px;
-    background-color: black;
+    background-color: rgb(46, 165, 46);
     width: 200px;
   }
   .navbar-nav {
@@ -35,6 +35,35 @@
     width: 200px !important;
 
   }
+
+.perfil{
+    font-size: 1.2em;
+    font-weight: 600;
+  }
+  .soporte{
+    font-size: 1.2em;
+    font-weight: 600;
+  }
+  .salir{
+    font-size: 1.2em;
+    font-weight: 600;
+  }
+.perfil:hover {
+  background-color: rgb(46, 165, 46);
+  height: 35px;
+}
+
+.soporte:hover {
+  background-color: rgb(46, 165, 46);
+  height: 35px;
+}
+
+.salir:hover {
+  background-color: rgb(209, 40, 40);
+  height: 35px;
+  color: white !important;
+}
+
   /* Mediauery */
   @media screen and (max-width: 767px) {
     .navbar-brand {

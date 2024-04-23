@@ -5,14 +5,18 @@ import Img3 from '../assets/foto-panoramica-hermosa-naturaleza-isla-kauai-hawaii
 import Img4 from '../assets/importancia-del-maiz-en-colombia1.jpg'
 import Img5 from '../assets/ocde.jpg'
 import Img6 from '../assets/472104.jpg'
-import Img7 from '../assets/female-agronomist-inspecting-young-corn-600nw-1985674649.webp'
+import Img7 from '../assets/campo.jpg'
 import Img8 from '../assets/area-de-cultivo-platanos.jpg'
 import Img9 from '../assets/SENA.png'
-import ImgSlider1 from '../assets/imagen1.png'
-import ImgSlider2 from '../assets/CafeSpecial.png'
+import ImgSlider1 from '../assets/se.jpg'
+import ImgSlider2 from '../assets/cultivos.jpg'
 import ImgSlider3 from '../assets/SENA-AZUL.jpg'
 import Logo from '../assets/logoOrigi.png'
-import Personal from '../assets/imagen-persona.png'
+import LogoSena from '../assets/SenaInicio.png'
+import container1 from '../assets/container1.jpg'
+import container2 from '../assets/container2.png'
+import container3 from '../assets/container3.jpg'
+import Personal from '../assets/personaaa.webp'
 
 const v = {
 
@@ -48,7 +52,11 @@ const v = {
     ImgSlider2: ImgSlider2,
     ImgSlider3: ImgSlider3,
     imageLogo: Logo,
+    imageLogoSena: LogoSena,
     Imagepersona: Personal,
+    container1: container1,
+    container2: container2,
+    container3: container3
 }
 
 export default v;
