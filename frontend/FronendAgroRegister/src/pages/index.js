@@ -6,16 +6,17 @@ export { OlvidopassonePage } from './olvido_contrase1';
 export { OlvidopasstwoPage } from './olvido_contrase2';
 export { OlvidopasstreePage } from './olvido_contrase3';
 export { FincaPage } from './fincas';
-export { UsuarioPage } from './usuarios';
-export { VariedadPage } from './variedad';
+export { UsuarioPage } from './Usuarios';
+export { VariedadPage } from './Variedad';
 export { CultivosPage } from './cultivos';
 export {ActividadPage}from './Actividades'
-export { LotesPage } from './lotes';
-export { RecursosPage } from './recursos';
-export { SoportePage } from './soporte';
+export { LotesPage } from './Lotes';
+export { RecursosPage } from './Recursos';
+export { SoportePage } from './Soporte';
 export { DashboardPage } from './dashboar';
-export { ReportesPage } from './reportes';
-export { ProgramacionPage } from './programacion';
-export { PerfilprincipalPage } from './perfil';
+export { ReportesPage } from './Reportes';
+export { ProgramacionPage } from './Programacion';
+export { ProduccionPage } from './Produccion';
+export { PerfilprincipalPage } from './Perfil';
 
 

@@ -5,6 +5,7 @@ import { FaEdit } from 'react-icons/fa';
 import { Datatable } from '../moleculas/Datatable';
 import ModalRecuRegeContrasenia from '../organismos/ModalActividad';
 import Header from '../organismos/Header/Header';
+import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar'; // Importamos el componente de búsqueda
 
 function Actividad() {
@@ -119,16 +120,22 @@ function Actividad() {
   ];
 
   return (
+    <div>
     <div className="recursos-container">
       <Header />
       <div className="container mt-5">
-        <div className="white-container">
-          <SearchBar onSearch={handleSearch} />
-          <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
+          <div className="white-container">
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+          </div>
         </div>
-        <Datatable columns={columns} data={data} title="Actividades" />
+        <br />
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+          <Datatable columns={columns} data={data} title="Actividades" />
+        </div>
       </div>
-
+  
       <ModalRecuRegeContrasenia
         mostrar={showRegistroModal}
         cerrarModal={handleCloseRegistroModal}
@@ -138,7 +145,7 @@ function Actividad() {
         mode="registro"
         handleSubmit={() => setShowRegistroModal(false)}
       />
-
+  
       <ModalRecuRegeContrasenia
         mostrar={showActualizacionModal}
         cerrarModal={handleCloseActualizacionModal}
@@ -148,8 +155,14 @@ function Actividad() {
         initialData={initialData}
         mode={mode}
       />
+      <br />
+      
+    </div>
+    <Footer/> 
     </div>
   );
+  
+  
 }
 
 export default Actividad;

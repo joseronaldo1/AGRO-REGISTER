@@ -3,6 +3,7 @@ import Formulario from '../organismos/Formulario.jsx';
 import Botones from '../atomos/Botones.jsx';
 import { Link } from 'react-router-dom';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
+import Footer from '../organismos/Footer/Footer';
 
  const Olvidopasstree = () => {
      const campos = [
@@ -39,6 +40,7 @@ import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
                
                 
              </div>
+             <Footer/>
          </div>
      );
  };

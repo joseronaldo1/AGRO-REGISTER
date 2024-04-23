@@ -12,6 +12,7 @@ import ModalRecuRegeContrasenia from '../organismos/Modal';
 import DivLorem from '../atomos/divlorem';
 import Image from '../atomos/Logo';
 import Header from '../organismos/Header/Header';
+import Footer from '../organismos/Footer/Footer';
 import Botones from '../atomos/Botones';
 
  function Soporte() {
@@ -49,6 +50,7 @@ import Botones from '../atomos/Botones';
    };
 
    return (
+    <div>
      <div className='container' style={{ margin: 0, padding: 0, boxSizing: 'border-box' }}>
        {/* Resto del contenido */}
        <Header />
@@ -142,6 +144,9 @@ import Botones from '../atomos/Botones';
          <FontAwesomeIcon icon={v.iconoCopyRight} className="mx-2" />
          <p className="m-0">2024 ADSO 2692929 todos los Derechos Reservados</p>
        </div>
+       
+    </div>
+    <Footer/>
     </div>
    );
  }

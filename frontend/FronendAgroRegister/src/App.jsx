@@ -20,6 +20,7 @@ import { SoportePage } from './pages';
 import { DashboardPage } from './pages';
 import { ReportesPage } from './pages';
 import { ProgramacionPage } from './pages';
+import { ProduccionPage } from './pages';
 import { PerfilprincipalPage } from './pages';
  
 
@@ -43,10 +44,11 @@ function App() {
         <Route path="/actividad" element={<ActividadPage />} />
         <Route path="/lotes" element={<LotesPage />} />
         <Route path="/recursos" element={<RecursosPage />} />
-        <Route path="/Soport" element={<SoportePage />} />
+        <Route path="/Soporte" element={<SoportePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/reportes" element={<ReportesPage />} />
         <Route path="/programacion" element={<ProgramacionPage />} />
+        <Route path="/produccion" element={<ProduccionPage />} />
         <Route path="/Perfilprincipal" element={<PerfilprincipalPage />} />
       </Routes>
     </BrowserRouter>
