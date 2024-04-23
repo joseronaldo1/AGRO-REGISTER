@@ -23,6 +23,7 @@ const IniciarSesion = () => {
         }
     
         try {
+            
           setLoading(true); // Indicar que se está cargando
           
           const response = await axios.post('http://localhost:3000/validacion', formData);
@@ -75,6 +76,7 @@ const IniciarSesion = () => {
         textAlign: 'center',
         padding: '1.30rem',
       };
+      
     
       return (
         <div style={fondoStyle}>
