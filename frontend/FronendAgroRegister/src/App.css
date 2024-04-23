@@ -19,17 +19,6 @@
   scroll-behavior: smooth;
   z-index: 500;
 }
-/* .nav-menu{
-  background-color: #BEC3C7;
-  width: 350px;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: 350ms;
-  scroll-behavior: smooth;
-  left: -100%;
-} */
 
 .nav-menu-user.active{
   right: 0;

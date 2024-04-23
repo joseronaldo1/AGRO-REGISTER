@@ -17,9 +17,7 @@ export const validarUsuario = [
         .not()
         .isEmpty()
         .isIn(["administrador", "empleado"]),
-        check('estado', 'Estado no existe')
-        .not().isEmpty()
-        .isIn(["activo", "inactivo"]),
+        
 ];
 
     
@@ -41,9 +39,6 @@ export const validarUsuario = [
             .optional()
             .not().isEmpty()
             .isIn(["administrador", "empleado"]),
-         check('estado', 'Estado no existe')
-            .optional()
-            .not().isEmpty()
-            .isIn(["activo", "inactivo"]),
+
     ];
     //nn

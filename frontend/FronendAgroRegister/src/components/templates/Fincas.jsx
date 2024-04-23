@@ -5,6 +5,7 @@ import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalFincas.jsx";
 import Header from "../organismos/Header/Header";
+import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 
 function fincas() {
@@ -104,16 +105,22 @@ function fincas() {
   ];
 
   return (
-    <div className="recursos-container">
+    <div>
+    <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header />
-      <div className="container mt-5">
-        <div className="white-container">
-          <SearchBar onSearch={handleSearch} />
-          <Botones children="Registrar" onClick={handleOpenRegistroModal}  />
+      <div className="main-content" style={{ flex: 1 }}>
+        {/* Contenido principal */}
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
+          <div className="white-container">
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+          </div>
         </div>
-        <Datatable columns={columns} data={data} title="Fincas" />
+        <br />
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+          <Datatable columns={columns} data={data} title="Fincas" />
+        </div>
       </div>
-
       <ModalRecuRegeContrasenia
         mostrar={showRegistroModal}
         cerrarModal={handleCloseRegistroModal}
@@ -123,7 +130,6 @@ function fincas() {
         mode="registro"
         handleSubmit={() => setShowRegistroModal(false)}
       />
-
       <ModalRecuRegeContrasenia
         mostrar={showActualizacionModal}
         cerrarModal={handleCloseActualizacionModal}
@@ -133,8 +139,15 @@ function fincas() {
         initialData={initialData}
         mode={mode}
       />
-    </div>
+      <br />
+
+     
+    </div> 
+    <Footer />
+   </div>
+   
   );
+  
 }
 
 export default fincas;
