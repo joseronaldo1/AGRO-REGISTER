@@ -6,10 +6,9 @@ const BotonBuscar = ({ onClick, children }) => {
     <Button
       style={{
         backgroundColor: '#ffc107',
-        color: 'black',
         borderColor: '#ffc107',
         borderRadius: '6px',
-        marginLeft: '-10px', // Aplicamos el mismo margen que el botón "Editar"
+        marginLeft: '-10px'
       }}
       onClick={onClick}
     >

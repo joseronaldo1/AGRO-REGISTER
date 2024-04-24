@@ -1,3 +1,4 @@
+// En el componente SearchBar
 import React, { useState } from 'react';
 
 const SearchBar = ({ onSearch }) => {

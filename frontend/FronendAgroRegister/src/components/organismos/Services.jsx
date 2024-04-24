@@ -44,11 +44,7 @@ const Services = () => {
                     </Card>
                 </Col>
             </Row>
-            <Row className='copy2'>
-                <Col>
-                    <p className="texto">SENA │ &copy;  2024 AGRO-REGISTER. Todos los derechos reservados │ Pitalito-Huila</p>
-                </Col>
-            </Row>
+            
         </Container>
     );
 };

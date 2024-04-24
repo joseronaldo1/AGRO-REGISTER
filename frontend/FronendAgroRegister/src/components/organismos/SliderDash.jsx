@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import Footer from '../organismos/Footer/Footer';
 import v from '../../styles/variables';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Services from './Services';
@@ -59,6 +60,7 @@ const SliderDash = () => {
                 {/* Fin de los puntos */}
                 <Services/>
             </div>
+            <Footer />
         </div>
     );
 };
