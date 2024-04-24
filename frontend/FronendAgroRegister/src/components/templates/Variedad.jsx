@@ -22,7 +22,7 @@ function Variedad() {
 
   useEffect(() => {
     fetchData();
-  }, [data]); 
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -94,11 +94,11 @@ function Variedad() {
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#ffc107', borderColor: '#ffc107', marginLeft: '10px' }}
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: '#343a40' }} /> 
+          <FaEdit style={{ color: 'white' }} />
         </button>
       ),
     },
@@ -141,9 +141,9 @@ function Variedad() {
           mode={mode}
         />
         <br />
-        
+
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

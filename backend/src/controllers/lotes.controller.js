@@ -1,41 +1,38 @@
 import { pool } from "../database/conexion.js"
-import {validationResult} from 'express-validator'
+import { validationResult } from 'express-validator'
 //nn
 
-export const listarlotes = async (req, res) =>{
-    try{
-
-        let sql = `SELECT lo.id_lote,lo.nombre, lo.longitud, lo.latitud, 
-        lo.fk_id_finca AS id_finca,  
-        fin.nombre_finca, 
-        fin.longitud, 
-        fin.latitud
- FROM lotes AS lo
- JOIN finca AS fin ON lo.fk_id_finca = fin.id_finca`;
+export const listarlotes = async (req, res) => {
+    try {
+        let sql = `SELECT lo.id_lote, lo.nombre, lo.longitud, lo.latitud, 
+                          lo.fk_id_finca AS id_finca,  
+                          fin.nombre_finca
+                   FROM lotes AS lo
+                   JOIN finca AS fin ON lo.fk_id_finca = fin.id_finca`;
         const [resultado] = await pool.query(sql)
 
-        if (resultado.length > 0){
+        if (resultado.length > 0) {
             res.status(200).json(resultado)
-        }else {
+        } else {
             res.status(404).json({
-                "mensaje": "no se pudo mostar hay algun error"
+                "mensaje": "No se pudo mostrar, hay algún error."
             })
-        }  
-
-    }catch(error){
+        }
+    } catch (error) {
         res.status(500).json({
             "mensaje": error
         })
     }
 }
 
+
 export const Registrarlotes = async (req, res) => {
     try {
         const errors = validationResult(req);
-        if(!errors.isEmpty()){
-            res.status(400).json({errors})
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors })
         }
-        const {nombre, longitud, latitud, fk_id_finca} = req.body
+        const { nombre, longitud, latitud, fk_id_finca } = req.body
         const [resultado] = await pool.query("insert into lotes(nombre, longitud, latitud, fk_id_finca) values (?,?,?,?)", [nombre, longitud, latitud, fk_id_finca])
 
         if (resultado.affectedRows > 0) {
@@ -51,7 +48,8 @@ export const Registrarlotes = async (req, res) => {
         res.status(500).json({
             "mensaje": error
         })
-    }   
+        console.log(error)
+    }
 }
 
 export const Actualizarlote = async (req, res) => {
@@ -60,32 +58,32 @@ export const Actualizarlote = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() }); // Corrección en el formato de los errores de validación
         }
-        
+
         const { id_lote } = req.params;
         const { nombre, longitud, latitud, fk_id_finca } = req.body;
-        
+
         // Verifica si al menos uno de los campos está presente en la solicitud
         if (!nombre && !longitud && !latitud && !fk_id_finca) {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, longitud, latitud, fk_id_finca) debe estar presente en la solicitud para realizar la actualización.' });
         }
-        
+
         const [oldUser] = await pool.query("SELECT * FROM lotes WHERE id_lote=?", [id_lote]);
-        
+
         const updateValues = {
             nombre: nombre ? nombre : oldUser[0].nombre,
             longitud: longitud ? longitud : oldUser[0].longitud,
             latitud: latitud ? latitud : oldUser[0].latitud,
             fk_id_finca: fk_id_finca ? fk_id_finca : oldUser[0].fk_id_finca,
         };
-        
+
         const updateQuery = `UPDATE lotes SET nombre=?, longitud=?, latitud=?, fk_id_finca=? WHERE id_lote=?`;
-        
+
         const [resultado] = await pool.query(updateQuery, [updateValues.nombre, updateValues.longitud, updateValues.latitud, updateValues.fk_id_finca, parseInt(id_lote)]);
-        
-        if (resultado.affectedRows > 0) { 
+
+        if (resultado.affectedRows > 0) {
             res.status(200).json({ "mensaje": "El lote ha sido actualizado" });
         } else {
-            res.status(404).json({ "mensaje": "No se pudo actualizar el lote" }); 
+            res.status(404).json({ "mensaje": "No se pudo actualizar el lote" });
         }
     } catch (error) {
         res.status(500).json({ "mensaje": error.message }); // Corrección en el manejo de error
@@ -97,7 +95,7 @@ export const Actualizarlote = async (req, res) => {
 export const Buscarlote = async (req, res) => {
     try {
         const { id_lote } = req.params;
-        const [ resultado ] = await pool.query("select * from lotes where id_lote=?", [id_lote])
+        const [resultado] = await pool.query("select * from lotes where id_lote=?", [id_lote])
 
         if (resultado.length > 0) {
             res.status(200).json(resultado)
@@ -107,17 +105,17 @@ export const Buscarlote = async (req, res) => {
             })
         }
 
-    }  catch (error) {
+    } catch (error) {
         res.status(500).json({
             "mensaje": error
-        })     
+        })
     }
 }
 
 export const eliminarlote = async (req, res) => {
-    try{
+    try {
         const { id_lote } = req.params;
-        const [ resultado ] = await pool.query("delete from lotes where id_lote=?", [id_lote])
+        const [resultado] = await pool.query("delete from lotes where id_lote=?", [id_lote])
 
         if (resultado.affectedRows > 0) {
             res.status(200).json({

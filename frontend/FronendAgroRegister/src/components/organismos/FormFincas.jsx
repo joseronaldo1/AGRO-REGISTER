@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
@@ -18,12 +19,23 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
       [name]: value
     }));
   };
-
+  const validarNombreFinca = nombre => {
+    const soloLetras = /^[a-zA-Z\s]*$/;
+    return soloLetras.test(nombre);
+  };
   const handleFormSubmit = async e => {
     e.preventDefault();
     try {
-      if (!formData.nombre_finca || !formData.longitud  || !formData.latitud) {
+      if (!formData.nombre_finca || !formData.longitud || !formData.latitud) {
         setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+        return;
+      } if (!validarNombreFinca(formData.nombre_finca)) {
+        // Mostrar alerta si el nombre contiene números
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El nombre de la finca solo puede contener letras'
+        });
         return;
       }
 
@@ -38,12 +50,25 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
           }
         );
         console.log(response.data);
+        // Mostrar alerta de registro exitoso
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'La finca se ha registrado exitosamente'
+        });
+        console.log(response.data);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/actualizarFinca/${id}`,
           formData
         );
+        // Mostrar alerta de actualización exitosa
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'La finca se ha actualizado exitosamente'
+        });
       }
 
       onSubmit(formData);

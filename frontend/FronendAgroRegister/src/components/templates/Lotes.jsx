@@ -19,7 +19,7 @@ function lotes() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -99,11 +99,11 @@ function lotes() {
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#ffc107', borderColor: '#ffc107', marginLeft: '10px' }}
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: '#343a40' }} /> {/* Icono de edición */}
+          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
         </button>
       ),
     },
@@ -111,44 +111,44 @@ function lotes() {
 
   return (
     <div>
-    <div className="recursos-container">
-      <Header />
-      <div className="container mt-5">
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-          <div className="white-container">
-            <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+      <div className="recursos-container">
+        <Header />
+        <div className="container mt-5">
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
+            <div className="white-container">
+              <SearchBar onSearch={handleSearch} />
+              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            </div>
+          </div>
+          <br />
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+            <Datatable columns={columns} data={data} title="lotes" />
           </div>
         </div>
+
+        <ModalRecuRegeContrasenia
+          mostrar={showRegistroModal}
+          cerrarModal={handleCloseRegistroModal}
+          titulo="Registro"
+          actionLabel="Registrar"
+          initialData={registroFormData}
+          mode="registro"
+          handleSubmit={() => setShowRegistroModal(false)}
+        />
+
+        <ModalRecuRegeContrasenia
+          mostrar={showActualizacionModal}
+          cerrarModal={handleCloseActualizacionModal}
+          titulo="Actualización"
+          handleSubmit={handleActualizacionFormSubmit}
+          actionLabel="Actualizar"
+          initialData={initialData}
+          mode={mode}
+        />
         <br />
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-        <Datatable columns={columns} data={data} title="lotes" />
-        </div>
+
       </div>
-
-      <ModalRecuRegeContrasenia
-        mostrar={showRegistroModal}
-        cerrarModal={handleCloseRegistroModal}
-        titulo="Registro"
-        actionLabel="Registrar"
-        initialData={registroFormData}
-        mode="registro"
-        handleSubmit={() => setShowRegistroModal(false)}
-      />
-
-      <ModalRecuRegeContrasenia
-        mostrar={showActualizacionModal}
-        cerrarModal={handleCloseActualizacionModal}
-        titulo="Actualización"
-        handleSubmit={handleActualizacionFormSubmit}
-        actionLabel="Actualizar"
-        initialData={initialData}
-        mode={mode}
-      />
-      <br />
-      
-    </div>
-    <Footer/>
+      <Footer />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
@@ -19,12 +20,24 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
       [name]: value
     }));
   };
-
+  const validarNombreLote = nombre => {
+    const soloLetras = /^[a-zA-Z\s]*$/;
+    return soloLetras.test(nombre);
+  };
   const handleFormSubmit = async e => {
     e.preventDefault();
     try {
       if (!formData.nombre || !formData.longitud || !formData.latitud || !formData.fk_id_finca) {
         setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+        return;
+      }
+      if (!validarNombreLote(formData.nombre)) {
+        // Mostrar alerta si el nombre contiene números
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El nombre del lote solo puede contener letras'
+        });
         return;
       }
 
@@ -39,12 +52,25 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
           }
         );
         console.log(response.data);
+        // Mostrar alerta de registro exitoso
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'El lote se ha registrado exitosamente'
+        });
+        console.log(response.data);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/Actualizarlote/${id}`,
           formData
         );
+        // Mostrar alerta de actualización exitosa
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'El lote se ha actualizado exitosamente'
+        });
       }
 
       onSubmit(formData);

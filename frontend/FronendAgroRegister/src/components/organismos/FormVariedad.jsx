@@ -17,7 +17,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
       ...prevState,
       [name]: value
     }));
-    
+
   };
 
   const validarNombreVariedad = nombre => {

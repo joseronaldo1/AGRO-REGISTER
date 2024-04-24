@@ -5,7 +5,7 @@ import Footer from '../organismos/Footer/Footer';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logoOrigi.png';
 import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png';
-import InputAtom from '../atomos/Inputs.jsx'; 
+import InputAtom from '../atomos/Inputs.jsx';
 import Select from '../atomos/selectRegistro.jsx';
 import axios from 'axios';
 
@@ -13,7 +13,6 @@ import axios from 'axios';
 
 const Registro = () => {
   const [formData, setFormData] = useState({
-    identificacion:'',
     nombre: '',
     apellido: '',
     correo: '',
@@ -33,7 +32,6 @@ const Registro = () => {
 
       // Limpiar el formulario después de enviar los datos
       setFormData({
-        identificacion:'',
         nombre: '',
         apellido: '',
         correo: '',
@@ -110,7 +108,6 @@ const Registro = () => {
             <h2 style={{ fontSize: '2.3em', fontWeight: 'bold', textAlign: 'center', padding: '1.30rem 0', color: 'black' }}>Registro de Usuario</h2>
             <img src={Logo} alt="Logo" style={imgStyle} />
             <div className='flex flex-col space-y-4'>
-            <InputAtom label="Identificacion:" id="identificacion" name="identificacion" value={formData.identificacion} onChange={handleChange} />
               <InputAtom label="Nombre:" id="nombre" name="nombre" value={formData.nombre} onChange={handleChange} />
               <InputAtom label="Apellido:" id="apellido" name="apellido" value={formData.apellido} onChange={handleChange} />
               <InputAtom label="Correo:" id="correo" name="correo" type="email" value={formData.correo} onChange={handleChange} />
