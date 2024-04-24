@@ -67,13 +67,13 @@ export const Actualizarlote = async (req, res) => {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, longitud, latitud, fk_id_finca) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
-        const [oldUser] = await pool.query("SELECT * FROM lotes WHERE id_lote=?", [id_lote]);
+        const [oldLote] = await pool.query("SELECT l.*, f.nombre_finca FROM lotes l JOIN fincas f ON l.fk_id_finca = f.id_finca WHERE l.id_lote=?", [id_lote]);
 
         const updateValues = {
-            nombre: nombre ? nombre : oldUser[0].nombre,
-            longitud: longitud ? longitud : oldUser[0].longitud,
-            latitud: latitud ? latitud : oldUser[0].latitud,
-            fk_id_finca: fk_id_finca ? fk_id_finca : oldUser[0].fk_id_finca,
+            nombre: nombre ? nombre : oldLote[0].nombre,
+            longitud: longitud ? longitud : oldLote[0].longitud,
+            latitud: latitud ? latitud : oldLote[0].latitud,
+            fk_id_finca: fk_id_finca ? fk_id_finca : oldLote[0].fk_id_finca,
         };
 
         const updateQuery = `UPDATE lotes SET nombre=?, longitud=?, latitud=?, fk_id_finca=? WHERE id_lote=?`;
@@ -81,7 +81,7 @@ export const Actualizarlote = async (req, res) => {
         const [resultado] = await pool.query(updateQuery, [updateValues.nombre, updateValues.longitud, updateValues.latitud, updateValues.fk_id_finca, parseInt(id_lote)]);
 
         if (resultado.affectedRows > 0) {
-            res.status(200).json({ "mensaje": "El lote ha sido actualizado" });
+            res.status(200).json({ "mensaje": "El lote ha sido actualizado", "nombre_finca": oldLote[0].nombre_finca });
         } else {
             res.status(404).json({ "mensaje": "No se pudo actualizar el lote" });
         }
@@ -89,6 +89,7 @@ export const Actualizarlote = async (req, res) => {
         res.status(500).json({ "mensaje": error.message }); // Corrección en el manejo de error
     }
 }
+
 
 
 
