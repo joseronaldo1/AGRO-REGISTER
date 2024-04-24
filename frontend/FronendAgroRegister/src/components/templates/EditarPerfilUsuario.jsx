@@ -3,6 +3,7 @@ import Botones from '../atomos/Botones.jsx';
 import Logo from '../../assets/logoOrigi.png';
 import { Link } from 'react-router-dom';
 import Header from '../organismos/Header/Header.jsx';
+import Footer from '../organismos/Footer/Footer';
 import Formulario from '../organismos/Formulario.jsx';
 
 const EditarPerfilusuario = () => {
@@ -55,6 +56,7 @@ const EditarPerfilusuario = () => {
                      <img src={Logo} alt="" style={{ maxWidth: '350px', maxHeight: '350px', marginLeft: '20px', marginTop: '80px' }} />
                  </form>
              </div>
+             <Footer/>
          </div>
      );
  };

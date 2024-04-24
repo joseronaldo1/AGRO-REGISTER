@@ -3,7 +3,9 @@ import Botones from "../atomos/Botones";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/Modal";
 import Header from "../organismos/Header/Header";
+import Footer from '../organismos/Footer/Footer';
 import Formulario from '../organismos/Formulario.jsx';
+import SearchBar from '../moleculas/SearchBar';
  function Cultivos() {
    const [showModal, setShowModal] = useState(false);
    const [modalTitle, setModalTitle] = useState("");
@@ -42,6 +44,14 @@ import Formulario from '../organismos/Formulario.jsx';
    const handleDesactivarClick = (fechaInicio) => {
      alert(`¿Quieres desactivar el cultivo con fecha de inicio ${fechaInicio}?`);
    };
+   const handleSearch = async (searchTerm) => {
+    try {
+      const response = await axios.get( `http://localhost:3000/Buscar/actividad/${searchTerm}`);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error searching for resources:", error);
+    }
+  };
 
    const columns = [
      { name: "Fecha de inicio", selector: (row) => row.fecha_inicio, sortable: true },
@@ -84,12 +94,21 @@ import Formulario from '../organismos/Formulario.jsx';
    return (
      <div style={{ marginTop: "8%" }}>
        <Header />
-       <div className="container mt-5">
-         <Botones children="Registrar" onClick={() => handleOpenModal("Registrar")} />
-         <Datatable columns={columns} data={data} title="Cultivos" />
-       </div>
+       
+       <div  className="container mt-5">
+        <br />
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px' }}>
+          <div className="white-container">
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={() => handleOpenModal("Registrar")} />
+          </div>
+        </div>
+        <br />
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+        <Datatable columns={columns} data={data} title="Cultivos" />
+        </div>
+      </div>
 
-       {/* Modal de Cultivos */}
        <ModalRecuRegeContrasenia
          mostrar={showModal}
          cerrarModal={handleCloseModal}
@@ -105,6 +124,8 @@ import Formulario from '../organismos/Formulario.jsx';
            onClick={() => handleFormSubmit()}
          />
        </ModalRecuRegeContrasenia>
+       <br />
+       <Footer/>
      </div>
    );
  }

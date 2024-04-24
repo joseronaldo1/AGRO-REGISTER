@@ -49,8 +49,8 @@ export const registrarUsuarios = async (req, res) => {
         if(!errors.isEmpty()){
             return res.status(400).json(errors)
         }
-        const{nombre,apellido,correo,password,rol,estado} = req.body
-        const[rows] = await pool.query(`INSERT INTO usuarios (nombre,apellido,correo,password,rol,estado) values (?, ?, ?, ?, ?,?)`, [nombre,apellido,correo,password,rol,estado])
+        const{nombre,apellido,correo,password,rol} = req.body
+        const[rows] = await pool.query(`INSERT INTO usuarios (nombre,apellido,correo,password,rol) values (?, ?, ?, ?, ?)`, [nombre,apellido,correo,password,rol])
 
 
         if(rows.affectedRows>0){

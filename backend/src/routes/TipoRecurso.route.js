@@ -12,7 +12,7 @@ rutaDeTipoRecurso.get("/listarRecurso", listarTipoRecurso);
 rutaDeTipoRecurso.post("/RegistroRecurso", validarRer,  RegistroTipoRecurso);
 rutaDeTipoRecurso.put("/actualizarRecurso/:id",validarRea, ActualizarTipoRecurso);
 /* rutaDeTipoRecurso.put("/desactivar/Recurso/:id", DesactivarTipoRecurso); */
-rutaDeTipoRecurso.get("/buscarRecurso/:id", BuscarTipoRecurso);
+rutaDeTipoRecurso.get("/buscarRecurso/:term", BuscarTipoRecurso);
 
 export  default rutaDeTipoRecurso ;
 

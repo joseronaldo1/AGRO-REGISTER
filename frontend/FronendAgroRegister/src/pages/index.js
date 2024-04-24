@@ -16,6 +16,7 @@ export { SoportePage } from './Soporte';
 export { DashboardPage } from './dashboar';
 export { ReportesPage } from './Reportes';
 export { ProgramacionPage } from './Programacion';
+export { ProduccionPage } from './Produccion';
 export { PerfilprincipalPage } from './Perfil';
 
 

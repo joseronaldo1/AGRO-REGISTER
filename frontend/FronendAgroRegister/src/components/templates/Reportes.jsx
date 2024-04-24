@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import Boton from "../atomos/Botones";
 import Header from "../organismos/Header/Header";
+import Footer from '../organismos/Footer/Footer';
 
 function Reportes() {
    // Estado para controlar la visibilidad de la información adicional
    const [mostrarInformacion, setMostrarInformacion] = useState(false);
 
    return (
+    <div>
      <div className="container" style={{ marginTop: "8%" }}>
        <Header/>
        <h2 style={{ display: "inline-block", marginRight: "20px" }}>Reporte Ingresos y Egresos</h2>
@@ -48,6 +50,9 @@ function Reportes() {
            <p>Más información..</p>
          </div>
        )}
+       
+     </div>
+     <Footer/>
      </div>
  );
  }

@@ -78,7 +78,7 @@ const FormActividad= ({ onSubmit, className, initialData, mode, cerrarModal }) =
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Tiempo: </label>
         <br />
         <input style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
-          type="time"
+          type="text"
           name="tiempo"
           placeholder="Tiempo"
           value={formData.tiempo}

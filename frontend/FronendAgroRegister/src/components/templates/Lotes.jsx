@@ -5,6 +5,7 @@ import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalLotes.jsx";
 import Header from "../organismos/Header/Header";
+import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 function lotes() {
   const baseURL = 'http://localhost:3000/listarlote';
@@ -89,8 +90,8 @@ function lotes() {
       sortable: true,
     },
     {
-      name: 'fk_id_finca',
-      selector: (row) => row.id_finca,
+      name: 'Nombre finca',
+      selector: (row) => row.nombre_finca,
       sortable: true,
     },
     {
@@ -109,14 +110,20 @@ function lotes() {
   ];
 
   return (
+    <div>
     <div className="recursos-container">
       <Header />
       <div className="container mt-5">
-        <div className="white-container">
-          <SearchBar onSearch={handleSearch} />
-          <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
+          <div className="white-container">
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+          </div>
         </div>
+        <br />
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
         <Datatable columns={columns} data={data} title="lotes" />
+        </div>
       </div>
 
       <ModalRecuRegeContrasenia
@@ -138,6 +145,10 @@ function lotes() {
         initialData={initialData}
         mode={mode}
       />
+      <br />
+      
+    </div>
+    <Footer/>
     </div>
   );
 }

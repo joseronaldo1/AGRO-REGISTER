@@ -2,6 +2,7 @@ import React from 'react';
 import Botones from '../atomos/Botones.jsx';
 import { Link } from 'react-router-dom';
 import Header from '../organismos/Header/Header.jsx';
+import Footer from '../organismos/Footer/Footer';
 import Formulario from '../organismos/Formulario.jsx';
 
 const Perfilprincipal = () => {
@@ -54,6 +55,7 @@ const Perfilprincipal = () => {
                      </Link>
                  </div>
              </div>
+             <Footer/>
          </div>
      );
  };

@@ -9,7 +9,8 @@ const rutaDeVariedad = Router();
 rutaDeVariedad.post("/registrarVariedad", validarRegistroVariedad, registrarVariedad);
 rutaDeVariedad.get("/listarVariedades",listarVariedades);
 rutaDeVariedad.put("/actualizarVariedad/:id",validarActualizacionVariedad, actualizarVariedad);
-rutaDeVariedad.get("/buscarVariedad/:id", buscarVariedad);
+rutaDeVariedad.get("/buscarVariedad/:term", buscarVariedad);
+
 
 export default rutaDeVariedad;
 

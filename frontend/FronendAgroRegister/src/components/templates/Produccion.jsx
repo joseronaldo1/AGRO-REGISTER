@@ -6,7 +6,7 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import Formulario from '../organismos/Formulario.jsx';
 
- function Programacion() {
+ function Produccion() {
    const [showRegistroModal, setShowRegistroModal] = useState(false);
    const [showActualizacionModal, setShowActualizacionModal] = useState(false);
    const [registroFormData, setRegistroFormData] = useState({
@@ -139,7 +139,7 @@ import Formulario from '../organismos/Formulario.jsx';
        <Header />
        <div className="container mt-5">
        <Botones children="Registrar" onClick={() => handleOpenModal("Registrar")} />
-         <Datatable columns={columns} data={data} title="Programación" />
+         <Datatable columns={columns} data={data} title="Producción" />
        </div>
 
        {/* Modal de Registro */}
@@ -179,4 +179,4 @@ import Formulario from '../organismos/Formulario.jsx';
    );
  }
 
- export default Programacion;
+ export default Produccion;
