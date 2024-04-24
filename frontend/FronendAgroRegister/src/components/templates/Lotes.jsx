@@ -89,7 +89,7 @@ function lotes() {
       sortable: true,
     },
     {
-      name: 'id finca',
+      name: 'fk_id_finca',
       selector: (row) => row.id_finca,
       sortable: true,
     },
