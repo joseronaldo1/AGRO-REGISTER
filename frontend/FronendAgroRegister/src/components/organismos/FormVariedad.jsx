@@ -73,6 +73,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           text: 'La variedad se ha actualizado exitosamente'
         });
       }
+      
 
       onSubmit(formData);
       cerrarModal();

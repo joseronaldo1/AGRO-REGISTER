@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
-    nombre: initialData ? initialData.nombre : '',
-    longitud: initialData ? initialData.longitud : '',
-    latitud: initialData ? initialData.latitud : '',
-    fk_id_finca: initialData ? initialData.fk_id_finca : ''
+    
+    nombre: initialData && initialData.nombre ? initialData.nombre : '',
+    longitud: initialData && initialData.longitud ? initialData.longitud : '',
+    latitud: initialData && initialData.latitud ? initialData.latitud : '',
+    fk_id_finca: initialData && initialData.fk_id_finca ? initialData.fk_id_finca : ''
   };
+  
 
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
+  //nuevo
+  const [nombre_finca, setNombreFinca] = useState([]);
 
+  useEffect(() => {
+    axios.get('http://localhost:3000/listarFinca')
+      .then(response => {
+        setNombreFinca(response.data); // Establecer directamente los datos de la respuesta en el estado nombre_finca
+      })
+      .catch(error => {
+        console.error('Error al obtener los datos:', error);
+      });
+  }, []);
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -90,11 +103,11 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         textAlign: 'center'
       }}
     >
-      {showWarning && ( // Mostrar advertencia si showWarning es true
+      {/* {showWarning && ( // Mostrar advertencia si showWarning es true
         <p style={{ color: 'red', marginBottom: '10px' }}>
           Por favor complete todos los campos
         </p>
-      )}
+      )} */}
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Nombre del lote:{' '}
@@ -154,22 +167,24 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
       </div>
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          id finca:{' '}
+          id finca:
         </label>
         <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="number"
-          name="fk_id_finca"
-          placeholder="Fk_id_finca"
+        <select
+          label='Nombre de Finca'
+          name='fk_id_finca'
+          id=''
+          required={true}
           value={formData.fk_id_finca}
           onChange={handleChange}
-        />
+    >
+      {/* Mapeo para crear las opciones del select */}
+      {nombre_finca.map(finca => (
+        <option key={finca.id_finca} value={finca.id_finca}>
+          {finca.nombre_finca}
+        </option>
+      ))}
+    </select>
       </div>
       <button
         className="boton"
@@ -187,6 +202,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         }}
       >
         {mode === 'registro' ? 'Registrar' : 'Actualizar'}
+        
       </button>
     </form>
   );

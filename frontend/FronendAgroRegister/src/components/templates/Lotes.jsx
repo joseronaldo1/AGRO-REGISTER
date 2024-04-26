@@ -17,9 +17,10 @@ function lotes() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
 
+  
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const fetchData = async () => {
     try {

@@ -20,7 +20,7 @@ function fincas() {
 
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const fetchData = async () => {
     try {
