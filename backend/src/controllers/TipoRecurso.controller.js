@@ -133,8 +133,8 @@ export const DesactivarTipoRecurso = async (req, res) => {
 // CRUD - Buscar
 export const BuscarTipoRecurso = async (req, res) => {
     try {
-        const { term } = req.params;
-        const [result] = await pool.query("SELECT * FROM tipo_recursos WHERE nombre_recursos LIKE ?", [`%${term}%`]);
+        const { id } = req.params;
+        const [result] = await pool.query("SELECT * FROM tipo_recursos WHERE id_tipo_recursos =?", [id]);
                     
         if (result.length > 0) {
             res.status(200).json(result);

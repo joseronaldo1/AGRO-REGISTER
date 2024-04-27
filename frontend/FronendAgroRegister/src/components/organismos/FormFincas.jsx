@@ -4,10 +4,11 @@ import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
-    nombre_finca: initialData ? initialData.nombre_finca : '',
-    longitud: initialData ? initialData.longitud : '',
-    latitud: initialData ? initialData.latitud : ''
+    nombre_finca: initialData && initialData.nombre_finca ? initialData.nombre_finca : '',
+    longitud: initialData && initialData.longitud ? initialData.longitud : '',
+    latitud: initialData && initialData.latitud ? initialData.latitud : ''
   };
+  
 
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
