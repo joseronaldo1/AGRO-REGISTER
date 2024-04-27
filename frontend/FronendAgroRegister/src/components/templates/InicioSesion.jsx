@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
@@ -24,16 +24,18 @@ const IniciarSesion = () => {
         }
 
         try {
-            setLoading(true); // Indicar que se está cargando
+            
+          setLoading(true); // Indicar que se está cargando
+          
+          const response = await axios.post('http://localhost:3000/validacion', formData);
+          const responseData = response.data;
+    
+          localStorage.setItem('token', responseData.token);
+          console.log(localStorage);
+          alert('Inicio de sesión exitoso');
+          
+          window.location.href = "/dashboard";
 
-            const response = await axios.post('http://localhost:3000/validacion', formData);
-            const responseData = response.data;
-
-            localStorage.setItem('token', responseData.token);
-            console.log(localStorage);
-            alert('Inicio de sesión exitoso');
-
-            window.location.href = "/dashboard";
         } catch (error) {
             alert('Error al iniciar sesión:', error.response.data.message);
         } finally {
@@ -79,6 +81,56 @@ const IniciarSesion = () => {
         fontWeight: 'bold',
         textAlign: 'center',
         padding: '1.30rem',
+
+      };
+      
+    
+      return (
+        <div style={fondoStyle}>
+          <div className='flex' style={{ margin: '130px' }}>
+            <HeaderInicio />
+            <div className='flex items-center justify-center'>
+              <form style={{ textAlign: 'center', ...formularioStyle }} onSubmit={handleSubmit}>
+                <label style={tituloStyle}>Inicio de Sesión</label>
+                <img src={Logo} alt="Logo" style={{ maxWidth: '160px' }} />
+                <div style={{ marginTop: '20px',  }}>
+                  <InputAtom
+                    className={'mb-3 height-10'}
+                    type="email"
+                    placeholder="Correo Electrónico"
+                    name="correo"
+                    value={formData.correo}
+                    onChange={handleChange}
+                    
+                  />
+                  <InputAtom
+                    type="password"
+                    placeholder="Contraseña"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='flex items-center justify-center'>
+                  {loading && <span>Cargando...</span>}
+                </div>
+                <div style={{ textAlign: 'center'}}>
+                  <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', margin: '15px', marginTop: '60px' }}>
+                  <Botones children='Iniciar' type="submit" disabled={loading}/>
+                  <div>
+                    <Link to='/registrarse' disabled={loading}>
+                      <Botones children='Registrarse' />
+                    </Link>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      );
+
     };
 
     const linkOlvidoContrasenaStyle = {

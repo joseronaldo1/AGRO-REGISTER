@@ -50,14 +50,23 @@ export const registrarUsuarios = async (req, res) => {
             return res.status(400).json(errors);
         }
 
+<<<<<<< HEAD
         const { nombre, apellido, correo, password, rol } = req.body;
+=======
+        const { nombre, apellido, correo, password, rol, estado } = req.body;
+>>>>>>> bd1fc78027e1f260281accdd6bc6122e60949039
 
         // Encriptar la contraseña antes de almacenarla en la base de datos
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const [rows] = await pool.query(
+<<<<<<< HEAD
             `INSERT INTO usuarios (nombre, apellido, correo, password, rol) VALUES (?, ?, ?, ?, ?)`,
             [nombre, apellido, correo, hashedPassword, rol]
+=======
+            `INSERT INTO usuarios (nombre, apellido, correo, password, rol, estado) VALUES (?, ?, ?, ?, ?, ?)`,
+            [nombre, apellido, correo, hashedPassword, rol, estado]
+>>>>>>> bd1fc78027e1f260281accdd6bc6122e60949039
         );
 
         if (rows.affectedRows > 0) {
