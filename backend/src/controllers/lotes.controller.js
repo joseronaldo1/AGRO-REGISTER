@@ -48,7 +48,6 @@ export const Registrarlotes = async (req, res) => {
         res.status(500).json({
             "mensaje": error
         })
-        console.log(error)
     }
 }
 
