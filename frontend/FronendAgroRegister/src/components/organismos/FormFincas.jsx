@@ -24,13 +24,14 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
     const soloLetras = /^[a-zA-Z\s]*$/;
     return soloLetras.test(nombre);
   };
-  const handleFormSubmit = async e => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
       if (!formData.nombre_finca || !formData.longitud || !formData.latitud) {
         setShowWarning(true); // Mostrar advertencia si algún campo está vacío
         return;
-      } if (!validarNombreFinca(formData.nombre_finca)) {
+      }
+      if (!validarNombreFinca(formData.nombre_finca)) {
         // Mostrar alerta si el nombre contiene números
         Swal.fire({
           icon: 'error',
@@ -39,7 +40,29 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         });
         return;
       }
-
+  
+      // Validar longitud
+      if (isNaN(formData.longitud) || formData.longitud < -180 || formData.longitud > 180) {
+        // Mostrar alerta si la longitud no es válida
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La longitud debe ser un número válido entre -180 y 180'
+        });
+        return;
+      }
+  
+      // Validar latitud
+      if (isNaN(formData.latitud) || formData.latitud < -90 || formData.latitud > 90) {
+        // Mostrar alerta si la latitud no es válida
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La latitud debe ser un número válido entre -90 y 90'
+        });
+        return;
+      }
+  
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistroFinca',
@@ -71,13 +94,14 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
           text: 'La finca se ha actualizado exitosamente'
         });
       }
-
+  
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
       console.error('Error al procesar el formulario:', error);
     }
   };
+  
 
   return (
     <form
