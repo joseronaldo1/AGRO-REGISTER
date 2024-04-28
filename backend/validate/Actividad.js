@@ -7,9 +7,7 @@ export const validarRR = [
         check('observaciones', 'El campo de observaciones debe tener máximo 255 caracteres').optional().matches(/^[a-zA-Z]+[a-zA-Z0-9\s\S]{0,254}$/),    
         check('fk_id_variedad', 'El campo de identificación de variedad debe ser un número entero').isInt(),
         check('valor_actividad', 'El campo de valor de actividad debe ser un número').isInt().isNumeric(),
-
-        check('estado', 'El campo de estado debe ser "activo" o "proceso", "terminado"').isIn(['activo', 'proceso','terminado'])
-    ];
+];
     
 //ACTUALIZAR
 export const validarRA = [

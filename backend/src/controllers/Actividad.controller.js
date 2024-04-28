@@ -39,23 +39,22 @@ export const RegistrarA = async (req, res) => {
             return res.status(400).json(errors);
         }
 
-        const { nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado } = req.body;
+        const { nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad } = req.body;
 
-        // Si no se proporciona un valor para 'rol', establecerlo como 'activo'
-        const esta = estado || 'activo';
+        // Asignar estado directamente como 'activo'
+        const esta = 'activo';
 
-         // fk variedad 
-         const [variedadExist] = await pool.query('SELECT * FROM variedad WHERE id_variedad = ?', [fk_id_variedad]);
+        // fk variedad 
+        const [variedadExist] = await pool.query('SELECT * FROM variedad WHERE id_variedad = ?', [fk_id_variedad]);
 
-         if (variedadExist.length === 0) {
-             return res.status(404).json({
-                 status: 404,
-                 message: 'la variedad no existe. Registre primero una variedad.'
-             });
-         }
-        
-        
-        const [result] = await pool.query("INSERT INTO actividad (nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado) VALUES (?, ?, ?, ?, ?, ?)", [nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado]);
+        if (variedadExist.length === 0) {
+            return res.status(404).json({
+                status: 404,
+                message: 'La variedad no existe. Registre primero una variedad.'
+            });
+        }
+
+        const [result] = await pool.query("INSERT INTO actividad (nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado) VALUES (?, ?, ?, ?, ?, ?)", [nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, esta]);
 
         if (result.affectedRows > 0) {
             res.status(200).json({
@@ -63,7 +62,7 @@ export const RegistrarA = async (req, res) => {
                 message: 'Se registró la actividad con éxito',
                 result: result // Mostrar el objeto result completo
             });
-        
+
         } else {
             res.status(403).json({
                 status: 403,
@@ -73,10 +72,12 @@ export const RegistrarA = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: error.message || 'error en el sistema'
+            message: error.message || 'Error en el sistema'
         });
+        console.log(error);
     }
 }
+
 
 export const ActualizarA = async (req, res) => {
     try {
@@ -87,8 +88,10 @@ export const ActualizarA = async (req, res) => {
 
         const { id } = req.params;
         const { nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado } = req.body;
-        if (!nombre_actividad && !tiempo && !observaciones && !fk_id_variedad && !valor_actividad && !estado) {
-            return res.status(400).json({ message: 'Al menos uno de los campos (nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad) debe estar presente en la solicitud para realizar la actualización.' });
+
+        // Comprueba si al menos uno de los campos de actualización está presente en la solicitud
+        if (!nombre_actividad && !tiempo && !observaciones && !fk_id_variedad && !valor_actividad && estado === undefined) {
+            return res.status(400).json({ message: 'Al menos uno de los campos (nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
         // Realiza una consulta para obtener la actividad antes de actualizarla
@@ -113,7 +116,7 @@ export const ActualizarA = async (req, res) => {
             WHERE id_actividad = ?`,
             [id]
         );
-     
+
         if (result.affectedRows > 0) {
             return res.status(200).json({
                 status: 200,
@@ -132,6 +135,7 @@ export const ActualizarA = async (req, res) => {
         });
     }
 };
+
 
 //CRUD - Desactivar
 export const DesactivarA = async (req, res) => {

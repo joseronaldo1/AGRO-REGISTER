@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const FormActividad= ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const FormActividad = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
     nombre_actividad: initialData ? initialData.nombre_actividad : '',
     tiempo: initialData ? initialData.tiempo : '',
     observaciones: initialData ? initialData.observaciones : '',
     valor_actividad: initialData ? initialData.valor_actividad : '',
-    fk_id_variedad: initialData ? initialData.fk_id_variedad : ''
+    fk_id_variedad: initialData ? initialData.fk_id_variedad : '',
+    estado: initialData && mode === 'update' ? initialData.estado : 'activo'
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
+  const [showWarning, setShowWarning] = useState(false);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -24,44 +25,58 @@ const FormActividad= ({ onSubmit, className, initialData, mode, cerrarModal }) =
   const handleFormSubmit = async e => {
     e.preventDefault();
     try {
-      if (!formData.nombre_actividad || !formData.tiempo || !formData.observaciones || !formData.valor_actividad 
-        || !formData.fk_id_variedad) {
-        setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+      if (!formData.nombre_actividad || !formData.tiempo || !formData.observaciones || !formData.valor_actividad || !formData.fk_id_variedad) {
+        setShowWarning(true);
         return;
       }
-
+  
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/Registrara',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
+          formData
         );
         console.log(response.data);
-      } else if (mode === 'update') {
+      } else if (mode === 'update' && initialData && initialData.id) {
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/Actualizara/actividad/${id}`,
           formData
         );
+      } else {
+        console.error('ID de actividad no válido.');
       }
-
+  
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
       console.error('Error al procesar el formulario:', error);
     }
   };
+  
 
   return (
     <form className={className} onSubmit={handleFormSubmit} style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-      {showWarning && ( // Mostrar advertencia si showWarning es true
+      {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>
           Por favor complete todos los campos
         </p>
+      )}
+      {mode === 'update' && (
+        <div className="flex flex-col">
+          <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Estado: </label>
+          <br />
+          <select
+            style={{ borderColor: '#1bc12e', borderRadius: '6px', width: '50%', height: '40px' }}
+            name="estado"
+            value={formData.estado}
+            onChange={handleChange}
+          >
+            <option value="activo">Activo</option>
+            <option value="proceso">Proceso</option>
+            <option value="terminado">Terminado</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+        </div>
       )}
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Nombre Actividad: </label>
@@ -118,7 +133,7 @@ const FormActividad= ({ onSubmit, className, initialData, mode, cerrarModal }) =
           onChange={handleChange}
         />
       </div>
-      
+
       <button className="boton" type="submit" style={{ backgroundColor: '#1bc12e', borderRadius: '10px', color: 'white', border: 'none', marginLeft: '3%', width: '20%', fontSize: '17px', marginTop: '20px', height: '40px' }}>
         {mode === 'registro' ? 'Registrar' : 'Actualizar'}
       </button>
