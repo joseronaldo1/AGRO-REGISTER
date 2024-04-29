@@ -2,30 +2,49 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2'; // Importa SweetAlert
 
-const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
-    nombre: initialData && initialData.nombre ? initialData.nombre : '',
-    longitud: initialData && initialData.longitud ? initialData.longitud : '',
-    latitud: initialData && initialData.latitud ? initialData.latitud : '',
-    fk_id_finca: initialData && initialData.fk_id_finca ? initialData.fk_id_finca : ''
+    fecha_inicio: initialData && initialData.fecha_inicio ? initialData.fecha_inicio : '',
+    cantidad_sembrada: initialData && initialData.cantidad_sembrada ? initialData.cantidad_sembrada : '',
+    fk_id_lote: initialData && initialData.fk_id_lote ? initialData.fk_id_lote : '',
+    fk_id_variedad: initialData && initialData.fk_id_variedad ? initialData.fk_id_variedad : ''
   };
   
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
-  const [nombre_finca, setNombreFinca] = useState([]);
 
+  // Nuevo estado para almacenar los nombres de los lotes y variedades
+  const [nombre_lote, setNombreLote] = useState([]);
+  const [nombre_variedad, setNombreVariedad] = useState([]);
+  
+  // Obtener los nombres de los lotes y variedades al cargar el componente
   useEffect(() => {
-    axios.get('http://localhost:3000/listarFinca')
+    axios.get('http://localhost:3000/listarlote')
       .then(response => {
-        setNombreFinca(response.data); // Establecer directamente los datos de la respuesta en el estado nombre_finca
+        setNombreLote(response.data);
+      })
+      .catch(error => {
+        console.error('Error al obtener los datos:', error);
+      });
+      
+    axios.get('http://localhost:3000/listarVariedades')
+      .then(response => {
+        setNombreVariedad(response.data);
       })
       .catch(error => {
         console.error('Error al obtener los datos:', error);
       });
   }, []);
 
+  // Restablecer la advertencia cuando cambia el lote seleccionado
+  useEffect(() => {
+    setShowWarning(false);
+  }, [formData.fk_id_lote]);
 
-
+  useEffect(() => {
+    setShowWarning(false);
+  }, [formData.fk_id_variedad]);
+  
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -33,54 +52,42 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
       [name]: value
     }));
   };
-
-  const validarNombreLote = nombre => {
-    const soloLetras = /^[a-zA-Z\s]*$/;
-    return soloLetras.test(nombre);
+  
+  const validarCantidadSembrada = cantidad_sembrada => {
+    const soloNumeros = /^\d+$/;
+    return soloNumeros.test(cantidad_sembrada);
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!formData.nombre || !formData.longitud || !formData.latitud || !formData.fk_id_finca) {
-        setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+      if (!formData.fecha_inicio || !formData.cantidad_sembrada || !formData.fk_id_lote || !formData.fk_id_variedad) {
+        setShowWarning(true);
         return;
       }
-      if (!validarNombreLote(formData.nombre)) {
-        // Mostrar alerta si el nombre contiene números
+
+      if (!validarCantidadSembrada(formData.cantidad_sembrada)) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'El nombre del lote solo puede contener letras'
+          text: 'La cantidad sembrada debe contener solo números'
         });
         return;
       }
-  
-      // Validar longitud
-      if (isNaN(formData.longitud) || formData.longitud < -180 || formData.longitud > 180) {
-        // Mostrar alerta si la longitud no es válida
+
+      const fechaInicio = formData.fecha_inicio;
+      if (!fechaInicio || !Date.parse(fechaInicio)) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'La longitud debe ser un número válido entre -180 y 180'
-        });
-        return;
-      }
-  
-      // Validar latitud
-      if (isNaN(formData.latitud) || formData.latitud < -80 || formData.latitud > 90) {
-        // Mostrar alerta si la latitud no es válida
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'La latitud debe ser un número válido entre -80 y 90'
+          text: 'La fecha de inicio debe estar en formato ISO 8601 (YYYY-MM-DD)'
         });
         return;
       }
   
       if (mode === 'registro') {
         const response = await axios.post(
-          'http://localhost:3000/Registrarlote',
+          'http://localhost:3000/registrarCultivos',
           formData,
           {
             headers: {
@@ -88,25 +95,22 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
             }
           }
         );
-        console.log(response.data);
-        // Mostrar alerta de registro exitoso
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'El lote se ha registrado exitosamente'
+          text: 'El cultivo se ha registrado exitosamente'
         });
         console.log(response.data);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
-          `http://localhost:3000/Actualizarlote/${id}`,
+          `http://localhost:3000/actualizarCultivo/${id}`,
           formData
         );
-        // Mostrar alerta de actualización exitosa
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'El lote se ha actualizado exitosamente'
+          text: 'El cultivo se ha actualizado exitosamente'
         });
       }
   
@@ -129,7 +133,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
     >
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Nombre del lote:{' '}
+          Fecha de inicio:{' '}
         </label>
         <br />
         <input
@@ -139,35 +143,16 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
             width: '50%',
             height: '40px'
           }}
-          type="text"
-          name="nombre"
-          placeholder="Nombre del lote"
-          value={formData.nombre}
+          type="date"
+          name="fecha_inicio"
+          placeholder="Fecha de Inicio"
+          value={formData.fecha_inicio}
           onChange={handleChange}
         />
       </div>
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Longitud:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="number"
-          name="longitud"
-          placeholder="longitud"
-          value={formData.longitud}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Latitud:{' '}
+          Cantidad Sembrada:{' '}
         </label>
         <br />
         <input
@@ -178,38 +163,64 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
             height: '40px'
           }}
           type="number"
-          name="latitud"
-          placeholder="latitud"
-          value={formData.latitud}
+          name="cantidad_sembrada"
+          placeholder="Cantidad Sembrada"
+          value={formData.cantidad_sembrada}
           onChange={handleChange}
         />
       </div>
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Selecciona tu finca:
+          Selecciona tu Lote:
         </label>
         <br />
         <select
-          label='Nombre de Finca'
-          name='fk_id_finca'
+          label='Nombre de Lote'
+          name='fk_id_lote'
           style={{borderColor: '#1bc12e', width: '50%', height: '40px',  borderRadius: '6px'}}
           id=''
           required={true}
-          value={formData.fk_id_finca}
+          value={formData.fk_id_lote} 
           onChange={handleChange}
         >
-          <option value="" disabled selected>Seleccione</option>
-          {/* Mapeo para crear las opciones del select */}
-          {nombre_finca.map(finca => (
-            <option key={finca.id_finca} value={finca.id_finca}>
-              {finca.nombre_finca}
+          <option value="" disabled>Seleccione</option>
+          {nombre_lote.map(lote => (
+            <option key={lote.id_lote} value={lote.id_lote}>
+              {lote.nombre}
             </option>
           ))}
         </select>
       </div>
       {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor seleccione una finca
+          Por favor seleccione un lote
+        </p>
+      )}
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Selecciona tu Variedad:
+        </label>
+        <br />
+        <select
+          label='Nombre de Variedad'
+          name='fk_id_variedad'
+          style={{borderColor: '#1bc12e', width: '50%', height: '40px',  borderRadius: '6px'}}
+          id=''
+          required={true}
+          value={formData.fk_id_variedad} 
+          onChange={handleChange}
+        >
+          <option value="" disabled>Seleccione</option>
+          {nombre_variedad.map(variedad => (
+            <option key={variedad.id_variedad} value={variedad.id_variedad}>
+              {variedad.nombre_variedad}
+            </option>
+          ))}
+        </select>
+      </div>
+      {showWarning && (
+        <p style={{ color: 'red', marginBottom: '10px' }}>
+          Por favor seleccione una Variedad
         </p>
       )}
       <button
@@ -233,4 +244,4 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
   );
 };
 
-export default Formulariolote;
+export default Formulariocultivo;

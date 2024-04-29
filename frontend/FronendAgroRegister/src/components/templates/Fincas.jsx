@@ -8,6 +8,7 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 
+
 function fincas() {
   const baseURL = 'http://localhost:3000/listarFinca';
 
@@ -58,7 +59,8 @@ function fincas() {
     }
   };
 
-  // Función para buscar recursos por ID
+
+  // Función para buscar fincas por nombre_finca
   const handleSearch = async (searchTerm) => {
     try {
       const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
@@ -67,6 +69,7 @@ function fincas() {
       console.error('Error searching for resources:', error);
     }
   };
+
 
   const columns = [
     {

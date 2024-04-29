@@ -22,7 +22,9 @@ function Variedad() {
 
   useEffect(() => {
     fetchData();
-  }, [data]);
+
+  }, []);
+
 
   const fetchData = async () => {
     try {
@@ -60,18 +62,18 @@ function Variedad() {
     }
   };
 
-  const handleSearch = async (searchTerm) => {
-    try {
-      const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
-      setData(response.data);
-    } catch (error) {
-      console.error('Error searching for resources:', error);
-    }
-  };
 
-  const handleResetSearch = () => {
-    setData(originalData); // Restablece los datos a los originales
-  };
+ // Función para buscar fincas por nombre_variedad
+ const handleSearch = async (searchTerm) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
+    setData(response.data);
+  } catch (error) {
+    console.error('Error searching for resources:', error);
+  }
+};
+
+
 
   const columns = [
     {
@@ -111,7 +113,9 @@ function Variedad() {
         <div className="container mt-5">
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
             <div className="white-container">
-              <SearchBar onSearch={handleSearch} onReset={handleResetSearch} />
+
+              <SearchBar onSearch={handleSearch} />
+
               <Botones children="Registrar" onClick={handleOpenRegistroModal} />
             </div>
           </div>

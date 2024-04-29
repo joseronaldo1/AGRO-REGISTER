@@ -1,6 +1,6 @@
 import { pool } from "../database/conexion.js"
 import { validationResult } from 'express-validator'
-//nn
+
 
 export const listarlotes = async (req, res) => {
     try {
@@ -94,23 +94,28 @@ export const Actualizarlote = async (req, res) => {
 
 export const Buscarlote = async (req, res) => {
     try {
-        const { id_lote } = req.params;
-        const [resultado] = await pool.query("select * from lotes where id_lote=?", [id_lote])
 
-        if (resultado.length > 0) {
-            res.status(200).json(resultado)
+        const { nombre } = req.params;
+        const [result] = await pool.query("SELECT * FROM lotes WHERE nombre LIKE ?", [`%${nombre}%`]);
+                    
+        if (result.length > 0) {
+            res.status(200).json(result);
+
         } else {
-            res.status(400).json({
-                "mensaje": "No se encontró nada con ese ID"
-            })
+            res.status(404).json({
+                status: 404,
+                message: 'No se encontraron resultados para la búsqueda'
+            });
         }
 
     } catch (error) {
         res.status(500).json({
-            "mensaje": error
-        })
+            status: 500,
+            message: "error en el sistema"
+        });
+
     }
-}
+};
 
 export const eliminarlote = async (req, res) => {
     try {

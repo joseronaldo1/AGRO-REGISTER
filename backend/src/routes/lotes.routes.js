@@ -7,8 +7,8 @@ const rutalote = Router();
 
 rutalote.get("/listarlote",listarlotes);
 rutalote.post("/Registrarlote",validarlotes, Registrarlotes);
-rutalote.put("/Actualizarlote/:id_lote",validarlotesactualizar, Actualizarlote);
-rutalote.get("/Buscarlote/:id_lote",Buscarlote);
+rutalote.put("/Actualizarlote/:id_lote",validarlotesactualizar, Actualizarlote)
+rutalote.get("/Buscarlote/:nombre",Buscarlote);
 
 
 export default rutalote ;

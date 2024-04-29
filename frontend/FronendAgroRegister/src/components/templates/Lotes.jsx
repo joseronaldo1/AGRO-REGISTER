@@ -58,16 +58,16 @@ function lotes() {
     }
   };
 
-  // Función para buscar recursos por ID
-  const handleSearch = async (searchTerm) => {
-    try {
-      const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
-      setData(response.data);
-    } catch (error) {
-      console.error('Error searching for resources:', error);
-    }
-  };
 
+ // Función para buscar fincas por nombre
+ const handleSearch = async (searchTerm) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
+    setData(response.data);
+  } catch (error) {
+    console.error('Error searching for resources:', error);
+  }
+};
 
   const columns = [
     {

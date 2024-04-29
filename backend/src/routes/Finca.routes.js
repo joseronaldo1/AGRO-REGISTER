@@ -9,7 +9,9 @@ const router = Router();
 router.get("/listarFinca", listarFinca);
 router.post("/RegistroFinca", validarFincaR, RegistroFinca);
 router.put("/actualizarFinca/:id", validarFincaA, ActualizarFinca);
-router.get("/buscarFinca/:id", BuscarFinca);
+
+router.get("/buscarFinca/:nombre", BuscarFinca);
+
 
 export default router;
-//nn
+
