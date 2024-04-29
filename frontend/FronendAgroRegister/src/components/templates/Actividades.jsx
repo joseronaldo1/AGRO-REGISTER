@@ -120,6 +120,7 @@ function Actividad() {
   ];
 
   return (
+    <div>
     <div className="recursos-container">
       <Header />
       <div className="container mt-5">
@@ -155,8 +156,10 @@ function Actividad() {
         mode={mode}
       />
       <br />
-      <Footer/>
-    </div> 
+      
+    </div>
+    <Footer/> 
+    </div>
   );
   
   

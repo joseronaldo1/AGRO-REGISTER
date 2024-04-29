@@ -7,8 +7,8 @@ export const validarRer = [
 
     check('cantidad_medida', 'La cantidad de medida es obligatoria y debe ser un número válido')
         .not().isEmpty().isNumeric(),
-    check('unidades_medida', 'Las unidades de medida son obligatorias y deben ser ml, litro, g, o kg')
-        .not().isEmpty().isIn(['ml', 'litro', 'g', 'kg']),
+    check('unidades_medida', 'Las unidades de medida son obligatorias y deben ser ml, litro, g, kg o unidad')
+        .not().isEmpty().isIn(['ml', 'litro', 'g', 'kg', 'unidad']),
     body('extras').optional().escape()
 ];
 
@@ -20,8 +20,8 @@ export const validarRea = [
     check('cantidad_medida', 'La cantidad de medida debe ser un número válido')
         .optional({ nullable: true })
         .isNumeric(),
-    check('unidades_medida', 'Las unidades de medida deben ser ml, litro, g, o kg')
+    check('unidades_medida', 'Las unidades de medida deben ser ml, litro, g, kg o unidad')
         .optional({ nullable: true })
-        .isIn(['ml', 'litro', 'g', 'kg']),
+        .isIn(['ml', 'litro', 'g', 'kg', 'unidad']),
     body('extras').optional().escape()
 ];

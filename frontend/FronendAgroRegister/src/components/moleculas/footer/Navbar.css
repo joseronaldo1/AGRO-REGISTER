@@ -4,6 +4,10 @@
     background-color: #026602; /* Cambiamos el color de fondo */
     color: white;
     padding: 50px 0;
+    padding: 50px 0;
+    margin: 0;
+    width: 100%; /* Ocupa todo el ancho */
+    bottom: 0; /* Se coloca al final de la página */
 }
 
 .footer-content {

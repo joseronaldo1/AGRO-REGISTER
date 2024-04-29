@@ -23,7 +23,7 @@ const Botones = ({ type, children, onClick, style, className, disabled }) => {
       className={className} 
       disabled={disabled}
      
-      onFocus={(e) => { e.target.style.borderColor = 'green'; }} 
+      onFocus={(e) => { e.target.style.borderColor = 'black'; }} 
       onBlur={(e) => { e.target.style.borderColor = '#1bc12e'; }} // Para restablecer el color cuando se pierde el foco
     >
       {children}

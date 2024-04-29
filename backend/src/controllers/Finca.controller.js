@@ -101,10 +101,11 @@ export const ActualizarFinca = async (req, res) => {
 };
 
 // CRUD - Buscar
+// En el controlador de Finca, crea una nueva función de búsqueda por nombre
 export const BuscarFinca = async (req, res) => {
     try {
-        const { id } = req.params;
-        const [result] = await pool.query("SELECT * FROM finca WHERE id_finca =?", [id]);
+        const { nombre } = req.params;
+        const [result] = await pool.query("SELECT * FROM finca WHERE nombre_finca LIKE ?", [`%${nombre}%`]);
                     
         if (result.length > 0) {
             res.status(200).json(result);

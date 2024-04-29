@@ -1,11 +1,12 @@
-import {pool} from '../database/conexion.js'
+import { pool } from '../database/conexion.js'
 import { validationResult } from "express-validator"
+import bcrypt from 'bcrypt';
 
 //nn
 export const listarUsuarios = async (req, res) => {
     try {
-        const [ result ] = await pool.query('SELECT * FROM usuarios');
-        if (result.length >  0) {
+        const [result] = await pool.query('SELECT * FROM usuarios');
+        if (result.length > 0) {
             res.status(200).json(result)
         } else {
             res.status(404).json({
@@ -15,8 +16,8 @@ export const listarUsuarios = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({
-            status:  500,
-            message: 'Error en el sistema'+error
+            status: 500,
+            message: 'Error en el sistema' + error
         })
     }
 }
@@ -35,42 +36,48 @@ export const buscarUsuario = async (req, res) => {
             });
         }
     } catch (error) {
-        res.status(500).json({ 
-            status: 500, 
-            message: 'Error en el sistema: ' + error 
+        res.status(500).json({
+            status: 500,
+            message: 'Error en el sistema: ' + error
         });
     }
 };
 
 export const registrarUsuarios = async (req, res) => {
     try {
-
         const errors = validationResult(req);
-        if(!errors.isEmpty()){
-            return res.status(400).json(errors)
-        }
-        const{nombre,apellido,correo,password,rol,estado} = req.body
-        const[rows] = await pool.query(`INSERT INTO usuarios (nombre,apellido,correo,password,rol,estado) values (?, ?, ?, ?, ?,?)`, [nombre,apellido,correo,password,rol,estado])
-
-
-        if(rows.affectedRows>0){
-            res.status(200).json({
-                'status': 'Se registro con exito el usuario'+ nombre
-            })
-        }else{
-            res.status(403).json({
-                'status': 403,
-                'message': 'No se registro el usuario'
-            })
+        if (!errors.isEmpty()) {
+            return res.status(400).json(errors);
         }
 
+        const { nombre, apellido, correo, password, rol } = req.body;
+
+        // Encriptar la contraseña antes de almacenarla en la base de datos
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const [rows] = await pool.query(
+            `INSERT INTO usuarios (nombre, apellido, correo, password, rol) VALUES (?, ?, ?, ?, ?)`,
+            [nombre, apellido, correo, hashedPassword, rol]
+        );
+
+        if (rows.affectedRows > 0) {
+            return res.status(200).json({
+                status: 'Se registró con éxito el usuario ' + nombre
+            });
+        } else {
+            return res.status(403).json({
+                status: 403,
+                message: 'No se registró el usuario'
+            });
+        }
     } catch (error) {
-        res.status(500).json({
-            'status': 500,
-            'message': 'Error del servidor' + error
-        })
+        console.log(error);
+        return res.status(500).json({
+            status: 500,
+            message: 'Error del servidor: ' + error
+        });
     }
-}
+};
 export const actualizarUsuario = async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -80,8 +87,8 @@ export const actualizarUsuario = async (req, res) => {
 
         const { id_usuario } = req.params;
         const { nombre, apellido, correo, password, rol, estado } = req.body;
-          // Verifica si al menos uno de los campos está presente en la solicitud
-          if (!nombre && !apellido && !correo && !password && !rol && !estado) {
+        // Verifica si al menos uno de los campos está presente en la solicitud
+        if (!nombre && !apellido && !correo && !password && !rol && !estado) {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, apellido, correo, password, rol, estado) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
@@ -131,11 +138,11 @@ export const desactivarUsuario = async (req, res) => {
     try {
         const { id_usuario } = req.params;
         const [result] = await pool.query("UPDATE usuarios SET estado='inactivo' WHERE id_usuario=?", [id_usuario]);
-        
-        if (result.affectedRows >  0) {
+
+        if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                "mensaje": "El usuario con el id "+id_usuario+" ha sido desactivado."
+                "mensaje": "El usuario con el id " + id_usuario + " ha sido desactivado."
             });
         } else {
             res.status(404).json({
@@ -146,7 +153,7 @@ export const desactivarUsuario = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: 'Error en el sistema: '+error
+            message: 'Error en el sistema: ' + error
         });
     }
 }

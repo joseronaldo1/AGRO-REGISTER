@@ -8,6 +8,7 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 
+
 function fincas() {
   const baseURL = 'http://localhost:3000/listarFinca';
 
@@ -58,7 +59,7 @@ function fincas() {
     }
   };
 
-  // Función para buscar recursos por ID
+  // Función para buscar fincas por nombre_finca
   const handleSearch = async (searchTerm) => {
     try {
       const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
@@ -67,6 +68,7 @@ function fincas() {
       console.error('Error searching for resources:', error);
     }
   };
+  
 
   const columns = [
     {
@@ -94,55 +96,60 @@ function fincas() {
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#ffc107', borderColor: '#ffc107', marginLeft: '10px' }}
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: '#343a40' }} /> {/* Icono de edición */}
+          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
         </button>
       ),
     },
   ];
 
   return (
-    <div className="recursos-container">
-      <Header />
-      <div className="container mt-5">
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-          <div className="white-container">
-            <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+    <div>
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
+            <div className="white-container">
+              <SearchBar onSearch={handleSearch} />
+              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            </div>
+          </div>
+          <br />
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+            <Datatable columns={columns} data={data} title="Fincas" />
           </div>
         </div>
+        <ModalRecuRegeContrasenia
+          mostrar={showRegistroModal}
+          cerrarModal={handleCloseRegistroModal}
+          titulo="Registro"
+          actionLabel="Registrar"
+          initialData={registroFormData}
+          mode="registro"
+          handleSubmit={() => setShowRegistroModal(false)}
+        />
+        <ModalRecuRegeContrasenia
+          mostrar={showActualizacionModal}
+          cerrarModal={handleCloseActualizacionModal}
+          titulo="Actualización"
+          handleSubmit={handleActualizacionFormSubmit}
+          actionLabel="Actualizar"
+          initialData={initialData}
+          mode={mode}
+        />
         <br />
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-        <Datatable columns={columns} data={data} title="Fincas" />
-        </div>
+
+
       </div>
-
-      <ModalRecuRegeContrasenia
-        mostrar={showRegistroModal}
-        cerrarModal={handleCloseRegistroModal}
-        titulo="Registro"
-        actionLabel="Registrar"
-        initialData={registroFormData}
-        mode="registro"
-        handleSubmit={() => setShowRegistroModal(false)}
-      />
-
-      <ModalRecuRegeContrasenia
-        mostrar={showActualizacionModal}
-        cerrarModal={handleCloseActualizacionModal}
-        titulo="Actualización"
-        handleSubmit={handleActualizacionFormSubmit}
-        actionLabel="Actualizar"
-        initialData={initialData}
-        mode={mode}
-      />
-      <br />
-      <Footer/>
+      <Footer />
     </div>
+
   );
+
 }
 
 export default fincas;

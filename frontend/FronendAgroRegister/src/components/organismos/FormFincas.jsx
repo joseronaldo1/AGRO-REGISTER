@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
-    nombre_finca: initialData ? initialData.nombre_finca : '',
-    longitud: initialData ? initialData.longitud : '',
-    latitud: initialData ? initialData.latitud : ''
+    nombre_finca: initialData && initialData.nombre_finca ? initialData.nombre_finca : '',
+    longitud: initialData && initialData.longitud ? initialData.longitud : '',
+    latitud: initialData && initialData.latitud ? initialData.latitud : ''
   };
+  
 
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
@@ -18,15 +20,49 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
       [name]: value
     }));
   };
-
-  const handleFormSubmit = async e => {
+  const validarNombreFinca = nombre => {
+    const soloLetras = /^[a-zA-Z\s]*$/;
+    return soloLetras.test(nombre);
+  };
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!formData.nombre_finca || !formData.longitud  || !formData.latitud) {
+      if (!formData.nombre_finca || !formData.longitud || !formData.latitud) {
         setShowWarning(true); // Mostrar advertencia si algún campo está vacío
         return;
       }
-
+      if (!validarNombreFinca(formData.nombre_finca)) {
+        // Mostrar alerta si el nombre contiene números
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El nombre de la finca solo puede contener letras'
+        });
+        return;
+      }
+  
+      // Validar longitud
+      if (isNaN(formData.longitud) || formData.longitud < -180 || formData.longitud > 180) {
+        // Mostrar alerta si la longitud no es válida
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La longitud debe ser un número válido entre -180 y 180'
+        });
+        return;
+      }
+  
+      // Validar latitud
+      if (isNaN(formData.latitud) || formData.latitud < -90 || formData.latitud > 90) {
+        // Mostrar alerta si la latitud no es válida
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La latitud debe ser un número válido entre -90 y 90'
+        });
+        return;
+      }
+  
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistroFinca',
@@ -38,20 +74,34 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
           }
         );
         console.log(response.data);
+        // Mostrar alerta de registro exitoso
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'La finca se ha registrado exitosamente'
+        });
+        console.log(response.data);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/actualizarFinca/${id}`,
           formData
         );
+        // Mostrar alerta de actualización exitosa
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'La finca se ha actualizado exitosamente'
+        });
       }
-
+  
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
       console.error('Error al procesar el formulario:', error);
     }
   };
+  
 
   return (
     <form

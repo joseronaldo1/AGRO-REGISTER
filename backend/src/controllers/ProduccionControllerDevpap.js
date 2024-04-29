@@ -118,13 +118,13 @@ export const actualizarProduccion = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { id_producccion  } = req.params;
+        const { id_producccion } = req.params;
         const { cantidad_produccion, precio, fk_id_programacion } = req.body;
 
-        if (!cantidad_produccion && !precio && !fk_id_programacion ) {
+        if (!cantidad_produccion && !precio && !fk_id_programacion) {
             return res.status(400).json({
-              message:
-                "se requiere uno de los campos para actualizar (cantidad_produccion, precio, fk_id_programacion)",
+                message:
+                    "se requiere uno de los campos para actualizar (cantidad_produccion, precio, fk_id_programacion)",
             });
         }
         const [variedadExiste] = await pool.query('SELECT * FROM programacion WHERE id_programacion = ?', [fk_id_programacion]);
@@ -137,7 +137,7 @@ export const actualizarProduccion = async (req, res) => {
         }
 
         // Verificar si la producción a actualizar existe
-        const [produccionExistente] = await pool.query('SELECT * FROM produccion WHERE id_producccion =?', [id_producccion ]);
+        const [produccionExistente] = await pool.query('SELECT * FROM produccion WHERE id_producccion =?', [id_producccion]);
 
         if (produccionExistente.length === 0) {
             return res.status(404).json({
@@ -170,7 +170,7 @@ export const actualizarProduccion = async (req, res) => {
             updateValues.cantidad_produccion,
             updateValues.precio,
             updateValues.fk_id_programacion,
-            id_producccion 
+            id_producccion
         ]);
 
         if (updatedProduccion.affectedRows > 0) {

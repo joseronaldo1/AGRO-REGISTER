@@ -141,6 +141,7 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
           <option value="litro">litro</option>
           <option value="g">g</option>
           <option value="kg">kg</option>
+          <option value="unidad">unidad</option>
         </select>
       </div>
       <div className="flex flex-col">
