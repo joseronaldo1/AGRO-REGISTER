@@ -8,7 +8,7 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 function Actividad() {
-  const baseURL = 'http://localhost:3000/listara';
+  const baseURL = 'http://localhost:3000/listarActividad';
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);

@@ -13,7 +13,7 @@ rutaProgramacion.post("/registrarProgramacion",    programacionC, registrarProgr
 rutaProgramacion.get("/listarProgramacion",   listarProgramacion);
 rutaProgramacion.put("/actualizarProgramacion/:id",   programacionA, actualizarProgramacion);
 rutaProgramacion.put("/estadoProgramacion/:id",   estadoProgramacion);
-rutaProgramacion.get("/buscarProgramacion/:nombre",  buscarProgramacion);
+rutaProgramacion.get("/buscarProgramacion/:id",  buscarProgramacion);
 
 export default rutaProgramacion
 

@@ -33,9 +33,9 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
     }));
   };
 
-  const validarNombreActividad = nombre => {
+  const validarNombreActividad = nombre_actividad => {
     const soloLetras = /^[a-zA-Z\s]*$/;
-    return soloLetras.test(nombre);
+    return soloLetras.test(nombre_actividad);
   };
 
   const validarObservaciones = observaciones => {

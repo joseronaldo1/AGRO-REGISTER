@@ -62,7 +62,7 @@ function Programacion() {
   // Función para buscar programacion por su id 
   const handleSearch = async (searchTerm) => {
     try {
-      const response = await axios.get(`http://localhost:3000/buscar/${searchTerm}`);
+      const response = await axios.get(`http://localhost:3000/buscarProgramacion/${searchTerm}`);
       setData(response.data);
     } catch (error) {
       console.error('Error searching for resources:', error);
