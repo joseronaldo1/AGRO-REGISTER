@@ -2,7 +2,7 @@ import { pool } from "../database/conexion.js";
 import {validationResult} from "express-validator"
 
 // CRUD - Registrar
-//cred
+
 export const registrarProgramacion = async (req, res) => {
     try {
         const errors = validationResult(req);

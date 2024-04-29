@@ -8,10 +8,10 @@ const rutaDeActividad = Router()
 
 //localhost:4000/VariedadCultivo
 rutaDeActividad.get("/listara", listarA);
-rutaDeActividad.post("/Registrara",validarRR, RegistrarA);
-rutaDeActividad.put("/Actualizara/actividad/:id", validarRA, ActualizarA);
+rutaDeActividad.post("/RegistrarActividad",validarRR, RegistrarA);
+rutaDeActividad.put("/ActualizarActividad/:id", validarRA, ActualizarA);
 
 rutaDeActividad.put("/Desactivara/actividad/:id", validarD, DesactivarA); 
-rutaDeActividad.get("/Buscar/actividad/:id", BuscarA);
+rutaDeActividad.get("/Buscaractividad/:nombre", BuscarA);
 
 export { rutaDeActividad };
