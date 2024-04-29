@@ -54,7 +54,7 @@ function lotes() {
       fetchData();
       setShowActualizacionModal(false);
     } catch (error) {
-      console.error('Error al actualizar la variedad:', error);
+      console.error('Error al actualizar el lote:', error);
     }
   };
 
