@@ -27,7 +27,7 @@ function NavbarHeader() {
           <h1>AGRO-REGISTER</h1>
           <div className="d-flex align-items-center">
             <img className='imagenpersonal' src={v.Imagepersona} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '100%' }} onClick={handleModalOpen} />
-            <strong><span style={{ marginLeft: '10px', fontSize: '20px', marginRight:'50px' }}>Sergio C</span></strong>
+            <strong><span style={{ marginLeft: '10px', fontSize: '20px', marginRight:'50px', cursor: 'pointer' }} onClick={handleModalOpen}>Sergio C</span></strong>
           </div>
         </div>
       </nav>

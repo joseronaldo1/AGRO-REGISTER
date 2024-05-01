@@ -5,7 +5,7 @@ import Footer from '../organismos/Footer/Footer';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logoOrigi.png';
 import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png';
-import InputAtom from '../atomos/Inputs.jsx'; 
+import InputAtom from '../atomos/Inputs.jsx';
 import Select from '../atomos/selectRegistro.jsx';
 import axios from 'axios';
 
@@ -117,7 +117,7 @@ const Registro = () => {
                 <option value="administrador">Administrador</option>
                 <option value="empleado">Empleado</option>
               </Select>
-              {loading && <span>Error al registrarse..</span>}
+              {loading && <span>Cargando..</span>}
             </div>
             <div style={btnWrapperStyle}>
               <Botones type={'submit'} children={'Registrarse'} />

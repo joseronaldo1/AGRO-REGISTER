@@ -1,3 +1,4 @@
+// En el componente SearchBar
 import React, { useState } from 'react';
 
 const SearchBar = ({ onSearch }) => {
@@ -13,17 +14,19 @@ const SearchBar = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{marginLeft: '75%'}}>
+    <form onSubmit={handleSubmit} style={{ marginLeft: '75%' }}>
       <input
         type="text"
-        placeholder="Buscar por ID"
-        style={{ borderRadius: '6px'}}
+        placeholder="Buscar por Nombre"
+        style={{ borderRadius: '6px' }}
         value={searchTerm}
         onChange={handleChange}
       />
-      <button type="submit" style={{backgroundColor: '#ffc107', 
-      color:'black', border: 'none', borderRadius: '6px',height: '35px' 
-      ,width: '25%',fontSize: '17px'}}>Buscar</button>
+      <button type="submit" style={{
+        backgroundColor: '#975C29',
+        color: 'white', border: 'none', borderRadius: '6px', height: '35px'
+        , width: '25%', fontSize: '17px'
+      }}>Buscar</button>
     </form>
   );
 };

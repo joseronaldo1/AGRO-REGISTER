@@ -40,7 +40,7 @@ servidor.use(express.static('./public'));
 servidor.use(rutaValidacion);
 servidor.use(rutaUsuario);
 servidor.use(rutaCostos);
-servidor.use('/cultivo', rutaCultivo);
+servidor.use(rutaCultivo);
 servidor.use(rutaDeActividad);
 servidor.use(router);
 servidor.use(inversiones);

@@ -1,8 +1,7 @@
 .recursos-container {
-    background-color: #eeeeee;
+    background-color: rgb(243, 243, 243);
     padding: 20px;
-    border-radius: 10px;
-    margin-top: 20px;
+    margin-top: 10px;
     min-height: 100vh;
     /* Establece la altura mínima del contenedor al 100% del alto de la ventana */
 }
@@ -13,3 +12,4 @@
     border-radius: 10px;
     margin-bottom: 20px;
 }
+

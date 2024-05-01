@@ -21,7 +21,7 @@ function Recursos() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -67,13 +67,22 @@ function Recursos() {
       console.error('Error searching for resources:', error);
     }
   };
-
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      const newEstado = estado === 'existe' ? 'agotado' : 'existe';
+      await axios.put(`http://localhost:3000/desactivar/Recurso/${id}`, { estado: newEstado });
+      fetchData(); // Actualizar los datos después de la actualización
+    } catch (error) {
+      console.error('Error al cambiar el estado del recurso:', error);
+    }
+  };
+  
   const columns = [
-    {
+  /*   {
       name: 'ID',
       selector: (row) => row.id_tipo_recursos,
       sortable: true,
-    },
+    }, */
     {
       name: 'Nombre',
       selector: (row) => row.nombre_recursos,
@@ -95,60 +104,86 @@ function Recursos() {
       sortable: true,
     },
     {
+      name: 'Estado',
+      selector: (row) => row.estado,
+      sortable: true,
+    },
+    {
       name: 'Acciones',
       cell: (row) => (
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#ffc107', borderColor: '#ffc107', marginLeft: '18px' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: '#343a40' }} /> {/* Icono de edición */}
-        </button>
+        <>
+          <button
+            className="btn p-2 rounded-lg"
+            style={{ backgroundColor: '#975C29', borderColor: '#ffc107',  border: 'none' }}
+            type="button"
+            onClick={() => handleOpenActualizacionModal(row)}
+          >
+            <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+          </button>
+          <button
+  className="btn p-2 rounded-lg estado-button"
+  style={{
+    backgroundColor: row.estado === 'existe' ? 'red' : 'green',
+    border: 'none',
+    color: 'white',
+    height:'40px',
+    width:'640px',
+    transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+  }}
+  type="button"
+  onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
+  onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+  onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+>
+  {row.estado === 'existe' ? 'Agotado' : 'Existe'}
+</button>
+
+        </>
       ),
     },
   ];
 
   return (
     <div>
-    <div className="recursos-container">
-      <Header />
-      <div className="container mt-5">
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-          <div className="white-container">
-            <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
+            <div className="white-container">
+              <SearchBar onSearch={handleSearch} />
+              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            </div>
+          </div>
+          <br />
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+            <Datatable columns={columns} data={data} title="Recursos" />
           </div>
         </div>
+
+        <ModalRecuRegeContrasenia
+          mostrar={showRegistroModal}
+          cerrarModal={handleCloseRegistroModal}
+          titulo="Registro"
+          actionLabel="Registrar"
+          initialData={registroFormData}
+          mode="registro"
+          handleSubmit={() => setShowRegistroModal(false)}
+        />
+
+        <ModalRecuRegeContrasenia
+          mostrar={showActualizacionModal}
+          cerrarModal={handleCloseActualizacionModal}
+          titulo="Actualización"
+          handleSubmit={handleActualizacionFormSubmit}
+          actionLabel="Actualizar"
+          initialData={initialData}
+          mode={mode}
+        />
         <br />
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-        <Datatable columns={columns} data={data} title="Recursos" />
-        </div>
+
       </div>
-
-      <ModalRecuRegeContrasenia
-        mostrar={showRegistroModal}
-        cerrarModal={handleCloseRegistroModal}
-        titulo="Registro"
-        actionLabel="Registrar"
-        initialData={registroFormData}
-        mode="registro"
-        handleSubmit={() => setShowRegistroModal(false)}
-      />
-
-      <ModalRecuRegeContrasenia
-        mostrar={showActualizacionModal}
-        cerrarModal={handleCloseActualizacionModal}
-        titulo="Actualización"
-        handleSubmit={handleActualizacionFormSubmit}
-        actionLabel="Actualizar"
-        initialData={initialData}
-        mode={mode}
-      />
-      <br />
-      
-    </div>
-    <Footer/>
+      <Footer />
     </div>
   );
 }

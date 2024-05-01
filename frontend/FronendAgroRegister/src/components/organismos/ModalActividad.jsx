@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
-import FormularioActividad from '../organismos/FormActividad';
+import Formulariolote from '../organismos/FormActividad';
 
-function ModalActividad({ titulo, mostrar, cerrarModal, handleSubmit, actionLabel, initialData, mode }) {
+
+function ModalRecuRegeContrasenia({ titulo, mostrar, cerrarModal, handleSubmit, actionLabel, initialData, mode }) {
   useEffect(() => {
     if (!mostrar) {
-      cerrarModal(); // Close the modal when mostrar changes to false
+      cerrarModal(); // Cierra el modal cuando mostrar cambia a false
     }
   }, [mostrar, cerrarModal]);
 
@@ -15,15 +16,16 @@ function ModalActividad({ titulo, mostrar, cerrarModal, handleSubmit, actionLabe
         <Modal.Title>{titulo}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {mostrar && (
-          <FormularioActividad
-            onSubmit={(data) => {
-              handleSubmit(data);
-              cerrarModal(); // Call cerrarModal after form submission
+        {mostrar && ( // Asegura que el contenido se renderice solo cuando mostrar es true
+          <Formulariolote
+            onSubmit={(data, e) => {
+              handleSubmit(data, e);
+              cerrarModal(); // Llama a cerrarModal después de enviar el formulario
             }}
+            className="form-registro"
             initialData={initialData}
             mode={mode}
-            cerrarModal={cerrarModal} 
+            cerrarModal={cerrarModal} // Pasar la función cerrarModal al componente Formulario
           />
         )}
       </Modal.Body>
@@ -31,4 +33,4 @@ function ModalActividad({ titulo, mostrar, cerrarModal, handleSubmit, actionLabe
   );
 }
 
-export default ModalActividad;
+export default ModalRecuRegeContrasenia;
