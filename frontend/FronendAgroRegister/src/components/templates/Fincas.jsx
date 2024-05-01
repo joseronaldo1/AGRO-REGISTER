@@ -93,6 +93,11 @@ function fincas() {
       sortable: true,
     },
     {
+      name: 'Estado',
+      selector: (row) => row.estado,
+      sortable: true,
+    },
+    {
       name: 'Acciones',
       cell: (row) => (
         <button

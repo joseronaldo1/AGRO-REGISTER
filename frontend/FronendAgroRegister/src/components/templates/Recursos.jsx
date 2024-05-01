@@ -21,7 +21,7 @@ function Recursos() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -67,7 +67,16 @@ function Recursos() {
       console.error('Error searching for resources:', error);
     }
   };
-
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      const newEstado = estado === 'existe' ? 'agotado' : 'existe';
+      await axios.put(`http://localhost:3000/desactivar/Recurso/${id}`, { estado: newEstado });
+      fetchData(); // Actualizar los datos después de la actualización
+    } catch (error) {
+      console.error('Error al cambiar el estado del recurso:', error);
+    }
+  };
+  
   const columns = [
     {
       name: 'ID',
@@ -95,16 +104,31 @@ function Recursos() {
       sortable: true,
     },
     {
+      name: 'Estado',
+      selector: (row) => row.estado,
+      sortable: true,
+    },
+    {
       name: 'Acciones',
       cell: (row) => (
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '18px', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-        </button>
+        <>
+          <button
+            className="btn p-2 rounded-lg"
+            style={{ backgroundColor: '#975C29', borderColor: '#ffc107',  border: 'none' }}
+            type="button"
+            onClick={() => handleOpenActualizacionModal(row)}
+          >
+            <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+          </button>
+          <button
+            className="btn p-2 rounded-lg"
+            style={{ backgroundColor: row.estado === 'existe' ? 'red' : 'green', border: 'none', color: 'white', height:'40px', width:'800px' }}
+            type="button"
+            onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
+          >
+            {row.estado === 'existe' ? 'Agotado' : 'Existe'}
+          </button>
+        </>
       ),
     },
   ];
