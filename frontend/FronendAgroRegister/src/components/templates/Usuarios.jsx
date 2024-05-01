@@ -3,6 +3,7 @@ import Botones from "../atomos/Botones";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/Modal";
 import Header from "../organismos/Header/Header";
+import Footer from '../organismos/Footer/Footer';
 import Formulario from '../organismos/Formulario.jsx';
 
 function Usuario() {
@@ -163,6 +164,7 @@ function Usuario() {
            onClick={() => handleRegistroFormSubmit()}
          />
        </ModalRecuRegeContrasenia>
+       <Footer/>
      </div>
    );
  }

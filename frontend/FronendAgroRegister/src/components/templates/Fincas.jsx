@@ -1,175 +1,156 @@
-import React, { useState } from "react";
-import Botones from "../atomos/Botones";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
-import ModalRecuRegeContrasenia from "../organismos/Modal";
+import ModalRecuRegeContrasenia from "../organismos/ModalFincas.jsx";
 import Header from "../organismos/Header/Header";
-import Formulario from '../organismos/Formulario.jsx';
+import Footer from '../organismos/Footer/Footer';
+import SearchBar from '../moleculas/SearchBar';
 
-function Finca() {
-   const [showRegistroModal, setShowRegistroModal] = useState(false);
-   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
-   const [registroFormData, setRegistroFormData] = useState({
-     nombre_variedad: "",
-     nombre_actividad: "",
-     tipo_recurso: "",
-     tiempo: "",
-   });
-   const [actualizacionFormData, setActualizacionFormData] = useState({     nombre_variedad: "",
-     nombre_actividad: "",
-     tipo_recurso: "",
-     tiempo: "",
-   });
 
-   const handleOpenRegistroModal = () => {
-     setShowRegistroModal(true);
-   };
+function fincas() {
+  const baseURL = 'http://localhost:3000/listarFinca';
 
-   const handleCloseRegistroModal = () => {
-     setShowRegistroModal(false);
-   };
+  const [data, setData] = useState([]);
+  const [showRegistroModal, setShowRegistroModal] = useState(false);
+  const [showActualizacionModal, setShowActualizacionModal] = useState(false);
+  const [registroFormData, setRegistroFormData] = useState({});
+  const [mode, setMode] = useState('create');
+  const [initialData, setInitialData] = useState(null);
 
-   const handleOpenActualizacionModal = () => {
-     setShowActualizacionModal(true);
-   };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-   const handleCloseActualizacionModal = () => {
-     setShowActualizacionModal(false);
-   };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(baseURL);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
-   const handleRegistroFormSubmit = (event) => {
-     event.preventDefault();
-     console.log("Datos de registro:", registroFormData);
-     setRegistroFormData({
-       nombre_finca: "",
-       direccion: "",
-       longitud: "",
-       latitud: "",
-     });
-     handleCloseRegistroModal();
-   };
+  const handleOpenRegistroModal = () => setShowRegistroModal(true);
+  const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
-   const handleActualizacionFormSubmit = (event) => {
-     event.preventDefault();
-     console.log("Datos de actualización:", actualizacionFormData);
-     setActualizacionFormData({
-       nombre_finca: "",
-       direccion: "",
-       longitud: "",
-       latitud: "",
-     });
-     handleCloseActualizacionModal();
-   };
+  const handleOpenActualizacionModal = (rowData) => {
+    const updatedInitialData = { ...rowData, id: rowData.id_finca };
+    setInitialData(updatedInitialData);
+    setMode('update');
+    setShowActualizacionModal(true);
+  };
 
-   const camposRegistro = [
-     { name: "nombre_finca", placeholder: "Nombre de la finca", type: "text" },
-     { name: "direccion", placeholder: "Dirección", type: "text" },
-     { name: "longitud", placeholder: "Longitud", type: "text" },
-     { name: "latitud", placeholder: "Latitud", type: "text" }
-   ];
+  const handleCloseActualizacionModal = () => {
+    setInitialData(null);
+    setShowActualizacionModal(false);
+  };
 
-   const camposActualizacion = [
-     { name: "nombre_finca", placeholder: "Nombre de la finca", type: "text" },
-     { name: "direccion", placeholder: "Dirección", type: "text" },
-     { name: "longitud", placeholder: "Longitud", type: "text" },
-     { name: "latitud", placeholder: "Latitud", type: "text" }
-   ];
+  const handleActualizacionFormSubmit = async (formData) => {
+    try {
+      console.log('Actualización de recurso:', formData);
+      const { id } = formData;
+      await axios.put(`http://localhost:3000/actualizarFinca/${id}`, formData);
+      fetchData();
+      setShowActualizacionModal(false);
+    } catch (error) {
+      console.error('Error al actualizar la variedad:', error);
+    }
+  };
 
-   const columns = [
-     {
-       name: "Nombre finca",
-       selector: (row) => row.Nombrefinca,
-       sortable: true,
+
+  // Función para buscar fincas por nombre_finca
+  const handleSearch = async (searchTerm) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+    }
+  };
+
+
+  const columns = [
+    {
+      name: 'ID',
+      selector: (row) => row.id_finca,
+      sortable: true,
     },
-     {
-      name: "Direccion",
-       selector: (row) => row.Direccion,
-       sortable: true,
-     },
-     {
-       name: "Longitud",
-       selector: (row) => row.Longitud,
-       sortable: true,
-     },
-     {
-       name: "Latitud",
-       selector: (row) => row.Latitud,
-       sortable: true,
-     },
-     {
-       name: "Acciones",
-       cell: (row) => (
-         <button
-           className="btn btn-warning p-2 rounded-lg text-sm font-bold"
-           type="button"
-           onClick={() => handleOpenActualizacionModal()}
-         >
-           Editar
-         </button>
-       ),
+    {
+      name: 'Nombre finca',
+      selector: (row) => row.nombre_finca,
+      sortable: true,
     },
-   ];
+    {
+      name: 'Longitud',
+      selector: (row) => row.longitud,
+      sortable: true,
+    },
+    {
+      name: 'Latitud',
+      selector: (row) => row.latitud,
+      sortable: true,
+    },
+    {
+      name: 'Acciones',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+        </button>
+      ),
+    },
+  ];
 
-   const data = [
-     {
-       Nombrefinca: "Yamboro",
-       Direccion: "Pitalito Huila",
-       Longitud: 1346,
-       Latitud: 394435,
-     },
-     {
-       Nombrefinca: "Margaritas",
-       Direccion: "Pitalito Huila",
-       Longitud: 1202,
-       Latitud: 434438,
-     },
-   ];
-
-   return (
-     <div style={{ marginTop: "8%" }}>
-       <Header />
-       <div className="container mt-5">
-         <Botones
-          children="Registrar"
-           onClick={() => handleOpenRegistroModal()}
-         />
-         <Datatable columns={columns} data={data} title="Fincas" />
-       </div>
-
-       {/* Modal de Registro */}
-       <ModalRecuRegeContrasenia
-         mostrar={showRegistroModal}
-         cerrarModal={handleCloseRegistroModal}
-         titulo="Registro"
-       >
-         <Formulario
-           campos={camposRegistro}
-           onSubmit={handleRegistroFormSubmit}
-           className="form-registro"
-         />
-         <Botones
-           children="Registrar"
-           onClick={() => handleRegistroFormSubmit()}
-         />
-       </ModalRecuRegeContrasenia>
-
-       {/* Modal de Actualización */}
-      <ModalRecuRegeContrasenia
-         mostrar={showActualizacionModal}
-         cerrarModal={handleCloseActualizacionModal}
-         titulo="Actualización"
-       >
-         <Formulario
-           campos={camposActualizacion}
-           onSubmit={handleActualizacionFormSubmit}
-           className="form-actualizacion"
+  return (
+    <div>
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
+            <div className="white-container">
+              <SearchBar onSearch={handleSearch} />
+              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            </div>
+          </div>
+          <br />
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+            <Datatable columns={columns} data={data} title="Fincas" />
+          </div>
+        </div>
+        <ModalRecuRegeContrasenia
+          mostrar={showRegistroModal}
+          cerrarModal={handleCloseRegistroModal}
+          titulo="Registro"
+          actionLabel="Registrar"
+          initialData={registroFormData}
+          mode="registro"
+          handleSubmit={() => setShowRegistroModal(false)}
         />
-           <Botones
-           children="Registrar"
-           onClick={() => handleRegistroFormSubmit()}
-         />
-       </ModalRecuRegeContrasenia>
-     </div>
-   );
- }
+        <ModalRecuRegeContrasenia
+          mostrar={showActualizacionModal}
+          cerrarModal={handleCloseActualizacionModal}
+          titulo="Actualización"
+          handleSubmit={handleActualizacionFormSubmit}
+          actionLabel="Actualizar"
+          initialData={initialData}
+          mode={mode}
+        />
+        <br />
 
- export default Finca;
+
+      </div>
+      <Footer />
+    </div>
+
+  );
+
+}
+
+export default fincas;

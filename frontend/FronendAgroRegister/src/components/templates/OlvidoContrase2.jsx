@@ -4,6 +4,7 @@ import Botones from '../atomos/Botones.jsx';
 import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
+import Footer from '../organismos/Footer/Footer';
 
 const Olvidopasstwo = () => {
      const campos = [
@@ -36,6 +37,7 @@ const Olvidopasstwo = () => {
                  </form>
                 
              </div>
+             <Footer/>
          </div>
      );
  };

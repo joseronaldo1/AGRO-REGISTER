@@ -2,22 +2,22 @@ import { check } from "express-validator";
 
 // Registrar Asignación
 export const programacionC = [
-    check('fk_id_usuario', 'El campo de clave foránea debe contener solo números naturales o el fk_id_usuario no existe').isInt(),
-    check('fk_id_cultivo', 'El campo de clave foránea debe contener solo números naturales o el fk_id_cultivo no existe').isNumeric(),
-    check('fk_id_actividad', 'El campo de clave foránea debe contener solo números naturales o el fk_id_actividad no existe').isInt(),
-    check('fecha_inicio', 'La fecha de la programacion debe ser YYYY-MM-DD, y no puede contener letras y barras').not().isEmpty().optional().isLength({ max: 20 }).matches(/^\d{4}-\d{2}-\d{2}$/),
-    check('fecha_fin', 'La fecha de la programacion debe ser YYYY-MM-DD, y no puede contener letras y barras').not().isEmpty().optional().isLength({ max: 20 }).matches(/^\d{4}-\d{2}-\d{2}$/),
-    check('estado', 'El estado es obligatorio y solo puede ser "activo", "inactivo"').isIn(['activo', 'inactivo'])
+    check('fk_id_usuario').notEmpty().withMessage().isNumeric().withMessage(),
+    check('fk_id_cultivo').notEmpty().withMessage().isNumeric().withMessage(),
+    check('fk_id_actividad').notEmpty().withMessage().isNumeric().withMessage(),
+    check('fecha_inicio').notEmpty().withMessage('La  es fecha es obligatoria').isISO8601().withMessage('La fecha debe estar en formato ISO 8601 (YYYY-MM-DD)'),
+    check('fecha_fin').notEmpty().withMessage('La  es fecha es obligatoria').isISO8601().withMessage('La fecha debe estar en formato ISO 8601 (YYYY-MM-DD)')
+
 ];
 
 // Actualizar Asignación
 export const programacionA = [
-    check('fk_id_usuario', 'El campo de clave foránea debe contener solo números naturales o el fk_id_usuario no existe').isNumeric(),
-    check('fk_id_cultivo', 'El campo de clave foránea debe contener solo números naturales o el fk_id_cultivo no existe').isNumeric(),
-    check('fk_id_actividad', 'El campo de clave foránea debe contener solo números naturales o el fk_id_actividad no existe').isNumeric(),
-    check('fecha_inicio', 'La fecha de la programacion debe ser YYYY-MM-DD, y no puede contener letras y barras').not().isEmpty().optional().isLength({ max: 20 }).matches(/^\d{4}-\d{2}-\d{2}$/),
-    check('fecha_fin', 'La fecha de la programacion debe ser YYYY-MM-DD, y no puede contener letras y barras').not().isEmpty().optional().isLength({ max: 20 }).matches(/^\d{4}-\d{2}-\d{2}$/),
-    check('estado', 'El estado es obligatorio y solo puede ser "activo","inactivo"').isIn(['activo', 'inactivo'])
+    check('fk_id_usuario').optional().isNumeric().withMessage(),
+    check('fk_id_cultivo').optional().isNumeric().withMessage(),
+    check('fk_id_actividad').optional().isNumeric().withMessage(),
+    check('fecha_inicio').optional().isISO8601().withMessage('La fecha debe estar en formato ISO 8601 (YYYY-MM-DD)'),
+    check('fecha_fin').optional().isISO8601().withMessage('La fecha debe estar en formato ISO 8601 (YYYY-MM-DD)')
+   
 ];
 
 //nn

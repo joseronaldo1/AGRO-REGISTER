@@ -1,27 +1,39 @@
 import { pool } from "../database/conexion.js";
 import  Jwt  from "jsonwebtoken";
 
-//nn
+
+
+import bcrypt from 'bcrypt';
 
 export const validar = async (req, res) => {
-
     try {
-        let {nombre,password} = req.body;
-        let sql = `SELECT * from usuarios where nombre='${nombre}' and password='${password}'`;
+        const { correo, password } = req.body;
+        const sql = `SELECT * FROM usuarios WHERE correo='${correo}'`;
+        const [rows] = await pool.query(sql);
 
-        const [rows] = await pool.query(sql)
-        if (rows.length>0) {
-            let token=Jwt.sign({rows},process.env.AUT_SECRET,{expiresIn:process.env.AUT_EXPIRE})
-            return res.status(200).json({'nombre':rows, 'token':token,message:'token generado con exito'})
-        }else{
-            return res.status(404).json({"message":"Usuario no autorizado"})
+        if (rows.length > 0) {
+            const user = rows[0];
+            // Aquí compararemos la contraseña proporcionada con la contraseña almacenada encriptada en la base de datos
+            const match = await bcrypt.compare(password, user.password);
+            if (match) {
+                // Si las contraseñas coinciden, generar el token y enviar la respuesta
+                const token = Jwt.sign({ user }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
+                return res.status(200).json({ nombre: user.nombre, token: token, message: 'Token generado con éxito' });
+            } else {
+                // Si las contraseñas no coinciden, enviar un mensaje de error
+                return res.status(404).json({ message: 'Credenciales inválidas' });
+            }
+        } else {
+            // Si no se encuentra el usuario, enviar un mensaje de usuario no encontrado
+            return res.status(404).json({ message: 'Usuario no encontrado' });
         }
-
     } catch (error) {
-        res.status(500).json({status: 500, message: 'Error del servidor' + error})
+        console.log(error);
+        // En caso de error, enviar un mensaje de error del servidor
+        res.status(500).json({ status: 500, message: 'Error del servidor' + error });
     }
-    
-}
+};
+
 //verificar
 
 export const validarToken = async (req, res, next) => {

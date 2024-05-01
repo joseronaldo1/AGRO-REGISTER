@@ -17,11 +17,13 @@ import rutaDeVariedad from './src/routes/variedad.routes.js';
 
 const servidor = express();
 
+
 servidor.use(cors({
   origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type'],
 }));
+
 
 servidor.use(bodyParser.json());
 servidor.use(bodyParser.urlencoded({ extended: false }));
@@ -38,7 +40,7 @@ servidor.use(express.static('./public'));
 servidor.use(rutaValidacion);
 servidor.use(rutaUsuario);
 servidor.use(rutaCostos);
-servidor.use('/cultivo', rutaCultivo);
+servidor.use(rutaCultivo);
 servidor.use(rutaDeActividad);
 servidor.use(router);
 servidor.use(inversiones);

@@ -1,5 +1,7 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { InicioSesionPage } from './pages';
 import { RegistroPage } from './pages';
@@ -18,14 +20,19 @@ import { SoportePage } from './pages';
 import { DashboardPage } from './pages';
 import { ReportesPage } from './pages';
 import { ProgramacionPage } from './pages';
+import { ProduccionPage } from './pages';
 import { PerfilprincipalPage } from './pages';
+ 
+
 
 function App() {
   return (
     <BrowserRouter>    
+
+
       <Routes>
         <Route path="/" element={<InicioSesionPage />} />
-        <Route path="/registrarse" element={<RegistroPage />} />
+        <Route path="/Registrarse" element={<RegistroPage />} />
         <Route path="/perfil" element={<EditarPerfilUsuarioPage />} />
         <Route path="/olvidocontra1" element={<OlvidopassonePage />} />
         <Route path="/olvidocontra2" element={<OlvidopasstwoPage />} />
@@ -37,10 +44,11 @@ function App() {
         <Route path="/actividad" element={<ActividadPage />} />
         <Route path="/lotes" element={<LotesPage />} />
         <Route path="/recursos" element={<RecursosPage />} />
-        <Route path="/Soport" element={<SoportePage />} />
+        <Route path="/Soporte" element={<SoportePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/reportes" element={<ReportesPage />} />
         <Route path="/programacion" element={<ProgramacionPage />} />
+        <Route path="/produccion" element={<ProduccionPage />} />
         <Route path="/Perfilprincipal" element={<PerfilprincipalPage />} />
       </Routes>
     </BrowserRouter>

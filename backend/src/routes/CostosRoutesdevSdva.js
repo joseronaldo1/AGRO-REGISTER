@@ -6,7 +6,7 @@ import { validarToken } from "../controllers/autenticacion.js";
 
 const rutaCostos = Router();
 
-rutaCostos.get('/listar', validarToken, listar);
+rutaCostos.get('/listar_costos', validarToken, listar);
 rutaCostos.post('/registrar', validarToken, validacionCostosR, registrar);
 rutaCostos.get('/buscar/:id_costos', validarToken, buscar); 
 rutaCostos.put('/actualizar/:id_costos',validarToken, validacionCostosA, actualizar);

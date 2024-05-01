@@ -3,6 +3,7 @@ import Formulario from '../organismos/Formulario.jsx';
 import Botones from '../atomos/Botones.jsx';
 import { Link } from 'react-router-dom';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
+import Footer from '../organismos/Footer/Footer';
 const Olvidopassone = () => {
      const campos = [
          { name: 'correo', type: 'text', placeholder: 'Correo Electronico' },
@@ -35,6 +36,7 @@ const Olvidopassone = () => {
                  </form>
                 
              </div>
+             <Footer/>
          </div>
      );
  };

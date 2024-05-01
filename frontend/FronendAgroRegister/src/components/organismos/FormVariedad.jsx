@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
@@ -16,6 +17,12 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
       ...prevState,
       [name]: value
     }));
+
+  };
+
+  const validarNombreVariedad = nombre => {
+    const soloLetras = /^[a-zA-Z\s]*$/;
+    return soloLetras.test(nombre);
   };
 
   const handleFormSubmit = async e => {
@@ -23,6 +30,16 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
     try {
       if (!formData.nombre_variedad || !formData.tipo_cultivo) {
         setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+        return;
+      }
+
+      if (!validarNombreVariedad(formData.nombre_variedad)) {
+        // Mostrar alerta si el nombre contiene números
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El nombre de la variedad solo puede contener letras'
+        });
         return;
       }
 
@@ -37,13 +54,26 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           }
         );
         console.log(response.data);
+        // Mostrar alerta de registro exitoso
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'La variedad se ha registrado exitosamente'
+        });
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/actualizarVariedad/${id}`,
           formData
         );
+        // Mostrar alerta de actualización exitosa
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'La variedad se ha actualizado exitosamente'
+        });
       }
+      
 
       onSubmit(formData);
       cerrarModal();
