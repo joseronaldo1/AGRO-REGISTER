@@ -19,7 +19,6 @@ function Sidebar() {
             <NavItem icon={v.iconoCultivo} text="Variedad" href="/variedad" />
             <NavItem icon={v.iconoActividad} text="Actividad" href="/actividad" />
             <NavItem icon={v.iconoTractor} text="Recursos" href="/recursos" />
-            <NavItem icon={v.iconoSoporte} text="Soporte" href="/Soporte" />
             <NavItem icon={v.iconoActividad} text="Programación" href="/programacion" />
             <NavItem icon={v.iconoTractor} text="Producción" href="/produccion" />
             <NavItem icon={v.iconoReporte} text="Reportes" href="/reportes" />
