@@ -8,6 +8,7 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 
+
 function Programacion() {
   const baseURL = 'http://localhost:3000/listarProgramacion';
 
@@ -18,10 +19,9 @@ function Programacion() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
 
-  
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -49,7 +49,7 @@ function Programacion() {
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      console.log('Actualización de la programacion:', formData);
+      console.log('Actualización de recurso:', formData);
       const { id } = formData;
       await axios.put(`http://localhost:3000/actualizarProgramacion/${id}`, formData);
       fetchData();
@@ -59,7 +59,7 @@ function Programacion() {
     }
   };
 
-  // Función para buscar programacion por su id 
+  // Función para buscar fincas por nombre_finca
   const handleSearch = async (searchTerm) => {
     try {
       const response = await axios.get(`http://localhost:3000/buscarProgramacion/${searchTerm}`);
@@ -69,13 +69,31 @@ function Programacion() {
     }
   };
 
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+        let newEstado = '';
+        if (estado === 'activo') {
+          newEstado = 'inactivo';
+        } else if (estado === 'inactivo') {
+          newEstado = 'activo';
+        } else if (estado === 'ejecutándose') {
+          newEstado = 'terminado';
+        } else if (estado === 'terminado') {
+          newEstado = 'ejecutándose';
+        }
+        await axios.put(`http://localhost:3000/desactivar/Programacion/${id}`, { estado: newEstado });
+        fetchData();
+    } catch (error) {
+        console.error('Error al cambiar el estado de la programación:', error);
+    }
+  };
 
   const columns = [
-    {
+    /*{
       name: 'ID',
       selector: (row) => row.id_programacion,
       sortable: true,
-    },
+    },*/
     {
       name: 'Fecha Inicio',
       selector: (row) => row.fecha_inicio,
@@ -102,25 +120,50 @@ function Programacion() {
       sortable: true,
     },
     {
+      name: 'Estado',
+      selector: (row) => row.estado,
+      sortable: true,
+    },
+    {
       name: 'Acciones',
       cell: (row) => (
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-        </button>
+        <>
+          <button
+            className="btn p-2 rounded-lg"
+            style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
+            type="button"
+            onClick={() => handleOpenActualizacionModal(row)}
+          >
+            <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+          </button>
+          <button
+            className="btn p-2 rounded-lg estado-button"
+            style={{
+              backgroundColor: row.estado === 'activo' ? 'red' : row.estado === 'inactivo' ? 'green' : row.estado === 'ejecutándose' ? 'yellow' : 'blue',
+              border: 'none',
+              color: 'white',
+              height: '40px',
+              width: '660px',
+              transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+            }}
+            type="button"
+            onClick={() => handleEstadoBotonClick(row.id_finca, row.estado)}
+            onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : row.estado === 'inactivo' ? '#2DBC28' : row.estado === 'ejecutándose' ? 'orange' : 'cyan' }} // Cambiar el color de fondo al pasar el mouse
+            onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : row.estado === 'inactivo' ? 'green' : row.estado === 'ejecutándose' ? 'yellow' : 'blue' }} // Restaurar el color de fondo al dejar de pasar el mouse
+          >
+            {row.estado === 'activo' ? 'Inactivo' : row.estado === 'inactivo' ? 'Activo' : row.estado === 'ejecutándose' ? 'Terminar' : 'Ejecutándose'}
+          </button>
+        </>
       ),
     },
   ];
 
   return (
     <div>
-      <div className="recursos-container">
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
-        <div className="container mt-5">
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
             <div className="white-container">
               <SearchBar onSearch={handleSearch} />
@@ -129,10 +172,10 @@ function Programacion() {
           </div>
           <br />
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-            <Datatable columns={columns} data={data} title="Programación" />
+            <Datatable columns={columns} data={data} title="Programacion" />
           </div>
         </div>
-
+        
         <ModalRecuRegeContrasenia
           mostrar={showRegistroModal}
           cerrarModal={handleCloseRegistroModal}
@@ -142,7 +185,6 @@ function Programacion() {
           mode="registro"
           handleSubmit={() => setShowRegistroModal(false)}
         />
-
         <ModalRecuRegeContrasenia
           mostrar={showActualizacionModal}
           cerrarModal={handleCloseActualizacionModal}
@@ -153,12 +195,11 @@ function Programacion() {
           mode={mode}
         />
         <br />
-
       </div>
       <Footer />
     </div>
   );
 }
 
-export default  Programacion;
+export default Programacion;
 

@@ -115,54 +115,32 @@ export const ActualizarA = async (req, res) => {
 
 //CRUD - Desactivar
 export const DesactivarA = async (req, res) => {
-     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+    try {
         const { id } = req.params;
         const { estado } = req.body;
 
-        // Verificar si el campo estado está presente en el cuerpo de la solicitud
-        if (!estado) {
-            // Si el campo estado está en blanco o no está presente, enviar una respuesta con estado 400 (Bad Request) y un mensaje indicando que deben llenar el campo estado
-            return res.status(400).json({
-                status: 400,
-                message: 'Por favor, especifique el estado para desactivar o activar la actividad'
+        const [oldRecurso] = await pool.query("SELECT * FROM actividad WHERE id_actividad = ?", [id]); 
+        
+        const [result] = await pool.query(
+            `UPDATE actividad SET estado = ${estado ? `'${estado}'` : `'${oldRecurso[0].estado}'`} WHERE id_actividad = ?`,[id]
+        );
+
+        if (result.affectedRows > 0) {
+            res.status(200).json({
+                status: 200,
+                message: 'Se actualizo el estado con éxito',
+                result: result
+            });
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: 'No se encontró el estado para actualizar'
             });
         }
-
-        // Buscar la actividad por su ID
-        const [oldActividad] = await pool.query("SELECT * FROM actividad WHERE id_actividad = ?", [id]);
-
-        // Verificar si se encontró la actividad
-        if (oldActividad.length > 0) {
-            // Actualizar el estado de la actividad
-            const [result] = await pool.query(
-                `UPDATE actividad SET estado = ? WHERE id_actividad = ?`, [estado, id]
-            );
-
-            // Verificar si se afectaron filas en la base de datos
-            if (result.affectedRows > 0) {
-                // Si se actualizó correctamente, enviar una respuesta con estado 200
-                res.status(200).json({
-                    status: 200,
-                    message: 'Peticion con éxito',
-                    result: result
-                });
-            } else {
-                // Si no se encontró el registro para desactivar, enviar una respuesta con estado 404
-                res.status(404).json({
-                    status: 404,
-                    message: 'No se encontró el registro para su peticion'
-                });
-            }
-        } 
     } catch (error) {
-        // Si hay algún error en el proceso, enviar una respuesta con estado 500
         res.status(500).json({
             status: 500,
-            message: 'Error en el sistema: ' + error
+            message: error
         });
     }
 }

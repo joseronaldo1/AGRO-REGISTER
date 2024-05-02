@@ -6,9 +6,9 @@ import { validarToken } from '../controllers/autenticacion.js'
 
 const rutaUsuario = Router();
 
-rutaUsuario.get('/listarUsuario', validarToken,listarUsuarios);  
+rutaUsuario.get('/listarUsuario', listarUsuarios);  
 rutaUsuario.post('/registrarUsuario',validarUsuario,registrarUsuarios);
-rutaUsuario.post('/desactivarUsuario/:id_usuario',validarToken, desactivarUsuario);
+rutaUsuario.post('/desactivarUsuario/:id_usuario', desactivarUsuario);
 rutaUsuario.put('/actualizarUsuario/:id_usuario',validarToken, validarUsu,actualizarUsuario);
 rutaUsuario.get('/buscarUsuarios/:id_usuario',validarToken, buscarUsuario);
 
