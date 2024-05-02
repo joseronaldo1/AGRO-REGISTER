@@ -70,7 +70,7 @@ function fincas() {
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
-      const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; // Cambiar los estados existentes por "activo" e "inactivo"
+      const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; //Cambiar los estados existentes por "activo" e "inactivo"
       await axios.put(`http://localhost:3000/desactivar/Finca/${id}`, { estado: newEstado });
       fetchData(); // Actualizar los datos después de la actualización
     } catch (error) {
@@ -123,7 +123,7 @@ function fincas() {
               border: 'none',
               color: 'white',
               height: '40px',
-              width: '90px',
+              width: '120px',
               transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
             }}
             type="button"
@@ -182,3 +182,4 @@ function fincas() {
 }
 
 export default fincas;
+

@@ -18,10 +18,9 @@ function Cultivos() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
 
-  
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -59,23 +58,32 @@ function Cultivos() {
     }
   };
 
-  // Función para buscar cultivos por 
+  // Función para buscar fincas por nombre_variedad
   const handleSearch = async (searchTerm) => {
     try {
-      const response = await axios.get(`http://localhost:3000/buscar/${searchTerm}`);
-      setData(response.data);
+        const response = await axios.get(`http://localhost:3000/buscarCultivo/${searchTerm}`); // Cambio aquí: enviar el nombre de la variedad como término de búsqueda
+        setData(response.data);
     } catch (error) {
-      console.error('Error searching for resources:', error);
+        console.error('Error searching for resources:', error);
     }
-  };
+};
 
+const handleEstadoBotonClick = async (id, estado) => {
+  try {
+    const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; //Cambiar los estados existentes por "activo" e "inactivo"
+    await axios.put(`http://localhost:3000/desactivar/Cultivo/${id}`, { estado: newEstado });
+    fetchData(); // Actualizar los datos después de la actualización
+  } catch (error) {
+    console.error('Error al cambiar el estado de la finca:', error);
+  }
+};
 
   const columns = [
-    {
-      name: 'ID',
-      selector: (row) => row.id_cultivo,
-      sortable: true,
-    },
+    // {
+    //   name: 'ID',
+    //   selector: (row) => row.id_cultivo,
+    //   sortable: true,
+    // },
     {
       name: 'Fecha Inicio',
       selector: (row) => row.fecha_inicio,
@@ -96,26 +104,51 @@ function Cultivos() {
       selector: (row) => row.nombre_variedad,
       sortable: true,
     },
+        {
+      name: 'Estado',
+      selector: (row) => row.estado,
+      sortable: true,
+    },
     {
       name: 'Acciones',
       cell: (row) => (
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-        </button>
+        <>
+          <button
+            className="btn p-2 rounded-lg"
+            style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
+            type="button"
+            onClick={() => handleOpenActualizacionModal(row)}
+          >
+            <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+          </button>
+          <button
+            className="btn p-2 rounded-lg estado-button"
+            style={{
+              backgroundColor: row.estado === 'activo' ? 'red' : 'green',
+              border: 'none',
+              color: 'white',
+              height: '40px',
+              width: '550px',
+              transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+            }}
+            type="button"
+            onClick={() => handleEstadoBotonClick(row.id_cultivo, row.estado)}
+            onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+            onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+          >
+            {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
+          </button>
+        </>
       ),
     },
   ];
 
   return (
     <div>
-      <div className="recursos-container">
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
-        <div className="container mt-5">
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
             <div className="white-container">
               <SearchBar onSearch={handleSearch} />
@@ -127,7 +160,7 @@ function Cultivos() {
             <Datatable columns={columns} data={data} title="Cultivos" />
           </div>
         </div>
-
+        
         <ModalRecuRegeContrasenia
           mostrar={showRegistroModal}
           cerrarModal={handleCloseRegistroModal}
@@ -137,7 +170,6 @@ function Cultivos() {
           mode="registro"
           handleSubmit={() => setShowRegistroModal(false)}
         />
-
         <ModalRecuRegeContrasenia
           mostrar={showActualizacionModal}
           cerrarModal={handleCloseActualizacionModal}
@@ -148,7 +180,6 @@ function Cultivos() {
           mode={mode}
         />
         <br />
-
       </div>
       <Footer />
     </div>
