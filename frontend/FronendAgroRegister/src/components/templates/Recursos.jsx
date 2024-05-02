@@ -127,7 +127,7 @@ function Recursos() {
     border: 'none',
     color: 'white',
     height:'40px',
-    width:'640px',
+    width:'600px',
     transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
   }}
   type="button"
@@ -135,7 +135,7 @@ function Recursos() {
   onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
   onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
 >
-  {row.estado === 'existe' ? 'Agotado' : 'Existe'}
+  {row.estado === 'existe' ? 'No hay' : 'Si hay'}
 </button>
 
         </>

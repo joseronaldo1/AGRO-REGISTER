@@ -7,6 +7,7 @@ import ModalRecuRegeContrasenia from "../organismos/ModalActividad.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
+
 function Actividad() {
   const baseURL = 'http://localhost:3000/listarActividad';
 
@@ -70,7 +71,23 @@ function Actividad() {
 };
 const handleEstadoBotonClick = async (id, estado) => {
   try {
-    const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; //Cambiar los estados existentes por "activo" e "inactivo"
+    let newEstado;
+    switch (estado) {
+      case 'activo':
+        newEstado = 'ejecutandose';
+        break;
+      case 'ejecutandose':
+        newEstado = 'terminado';
+        break;
+      case 'terminado':
+        newEstado = 'inactivo';
+        break;
+      case 'inactivo':
+        newEstado = 'activo';
+        break;
+      default:
+        break;
+    }
     await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
     fetchData(); // Actualizar los datos después de la actualización
   } catch (error) {
@@ -116,8 +133,8 @@ const handleEstadoBotonClick = async (id, estado) => {
     },
     {
       name: 'Acciones',
-      cell: (row) => (
-        <>
+    cell: (row) => (
+      <>
         <button
           className="btn p-2 rounded-lg"
           style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
@@ -129,19 +146,19 @@ const handleEstadoBotonClick = async (id, estado) => {
         <button
           className="btn p-2 rounded-lg estado-button"
           style={{
-            backgroundColor: row.estado === 'activo' ? 'red' : row.estado === 'inactivo' ? 'green' : row.estado === 'ejecutándose' ? 'yellow' : 'blue',
+            backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
             border: 'none',
             color: 'white',
             height: '40px',
-            width: '930px',
+            width: '1040px',
             transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
           }}
           type="button"
-          onClick={() => handleEstadoBotonClick(row.id_finca, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : row.estado === 'inactivo' ? '#2DBC28' : row.estado === 'ejecutándose' ? 'orange' : 'cyan' }} // Cambiar el color de fondo al pasar el mouse
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : row.estado === 'inactivo' ? 'green' : row.estado === 'ejecutándose' ? 'yellow' : 'blue' }} // Restaurar el color de fondo al dejar de pasar el mouse
+          onClick={() => handleEstadoBotonClick(row.id_actividad, row.estado)}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#377AF0' : row.estado === 'terminado' ? '#E54444' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
         >
-          {row.estado === 'activo' ? 'Inactivo' : row.estado === 'inactivo' ? 'Activo' : row.estado === 'ejecutándose' ? 'Terminar' : 'Ejecutándose'}
+          {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
         </button>
       </>
     ),

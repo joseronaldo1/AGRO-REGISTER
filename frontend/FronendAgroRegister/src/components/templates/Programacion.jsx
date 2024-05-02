@@ -71,20 +71,27 @@ function Programacion() {
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
-        let newEstado = '';
-        if (estado === 'activo') {
-          newEstado = 'inactivo';
-        } else if (estado === 'inactivo') {
-          newEstado = 'activo';
-        } else if (estado === 'ejecutándose') {
+      let newEstado;
+      switch (estado) {
+        case 'activo':
+          newEstado = 'ejecutandose';
+          break;
+        case 'ejecutandose':
           newEstado = 'terminado';
-        } else if (estado === 'terminado') {
-          newEstado = 'ejecutándose';
-        }
-        await axios.put(`http://localhost:3000/desactivar/Programacion/${id}`, { estado: newEstado });
-        fetchData();
+          break;
+        case 'terminado':
+          newEstado = 'inactivo';
+          break;
+        case 'inactivo':
+          newEstado = 'activo';
+          break;
+        default:
+          break;
+      }
+      await axios.put(`http://localhost:3000/desactivar/Programacion/${id}`, { estado: newEstado });
+      fetchData(); // Actualizar los datos después de la actualización
     } catch (error) {
-        console.error('Error al cambiar el estado de la programación:', error);
+      console.error('Error al cambiar el estado de la actividad:', error);
     }
   };
 
@@ -137,22 +144,22 @@ function Programacion() {
             <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
           </button>
           <button
-            className="btn p-2 rounded-lg estado-button"
-            style={{
-              backgroundColor: row.estado === 'activo' ? 'red' : row.estado === 'inactivo' ? 'green' : row.estado === 'ejecutándose' ? 'yellow' : 'blue',
-              border: 'none',
-              color: 'white',
-              height: '40px',
-              width: '660px',
-              transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-            }}
-            type="button"
-            onClick={() => handleEstadoBotonClick(row.id_finca, row.estado)}
-            onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : row.estado === 'inactivo' ? '#2DBC28' : row.estado === 'ejecutándose' ? 'orange' : 'cyan' }} // Cambiar el color de fondo al pasar el mouse
-            onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : row.estado === 'inactivo' ? 'green' : row.estado === 'ejecutándose' ? 'yellow' : 'blue' }} // Restaurar el color de fondo al dejar de pasar el mouse
-          >
-            {row.estado === 'activo' ? 'Inactivo' : row.estado === 'inactivo' ? 'Activo' : row.estado === 'ejecutándose' ? 'Terminar' : 'Ejecutándose'}
-          </button>
+          className="btn p-2 rounded-lg estado-button"
+          style={{
+            backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
+            border: 'none',
+            color: 'white',
+            height: '40px',
+            width: '1040px',
+            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+          }}
+          type="button"
+          onClick={() => handleEstadoBotonClick(row.id_programacion, row.estado)}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#377AF0' : row.estado === 'terminado' ? '#E54444' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+        >
+          {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
+        </button>
         </>
       ),
     },
