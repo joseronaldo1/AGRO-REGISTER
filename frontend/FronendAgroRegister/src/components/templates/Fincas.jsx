@@ -17,15 +17,19 @@ function fincas() {
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
+  
+
 
   useEffect(() => {
     fetchData();
   }, []);
-
+  
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
+      setOriginalData(response.data); // Guardar los datos originales sin filtrar
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -58,22 +62,37 @@ function fincas() {
     }
   };
 
-  // Función para buscar recursos por ID
+  // Función para buscar fincas por nombre_finca
   const handleSearch = async (searchTerm) => {
     try {
-      const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
-      setData(response.data);
+      if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
+        setData(originalData);
+      } else {
+        const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
+        setData(response.data);
+      }
     } catch (error) {
       console.error('Error searching for resources:', error);
     }
   };
 
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; //Cambiar los estados existentes por "activo" e "inactivo"
+      await axios.put(`http://localhost:3000/desactivar/Finca/${id}`, { estado: newEstado });
+      fetchData(); // Actualizar los datos después de la actualización
+    } catch (error) {
+      console.error('Error al cambiar el estado de la finca:', error);
+    }
+  };
+
   const columns = [
-    {
+    /* {
       name: 'ID',
       selector: (row) => row.id_finca,
       sortable: true,
-    },
+    }, */
     {
       name: 'Nombre finca',
       selector: (row) => row.nombre_finca,
@@ -90,16 +109,44 @@ function fincas() {
       sortable: true,
     },
     {
+      name: 'Estado',
+    cell: (row) => (
+      <span style={{ color: row.estado === 'activo' ? 'green' : 'red',fontWeight:'700' }}>
+        {row.estado}
+      </span>
+    ),
+    sortable: true,
+    },
+    {
       name: 'Acciones',
       cell: (row) => (
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-        </button>
+        <>
+          <button
+            className="btn p-2 rounded-lg"
+            style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
+            type="button"
+            onClick={() => handleOpenActualizacionModal(row)}
+          >
+            <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+          </button>
+          <button
+            className="btn p-2 rounded-lg estado-button"
+            style={{
+              backgroundColor: row.estado === 'activo' ? 'red' : 'green',
+              border: 'none',
+              color: 'white',
+              height: '40px',
+              width: '120px',
+              transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+            }}
+            type="button"
+            onClick={() => handleEstadoBotonClick(row.id_finca, row.estado)}
+            onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+            onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+          >
+            {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
+          </button>
+        </>
       ),
     },
   ];
@@ -121,6 +168,7 @@ function fincas() {
             <Datatable columns={columns} data={data} title="Fincas" />
           </div>
         </div>
+        
         <ModalRecuRegeContrasenia
           mostrar={showRegistroModal}
           cerrarModal={handleCloseRegistroModal}
@@ -140,14 +188,11 @@ function fincas() {
           mode={mode}
         />
         <br />
-
-
       </div>
       <Footer />
     </div>
-
   );
-
 }
 
 export default fincas;
+

@@ -16,16 +16,17 @@ function lotes() {
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
 
-  
   useEffect(() => {
     fetchData();
   }, []);
-
+  
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
+      setOriginalData(response.data); // Guardar los datos originales sin filtrar
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -54,27 +55,42 @@ function lotes() {
       fetchData();
       setShowActualizacionModal(false);
     } catch (error) {
-      console.error('Error al actualizar la variedad:', error);
+      console.error('Error al actualizar el lote:', error);
     }
   };
 
-  // Función para buscar recursos por ID
-  const handleSearch = async (searchTerm) => {
-    try {
+
+ // Función para buscar fincas por nombre
+ const handleSearch = async (searchTerm) => {
+  try {
+    if (searchTerm.trim() === '') {
+      // Si el término de búsqueda está vacío, restaurar los datos originales
+      setData(originalData);
+    } else {
       const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
       setData(response.data);
-    } catch (error) {
-      console.error('Error searching for resources:', error);
     }
-  };
+  } catch (error) {
+    console.error('Error searching for resources:', error);
+  }
+};
 
+const handleEstadoBotonClick = async (id, estado) => {
+  try {
+    const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; // Cambiar los estados existentes por "activo" e "inactivo"
+    await axios.put(`http://localhost:3000/desactivar/Lote/${id}`, { estado: newEstado });
+    fetchData(); // Actualizar los datos después de la actualización
+  } catch (error) {
+    console.error('Error al cambiar el estado del lote:', error);
+  }
+};
 
   const columns = [
-    {
+    /* {
       name: 'ID',
       selector: (row) => row.id_lote,
       sortable: true,
-    },
+    }, */
     {
       name: 'Nombre',
       selector: (row) => row.nombre,
@@ -96,25 +112,54 @@ function lotes() {
       sortable: true,
     },
     {
+      name: 'Estado',
+    cell: (row) => (
+      <span style={{ color: row.estado === 'activo' ? 'green' : 'red',fontWeight:'700'  }}>
+        {row.estado}
+      </span>
+    ),
+    sortable: true,
+    },
+    {
       name: 'Acciones',
       cell: (row) => (
+        <>
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
           <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
         </button>
+        <button
+            className="btn p-2 rounded-lg estado-button"
+            style={{
+              backgroundColor: row.estado === 'activo' ? 'red' : 'green',
+              border: 'none',
+              color: 'white',
+              height: '40px',
+              width: '650px',
+              transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+            }}
+            type="button"
+            onClick={() => handleEstadoBotonClick(row.id_lote, row.estado)}
+            onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+            onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+          >
+            {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
+          </button>
+        </>
       ),
     },
   ];
 
   return (
     <div>
-      <div className="recursos-container">
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
-        <div className="container mt-5">
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
             <div className="white-container">
               <SearchBar onSearch={handleSearch} />
@@ -123,7 +168,7 @@ function lotes() {
           </div>
           <br />
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-            <Datatable columns={columns} data={data} title="lotes" />
+            <Datatable columns={columns} data={data} title="Lotes" />
           </div>
         </div>
 

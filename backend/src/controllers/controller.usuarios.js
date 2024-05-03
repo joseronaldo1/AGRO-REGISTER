@@ -11,7 +11,7 @@ export const listarUsuarios = async (req, res) => {
         } else {
             res.status(404).json({
                 status: 404,
-                "message": 'El usuario no esta registrados'
+                "message": 'El usuario no esta registrado'
             });
         }
     } catch (error) {

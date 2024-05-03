@@ -106,8 +106,10 @@ export const actualizarVariedad = async (req, res) => {
 // CRUD - Buscar
 export const buscarVariedad = async (req, res) => {
     try {
-        const { term } = req.params;
-        const [result] = await pool.query("SELECT * FROM variedad WHERE nombre_variedad LIKE ?", [`%${term}%`]);
+
+        const { nombre } = req.params;
+        const [result] = await pool.query("SELECT * FROM variedad WHERE nombre_variedad LIKE ?", [`%${nombre}%`]);
+                    
 
         if (result.length > 0) {
             res.status(200).json(result);
@@ -120,7 +122,7 @@ export const buscarVariedad = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: "Error en el sistema"
+            message: "error en el sistema"
         });
     }
 };

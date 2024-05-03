@@ -13,22 +13,22 @@ function Variedad() {
   const baseURL = 'http://localhost:3000/listarVariedades';
 
   const [data, setData] = useState([]);
-  const [originalData, setOriginalData] = useState([]); // Estado separado para los datos originales
   const [showRegistroModal, setShowRegistroModal] = useState(false);
   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
 
   useEffect(() => {
     fetchData();
-  }, [data]);
-
+  }, []);
+  
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
-      setOriginalData(response.data); // Almacena los datos originales al cargar
+      setOriginalData(response.data); // Guardar los datos originales sin filtrar
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -60,18 +60,23 @@ function Variedad() {
     }
   };
 
-  const handleSearch = async (searchTerm) => {
-    try {
+
+ // Función para buscar fincas por nombre_variedad
+ const handleSearch = async (searchTerm) => {
+  try {
+    if (searchTerm.trim() === '') {
+      // Si el término de búsqueda está vacío, restaurar los datos originales
+      setData(originalData);
+    } else {
       const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
       setData(response.data);
-    } catch (error) {
-      console.error('Error searching for resources:', error);
     }
-  };
+  } catch (error) {
+    console.error('Error searching for resources:', error);
+  }
+};
 
-  const handleResetSearch = () => {
-    setData(originalData); // Restablece los datos a los originales
-  };
+
 
   const columns = [
     {
@@ -111,7 +116,9 @@ function Variedad() {
         <div className="container mt-5">
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
             <div className="white-container">
-              <SearchBar onSearch={handleSearch} onReset={handleResetSearch} />
+
+              <SearchBar onSearch={handleSearch} />
+
               <Botones children="Registrar" onClick={handleOpenRegistroModal} />
             </div>
           </div>

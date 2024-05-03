@@ -4,18 +4,17 @@ import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
-    nombre: initialData && initialData.nombre ? initialData.nombre : '',
-    longitud: initialData && initialData.longitud ? initialData.longitud : '',
-    latitud: initialData && initialData.latitud ? initialData.latitud : '',
-    fk_id_finca: initialData && initialData.fk_id_finca ? initialData.fk_id_finca : ''
+    cantidad_produccion: initialData && initialData.cantidad_produccion ? initialData.cantidad_produccion : '',
+    precio: initialData && initialData.precio ? initialData.precio : '',
+    fk_id_actividad: initialData && initialData.fk_id_actividad ? initialData.fk_id_actividad : ''
   };
   
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
-  const [nombre_finca, setNombreFinca] = useState([]);
+  const [nombre_actividad, setNombreFinca] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/listarFinca')
+    axios.get('http://localhost:3000/listarActividad')
       .then(response => {
         setNombreFinca(response.data); // Establecer directamente los datos de la respuesta en el estado nombre_finca
       })
@@ -34,53 +33,45 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
     }));
   };
 
-  const validarNombreLote = nombre => {
-    const soloLetras = /^[a-zA-Z\s]*$/;
-    return soloLetras.test(nombre);
+  const validarCantidadProduccion = cantidad_produccion => {
+    const soloNumeros = /^\d+$/;
+    return soloNumeros.test(cantidad_produccion);
   };
+  const validarPrecio = precio => {
+        const soloNumeros = /^\d+$/;
+        return soloNumeros.test(precio);
+      };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!formData.nombre || !formData.longitud || !formData.latitud || !formData.fk_id_finca) {
+      if (!formData.cantidad_produccion || !formData.precio || !formData.fk_id_actividad) {
         setShowWarning(true); // Mostrar advertencia si algún campo está vacío
         return;
       }
-      if (!validarNombreLote(formData.nombre)) {
-        // Mostrar alerta si el nombre contiene números
+      if (!validarCantidadProduccion(formData.cantidad_produccion)) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'El nombre del lote solo puede contener letras'
+          text: 'La cantidad de producción debe contener solo números'
+        });
+        return;
+      }
+
+      if (!validarPrecio(formData.precio)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El precio debe contener solo números'
         });
         return;
       }
   
-      // Validar longitud
-      if (isNaN(formData.longitud) || formData.longitud < -180 || formData.longitud > 180) {
-        // Mostrar alerta si la longitud no es válida
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'La longitud debe ser un número válido entre -180 y 180'
-        });
-        return;
-      }
-  
-      // Validar latitud
-      if (isNaN(formData.latitud) || formData.latitud < -80 || formData.latitud > 90) {
-        // Mostrar alerta si la latitud no es válida
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'La latitud debe ser un número válido entre -80 y 90'
-        });
-        return;
-      }
+
   
       if (mode === 'registro') {
         const response = await axios.post(
-          'http://localhost:3000/Registrarlote',
+          'http://localhost:3000/RegistraProduccion',
           formData,
           {
             headers: {
@@ -93,20 +84,20 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'El lote se ha registrado exitosamente'
+          text: 'La Producción se ha registrado exitosamente'
         });
         console.log(response.data);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
-          `http://localhost:3000/Actualizarlote/${id}`,
+          `http://localhost:3000/ActualizarProduccion/${id}`,
           formData
         );
         // Mostrar alerta de actualización exitosa
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'El lote se ha actualizado exitosamente'
+          text: 'La Producción se ha actualizado exitosamente'
         });
       }
   
@@ -129,26 +120,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
     >
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Nombre del lote:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="text"
-          name="nombre"
-          placeholder="Nombre del lote"
-          value={formData.nombre}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Longitud:{' '}
+          Cantidad Producción:{' '}
         </label>
         <br />
         <input
@@ -159,15 +131,15 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
             height: '40px'
           }}
           type="number"
-          name="longitud"
-          placeholder="longitud"
-          value={formData.longitud}
+          name="cantidad_produccion"
+          placeholder="Cantidad Producción"
+          value={formData.cantidad_produccion}
           onChange={handleChange}
         />
       </div>
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Latitud:{' '}
+          Precio:{' '}
         </label>
         <br />
         <input
@@ -178,15 +150,15 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
             height: '40px'
           }}
           type="number"
-          name="latitud"
-          placeholder="latitud"
-          value={formData.latitud}
+          name="precio"
+          placeholder="Precio"
+          value={formData.precio}
           onChange={handleChange}
         />
       </div>
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Selecciona tu finca:
+          Selecciona tu Actividad:
         </label>
         <br />
         <select
@@ -195,21 +167,21 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
           style={{borderColor: '#1bc12e', width: '50%', height: '40px',  borderRadius: '6px'}}
           id=''
           required={true}
-          value={formData.fk_id_finca}
+          value={formData.fk_id_actividad}
           onChange={handleChange}
         >
           <option value="" disabled selected>Seleccione</option>
           {/* Mapeo para crear las opciones del select */}
-          {nombre_finca.map(finca => (
-            <option key={finca.id_finca} value={finca.id_finca}>
-              {finca.nombre_finca}
+          {nombre_actividad.map(actividad => (
+            <option key={actividad.id_actividad} value={actividad.id_actividad}>
+              {actividad.nombre_actividad}
             </option>
           ))}
         </select>
       </div>
       {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor seleccione una finca
+          Por favor seleccione una Actividad
         </p>
       )}
       <button

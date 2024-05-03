@@ -1,12 +1,13 @@
 import { pool } from "../database/conexion.js"
 import { validationResult } from 'express-validator'
-//nn
+
 
 export const listarlotes = async (req, res) => {
     try {
         let sql = `SELECT lo.id_lote, lo.nombre, lo.longitud, lo.latitud, 
                           lo.fk_id_finca AS id_finca,  
-                          fin.nombre_finca
+                          fin.nombre_finca,
+                          lo.*
                    FROM lotes AS lo
                    JOIN finca AS fin ON lo.fk_id_finca = fin.id_finca`;
         const [resultado] = await pool.query(sql)
@@ -24,6 +25,7 @@ export const listarlotes = async (req, res) => {
         })
     }
 }
+
 
 
 export const Registrarlotes = async (req, res) => {
@@ -94,42 +96,58 @@ export const Actualizarlote = async (req, res) => {
 
 export const Buscarlote = async (req, res) => {
     try {
-        const { id_lote } = req.params;
-        const [resultado] = await pool.query("select * from lotes where id_lote=?", [id_lote])
 
-        if (resultado.length > 0) {
-            res.status(200).json(resultado)
-        } else {
-            res.status(400).json({
-                "mensaje": "No se encontró nada con ese ID"
-            })
-        }
+        const { nombre } = req.params;
+        const [result] = await pool.query("SELECT * FROM lotes WHERE nombre LIKE ?", [`%${nombre}%`]);
+                    
+        if (result.length > 0) {
+            res.status(200).json(result);
 
-    } catch (error) {
-        res.status(500).json({
-            "mensaje": error
-        })
-    }
-}
-
-export const eliminarlote = async (req, res) => {
-    try {
-        const { id_lote } = req.params;
-        const [resultado] = await pool.query("delete from lotes where id_lote=?", [id_lote])
-
-        if (resultado.affectedRows > 0) {
-            res.status(200).json({
-                "mensaje": "desactivado con exito"
-            })
         } else {
             res.status(404).json({
-                "mensaje": "No se pudo desactivar"
-            })
+                status: 404,
+                message: 'No se encontraron resultados para la búsqueda'
+            });
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: "error en el sistema"
+        });
+
+    }
+};
+
+//CRUD - Desactivar
+export const DesactivarLote = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { estado } = req.body;
+
+        const [oldRecurso] = await pool.query("SELECT * FROM lotes WHERE id_lote = ?", [id]); 
+        
+        const [result] = await pool.query(
+            `UPDATE lotes SET estado = ${estado ? `'${estado}'` : `'${oldRecurso[0].estado}'`} WHERE id_lote = ?`,[id]
+        );
+
+        if (result.affectedRows > 0) {
+            res.status(200).json({
+                status: 200,
+                message: 'Se actualizo el estado con éxito',
+                result: result
+            });
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: 'No se encontró el estado para actualizar'
+            });
         }
     } catch (error) {
         res.status(500).json({
-            "mensaje": error
-        })
+            status: 500,
+            message: error
+        });
     }
 }
 /* 

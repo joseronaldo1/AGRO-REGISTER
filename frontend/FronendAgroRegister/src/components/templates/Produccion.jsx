@@ -1,182 +1,165 @@
-import React, { useState } from "react";
-import Botones from "../atomos/Botones";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
-import ModalRecuRegeContrasenia from "../organismos/Modal";
+import ModalRecuRegeContrasenia from "../organismos/ModalProduccion.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
-import Formulario from '../organismos/Formulario.jsx';
+import SearchBar from '../moleculas/SearchBar';
 
- function Produccion() {
-   const [showRegistroModal, setShowRegistroModal] = useState(false);
-   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
-   const [registroFormData, setRegistroFormData] = useState({
-     fecha_inicio: "",
-     fecha_fin: "",
-     Usuario: "",
-     Actividad: "",
-     cultivo: ""
-   });
-   const [actualizacionFormData, setActualizacionFormData] = useState({
-     fecha_inicio: "",
-     fecha_fin: "",
-     Usuario: "",
-     Actividad: "",
-     Ciltivo: ""
-   });
+function Produccion() {
+  const baseURL = 'http://localhost:3000/listarProduccion';
 
-   const handleOpenRegistroModal = () => {
-     setShowRegistroModal(true);
-   };
+  const [data, setData] = useState([]);
+  const [showRegistroModal, setShowRegistroModal] = useState(false);
+  const [showActualizacionModal, setShowActualizacionModal] = useState(false);
+  const [registroFormData, setRegistroFormData] = useState({});
+  const [mode, setMode] = useState('create');
+  const [initialData, setInitialData] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
 
-   const handleCloseRegistroModal = () => {
-     setShowRegistroModal(false);
-   };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(baseURL);
+      setData(response.data);
+      setOriginalData(response.data); // Guardar los datos originales sin filtrar
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
-   const handleOpenActualizacionModal = () => {
-     setShowActualizacionModal(true);
-   };
+  const handleOpenRegistroModal = () => setShowRegistroModal(true);
+  const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
-   const handleCloseActualizacionModal = () => {
-     setShowActualizacionModal(false);
-   };
+  const handleOpenActualizacionModal = (rowData) => {
+    const updatedInitialData = { ...rowData, id: rowData.id_produccion };
+    setInitialData(updatedInitialData);
+    setMode('update');
+    setShowActualizacionModal(true);
+  };
 
-   const handleRegistroFormSubmit = (event) => {
-     event.preventDefault();
-     console.log("Datos de registro:", registroFormData);
-     setRegistroFormData({
-         fecha_inicio: "",
-         fecha_fin: "",
-         Usuario: "",
-         Actividad: "",
-         cultivo: ""
-     });
-     handleCloseRegistroModal();
-   };
+  const handleCloseActualizacionModal = () => {
+    setInitialData(null);
+    setShowActualizacionModal(false);
+  };
 
-   const handleActualizacionFormSubmit = (event) => {
-     event.preventDefault();
-     console.log("Datos de actualización:", actualizacionFormData);
-     setActualizacionFormData({
-         fecha_inicio: "",
-         fecha_fin: "",
-         Usuario: "",
-         Actividad: "",
-         cultivo: ""
-     });
-     handleCloseActualizacionModal();
-   };
+  const handleActualizacionFormSubmit = async (formData) => {
+    try {
+      console.log('Actualización de la producción:', formData);
+      const { id } = formData;
+      await axios.put(`http://localhost:3000/ActualizarProduccion/${id}`, formData);
+      fetchData();
+      setShowActualizacionModal(false);
+    } catch (error) {
+      console.error('Error al actualizar la producción:', error);
+    }
+  };
 
-   const camposRegistro = [
-     { name: "fecha_inicio", placeholder: "Fecha Inicio", type: "date" },
-     { name: "fecha_fin", placeholder: "Fecha Fin", type: "date" },
-     { name: "usuario", placeholder: "Usario", type: "number" },
-     { name: "Actividad", placeholder: "Actividad", type: "number" },
-     { name: "cultivo", placeholder: "Cultivo", type: "number" }
-   ];
 
-   const camposActualizacion = [
-     { name: "fecha_inicio", placeholder: "Fecha Inicio", type: "date" },
-     { name: "fecha_fin", placeholder: "Fecha Fin", type: "date" },
-     { name: "usuario", placeholder: "Usario", type: "number" },
-     { name: "Actividad", placeholder: "Actividad", type: "number" },
-     { name: "cultivo", placeholder: "Cultivo", type: "number" }
-   ];
+ // Función para buscar produccion por nombre
+ const handleSearch = async (searchTerm) => {
+  try {
+    if (searchTerm.trim() === '') {
+      // Si el término de búsqueda está vacío, restaurar los datos originales
+      setData(originalData);
+    } else {
+      const response = await axios.get(`http://localhost:3000/BuscarProduccion/${searchTerm}`);
+      setData(response.data);
+    }
+  } catch (error) {
+    console.error('Error searching for resources:', error);
+  }
+};
 
-   const columns = [
-     {
-       name: "Fecha Inicio",
-       selector: (row) => row.fecha_inicio,
-       sortable: true,
-     },
-   {
-       name: "Fecha Fin",
-       selector: (row) => row.fecha_fin,
-       sortable: true,
-         },
-     {
-       name: "Usario",
-       selector: (row) => row.Usuario,
-       sortable: true,
-     },
-     {
-       name: "Actividad",
-       selector: (row) => row.Actividad,
-       sortable: true,
-     },
-    
-     {
-         name: "Cultivo",
-         selector: (row) => row.cultivo,
-         sortable: true,
-       },
-     {
-       name: "Acciones",
-       cell: (row) => (
-         <button
-           className="btn btn-warning p-2 rounded-lg text-sm font-bold"
-           type="button"
-           onClick={() => handleOpenActualizacionModal()}
-         >
-           Editar
-         </button>
-       ),
-     },
-   ];
 
-   const data = [
-     {
-         fecha_inicio: "2024/09/02",
-         fecha_fin: "2024/09/12",
-         Usuario: "1",
-         Actividad: "1",
-         cultivo: "1"
-     },
-    
-   ];
 
-   return (
-     <div style={{ marginTop: "8%" }}>
-       <Header />
-       <div className="container mt-5">
-       <Botones children="Registrar" onClick={() => handleOpenModal("Registrar")} />
-         <Datatable columns={columns} data={data} title="Producción" />
-       </div>
+  const columns = [
+    {
+      name: 'ID',
+      selector: (row) => row.id_produccion,
+      sortable: true,
+    }, 
+    {
+      name: 'Cantidad Producción',
+      selector: (row) => row.cantidad_produccion,
+      sortable: true,
+    },
+    {
+      name: 'Precio',
+      selector: (row) => row.precio,
+      sortable: true,
+    },
+    {
+      name: 'Actividad',
+      selector: (row) => row.nombre_actividad,
+      sortable: true,
+    },
+ 
+    {
+      name: 'Acciones',
+      cell: (row) => (
+        <>
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+        </button>
+        </>
+      ),
+    },
+  ];
 
-       {/* Modal de Registro */}
-       <ModalRecuRegeContrasenia
-         mostrar={showRegistroModal}
-         cerrarModal={handleCloseRegistroModal}
-         titulo="Registro"
-       >
-         <Formulario
-           campos={camposRegistro}
-           onSubmit={handleRegistroFormSubmit}
-           className="form-registro"
-         />
-     <div className="container mt-5">
-       <Botones children="Registrar" onClick={() => handleOpenModal("Editar")} />
-       </div>
-       </ModalRecuRegeContrasenia>
+  return (
+    <div>
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
+            <div className="white-container">
+              <SearchBar onSearch={handleSearch} />
+              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            </div>
+          </div>
+          <br />
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+            <Datatable columns={columns} data={data} title="Producción" />
+          </div>
+        </div>
 
-       {/* Modal de Actualización */}
-       <ModalRecuRegeContrasenia
-         mostrar={showActualizacionModal}
-         cerrarModal={handleCloseActualizacionModal}
-         titulo="Actualización"
-       >
-         <Formulario
-           campos={camposActualizacion}
-           onSubmit={handleActualizacionFormSubmit}
-           className="form-actualizacion"
-         />
-         <Botones
-           children="Registrar"
-           onClick={() => handleRegistroFormSubmit()}
-         />
-       </ModalRecuRegeContrasenia>
-       <Footer/>
-     </div>
-   );
- }
+        <ModalRecuRegeContrasenia
+          mostrar={showRegistroModal}
+          cerrarModal={handleCloseRegistroModal}
+          titulo="Registro"
+          actionLabel="Registrar"
+          initialData={registroFormData}
+          mode="registro"
+          handleSubmit={() => setShowRegistroModal(false)}
+        />
 
- export default Produccion;
+        <ModalRecuRegeContrasenia
+          mostrar={showActualizacionModal}
+          cerrarModal={handleCloseActualizacionModal}
+          titulo="Actualización"
+          handleSubmit={handleActualizacionFormSubmit}
+          actionLabel="Actualizar"
+          initialData={initialData}
+          mode={mode}
+        />
+        <br />
+
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+export default Produccion;

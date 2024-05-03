@@ -101,10 +101,11 @@ export const ActualizarFinca = async (req, res) => {
 };
 
 // CRUD - Buscar
+// En el controlador de Finca, crea una nueva función de búsqueda por nombre
 export const BuscarFinca = async (req, res) => {
     try {
-        const { id } = req.params;
-        const [result] = await pool.query("SELECT * FROM finca WHERE id_finca =?", [id]);
+        const { nombre } = req.params;
+        const [result] = await pool.query("SELECT * FROM finca WHERE nombre_finca LIKE ?", [`%${nombre}%`]);
                     
         if (result.length > 0) {
             res.status(200).json(result);
@@ -121,3 +122,36 @@ export const BuscarFinca = async (req, res) => {
         });
     }
 };
+
+
+//CRUD - Desactivar
+export const DesactivarFinca = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { estado } = req.body;
+
+        const [oldRecurso] = await pool.query("SELECT * FROM finca WHERE id_finca = ?", [id]); 
+        
+        const [result] = await pool.query(
+            `UPDATE finca SET estado = ${estado ? `'${estado}'` : `'${oldRecurso[0].estado}'`} WHERE id_finca = ?`,[id]
+        );
+
+        if (result.affectedRows > 0) {
+            res.status(200).json({
+                status: 200,
+                message: 'Se actualizo el estado con éxito',
+                result: result
+            });
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: 'No se encontró el estado para actualizar'
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: error
+        });
+    }
+}
