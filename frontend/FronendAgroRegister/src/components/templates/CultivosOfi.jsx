@@ -105,9 +105,13 @@ const handleEstadoBotonClick = async (id, estado) => {
       sortable: true,
     },
         {
-      name: 'Estado',
-      selector: (row) => row.estado,
-      sortable: true,
+          name: 'Estado',
+          cell: (row) => (
+            <span style={{ color: row.estado === 'activo' ? 'green' : 'red',fontWeight:'700' }}>
+              {row.estado}
+            </span>
+          ),
+          sortable: true,
     },
     {
       name: 'Acciones',

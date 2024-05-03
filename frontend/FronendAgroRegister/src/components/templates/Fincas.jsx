@@ -101,8 +101,12 @@ function fincas() {
     },
     {
       name: 'Estado',
-      selector: (row) => row.estado,
-      sortable: true,
+    cell: (row) => (
+      <span style={{ color: row.estado === 'activo' ? 'green' : 'red',fontWeight:'700' }}>
+        {row.estado}
+      </span>
+    ),
+    sortable: true,
     },
     {
       name: 'Acciones',
@@ -131,7 +135,7 @@ function fincas() {
             onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
             onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
           >
-            {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
+            {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
           </button>
         </>
       ),

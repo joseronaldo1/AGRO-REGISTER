@@ -128,7 +128,15 @@ function Programacion() {
     },
     {
       name: 'Estado',
-      selector: (row) => row.estado,
+      cell: (row) => (
+        <span style={{ color: 
+          row.estado === 'activo' ? 'green' : 
+          row.estado === 'ejecutandose' ? 'orange' : 
+          row.estado === 'terminado' ? '#2A5CB5' : 
+          'red',fontWeight:'700'  }}>
+          {row.estado}
+        </span>
+      ),
       sortable: true,
     },
     {
@@ -150,7 +158,7 @@ function Programacion() {
             border: 'none',
             color: 'white',
             height: '40px',
-            width: '1040px',
+            width: '700px',
             transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
           }}
           type="button"

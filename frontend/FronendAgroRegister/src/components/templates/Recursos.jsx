@@ -105,8 +105,12 @@ function Recursos() {
     },
     {
       name: 'Estado',
-      selector: (row) => row.estado,
-      sortable: true,
+    cell: (row) => (
+      <span style={{ color: row.estado === 'existe' ? 'green' : 'red',fontWeight:'700'  }}>
+        {row.estado}
+      </span>
+    ),
+    sortable: true,
     },
     {
       name: 'Acciones',
