@@ -23,7 +23,7 @@ function Recursos() {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
@@ -85,13 +85,13 @@ function Recursos() {
       console.error('Error al cambiar el estado del recurso:', error);
     }
   };
-  
+
   const columns = [
-  /*   {
-      name: 'ID',
-      selector: (row) => row.id_tipo_recursos,
-      sortable: true,
-    }, */
+    /*   {
+        name: 'ID',
+        selector: (row) => row.id_tipo_recursos,
+        sortable: true,
+      }, */
     {
       name: 'Nombre',
       selector: (row) => row.nombre_recursos,
@@ -114,12 +114,12 @@ function Recursos() {
     },
     {
       name: 'Estado',
-    cell: (row) => (
-      <span style={{ color: row.estado === 'existe' ? 'green' : 'red',fontWeight:'700'  }}>
-        {row.estado}
-      </span>
-    ),
-    sortable: true,
+      cell: (row) => (
+        <span style={{ color: row.estado === 'existe' ? 'green' : '#E83636', fontWeight: '700' }}>
+          {row.estado}
+        </span>
+      ),
+      sortable: true,
     },
     {
       name: 'Acciones',
@@ -127,29 +127,29 @@ function Recursos() {
         <>
           <button
             className="btn p-2 rounded-lg"
-            style={{ backgroundColor: '#975C29', borderColor: '#ffc107',  border: 'none' }}
+            style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
             type="button"
             onClick={() => handleOpenActualizacionModal(row)}
           >
             <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
           </button>
           <button
-  className="btn p-2 rounded-lg estado-button"
-  style={{
-    backgroundColor: row.estado === 'existe' ? 'red' : 'green',
-    border: 'none',
-    color: 'white',
-    height:'40px',
-    width:'600px',
-    transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-  }}
-  type="button"
-  onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
-  onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-  onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
->
-  {row.estado === 'existe' ? 'No hay' : 'Si hay'}
-</button>
+            className="btn p-2 rounded-lg estado-button"
+            style={{
+              backgroundColor: row.estado === 'existe' ? '#E83636' : 'green',
+              border: 'none',
+              color: 'white',
+              height: '40px',
+              width: '600px',
+              transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+            }}
+            type="button"
+            onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
+            onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+            onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+          >
+            {row.estado === 'existe' ? 'No hay' : 'Si hay'}
+          </button>
 
         </>
       ),

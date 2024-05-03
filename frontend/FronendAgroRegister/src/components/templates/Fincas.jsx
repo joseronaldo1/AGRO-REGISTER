@@ -18,13 +18,13 @@ function fincas() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-  
+
 
 
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
@@ -110,12 +110,12 @@ function fincas() {
     },
     {
       name: 'Estado',
-    cell: (row) => (
-      <span style={{ color: row.estado === 'activo' ? 'green' : 'red',fontWeight:'700' }}>
-        {row.estado}
-      </span>
-    ),
-    sortable: true,
+      cell: (row) => (
+        <span style={{ color: row.estado === 'activo' ? 'green' : '#E83636', fontWeight: '700' }}>
+          {row.estado}
+        </span>
+      ),
+      sortable: true,
     },
     {
       name: 'Acciones',
@@ -132,7 +132,7 @@ function fincas() {
           <button
             className="btn p-2 rounded-lg estado-button"
             style={{
-              backgroundColor: row.estado === 'activo' ? 'red' : 'green',
+              backgroundColor: row.estado === 'activo' ? '#E83636' : 'green',
               border: 'none',
               color: 'white',
               height: '40px',
@@ -168,7 +168,7 @@ function fincas() {
             <Datatable columns={columns} data={data} title="Fincas" />
           </div>
         </div>
-        
+
         <ModalRecuRegeContrasenia
           mostrar={showRegistroModal}
           cerrarModal={handleCloseRegistroModal}

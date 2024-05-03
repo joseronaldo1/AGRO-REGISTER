@@ -22,7 +22,7 @@ function Cultivos() {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
@@ -75,15 +75,15 @@ function Cultivos() {
     }
   };
 
-const handleEstadoBotonClick = async (id, estado) => {
-  try {
-    const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; //Cambiar los estados existentes por "activo" e "inactivo"
-    await axios.put(`http://localhost:3000/desactivar/Cultivo/${id}`, { estado: newEstado });
-    fetchData(); // Actualizar los datos después de la actualización
-  } catch (error) {
-    console.error('Error al cambiar el estado de la finca:', error);
-  }
-};
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; //Cambiar los estados existentes por "activo" e "inactivo"
+      await axios.put(`http://localhost:3000/desactivar/Cultivo/${id}`, { estado: newEstado });
+      fetchData(); // Actualizar los datos después de la actualización
+    } catch (error) {
+      console.error('Error al cambiar el estado de la finca:', error);
+    }
+  };
 
   const columns = [
     // {
@@ -111,14 +111,14 @@ const handleEstadoBotonClick = async (id, estado) => {
       selector: (row) => row.nombre_variedad,
       sortable: true,
     },
-        {
-          name: 'Estado',
-          cell: (row) => (
-            <span style={{ color: row.estado === 'activo' ? 'green' : 'red',fontWeight:'700' }}>
-              {row.estado}
-            </span>
-          ),
-          sortable: true,
+    {
+      name: 'Estado',
+      cell: (row) => (
+        <span style={{ color: row.estado === 'activo' ? 'green' : '#E83636', fontWeight: '700' }}>
+          {row.estado}
+        </span>
+      ),
+      sortable: true,
     },
     {
       name: 'Acciones',
@@ -135,7 +135,7 @@ const handleEstadoBotonClick = async (id, estado) => {
           <button
             className="btn p-2 rounded-lg estado-button"
             style={{
-              backgroundColor: row.estado === 'activo' ? 'red' : 'green',
+              backgroundColor: row.estado === 'activo' ? '#E83636' : 'green',
               border: 'none',
               color: 'white',
               height: '40px',
@@ -171,7 +171,7 @@ const handleEstadoBotonClick = async (id, estado) => {
             <Datatable columns={columns} data={data} title="Cultivos" />
           </div>
         </div>
-        
+
         <ModalRecuRegeContrasenia
           mostrar={showRegistroModal}
           cerrarModal={handleCloseRegistroModal}

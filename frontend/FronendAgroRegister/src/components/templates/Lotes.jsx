@@ -21,7 +21,7 @@ function lotes() {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
@@ -60,30 +60,30 @@ function lotes() {
   };
 
 
- // Función para buscar fincas por nombre
- const handleSearch = async (searchTerm) => {
-  try {
-    if (searchTerm.trim() === '') {
-      // Si el término de búsqueda está vacío, restaurar los datos originales
-      setData(originalData);
-    } else {
-      const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
-      setData(response.data);
+  // Función para buscar fincas por nombre
+  const handleSearch = async (searchTerm) => {
+    try {
+      if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
+        setData(originalData);
+      } else {
+        const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error('Error searching for resources:', error);
     }
-  } catch (error) {
-    console.error('Error searching for resources:', error);
-  }
-};
+  };
 
-const handleEstadoBotonClick = async (id, estado) => {
-  try {
-    const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; // Cambiar los estados existentes por "activo" e "inactivo"
-    await axios.put(`http://localhost:3000/desactivar/Lote/${id}`, { estado: newEstado });
-    fetchData(); // Actualizar los datos después de la actualización
-  } catch (error) {
-    console.error('Error al cambiar el estado del lote:', error);
-  }
-};
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; // Cambiar los estados existentes por "activo" e "inactivo"
+      await axios.put(`http://localhost:3000/desactivar/Lote/${id}`, { estado: newEstado });
+      fetchData(); // Actualizar los datos después de la actualización
+    } catch (error) {
+      console.error('Error al cambiar el estado del lote:', error);
+    }
+  };
 
   const columns = [
     /* {
@@ -113,29 +113,29 @@ const handleEstadoBotonClick = async (id, estado) => {
     },
     {
       name: 'Estado',
-    cell: (row) => (
-      <span style={{ color: row.estado === 'activo' ? 'green' : 'red',fontWeight:'700'  }}>
-        {row.estado}
-      </span>
-    ),
-    sortable: true,
+      cell: (row) => (
+        <span style={{ color: row.estado === 'activo' ? 'green' : '#E83636', fontWeight: '700' }}>
+          {row.estado}
+        </span>
+      ),
+      sortable: true,
     },
     {
       name: 'Acciones',
       cell: (row) => (
         <>
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-        </button>
-        <button
+          <button
+            className="btn p-2 rounded-lg"
+            style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
+            type="button"
+            onClick={() => handleOpenActualizacionModal(row)}
+          >
+            <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+          </button>
+          <button
             className="btn p-2 rounded-lg estado-button"
             style={{
-              backgroundColor: row.estado === 'activo' ? 'red' : 'green',
+              backgroundColor: row.estado === 'activo' ? '#E83636' : 'green',
               border: 'none',
               color: 'white',
               height: '40px',
