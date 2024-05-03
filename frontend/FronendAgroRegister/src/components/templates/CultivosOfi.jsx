@@ -18,6 +18,7 @@ function Cultivos() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
+  const [error, setError] = useState(null); // Estado para manejar errores
 
   useEffect(() => {
     fetchData();
@@ -66,12 +67,20 @@ function Cultivos() {
       if (searchTerm.trim() === '') {
         // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
+        setError(null); // Limpiar el error
       } else {
         const response = await axios.get(`http://localhost:3000/buscarCultivo/${searchTerm}`);
         setData(response.data);
+        if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
+          setError('No se encontraron resultados');
+        } else {
+          setError(null); // Limpiar el error si se encontraron resultados
+        }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
+      setError('Error al buscar recursos'); // Establecer mensaje de error
     }
   };
 
@@ -174,7 +183,11 @@ function Cultivos() {
 
           <br />
 
-          <Datatable columns={columns} data={data} title="Cultivos" />
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
+            <Datatable columns={columns} data={data} title="Cultivos" />
+          )}
 
         </div>
 
@@ -204,4 +217,3 @@ function Cultivos() {
 }
 
 export default Cultivos;
-

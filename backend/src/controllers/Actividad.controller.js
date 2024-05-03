@@ -42,37 +42,11 @@ export const RegistrarA = async (req, res) => {
         const { nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad } = req.body
         const [resultado] = await pool.query("insert into actividad(nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad) values (?,?,?,?,?)", [nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad ])
 
-<<<<<<< HEAD
-        const { nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad } = req.body;
 
-        // Asignar estado directamente como 'activo'
-        const esta = 'activo';
-
-        // fk variedad 
-        const [variedadExist] = await pool.query('SELECT * FROM variedad WHERE id_variedad = ?', [fk_id_variedad]);
-
-        if (variedadExist.length === 0) {
-            return res.status(404).json({
-                status: 404,
-                message: 'La variedad no existe. Registre primero una variedad.'
-            });
-        }
-
-        const [result] = await pool.query("INSERT INTO actividad (nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado) VALUES (?, ?, ?, ?, ?, ?)", [nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, esta]);
-
-        if (result.affectedRows > 0) {
-            res.status(200).json({
-                status: 200,
-                message: 'Se registró la actividad con éxito',
-                result: result // Mostrar el objeto result completo
-            });
-
-=======
         if (resultado.affectedRows > 0) {
             res.status(200).json({
                 "mensaje": "Actividad registrada con exito"
             })
->>>>>>> f89cae0e07c132105c794ce36c9e9ba139d10b88
         } else {
             res.status(400).json({
                 "mensaje": "hay un error no se pudo guardar"
@@ -80,15 +54,9 @@ export const RegistrarA = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({
-<<<<<<< HEAD
-            status: 500,
-            message: error.message || 'Error en el sistema'
-        });
-        console.log(error);
-=======
+
             "mensaje": error
         })
->>>>>>> f89cae0e07c132105c794ce36c9e9ba139d10b88
     }
 }
 
