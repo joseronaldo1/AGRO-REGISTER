@@ -18,7 +18,7 @@ function Actividad() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
 
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -60,40 +60,40 @@ function Actividad() {
   };
 
 
- // Función para buscar actividades por nombre
- const handleSearch = async (searchTerm) => {
-  try {
-    const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
-    setData(response.data);
-  } catch (error) {
-    console.error('Error searching for resources:', error);
-  }
-};
-const handleEstadoBotonClick = async (id, estado) => {
-  try {
-    let newEstado;
-    switch (estado) {
-      case 'activo':
-        newEstado = 'ejecutandose';
-        break;
-      case 'ejecutandose':
-        newEstado = 'terminado';
-        break;
-      case 'terminado':
-        newEstado = 'inactivo';
-        break;
-      case 'inactivo':
-        newEstado = 'activo';
-        break;
-      default:
-        break;
+  // Función para buscar actividades por nombre
+  const handleSearch = async (searchTerm) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error searching for resources:', error);
     }
-    await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
-    fetchData(); // Actualizar los datos después de la actualización
-  } catch (error) {
-    console.error('Error al cambiar el estado de la actividad:', error);
-  }
-};
+  };
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      let newEstado;
+      switch (estado) {
+        case 'activo':
+          newEstado = 'ejecutandose';
+          break;
+        case 'ejecutandose':
+          newEstado = 'terminado';
+          break;
+        case 'terminado':
+          newEstado = 'inactivo';
+          break;
+        case 'inactivo':
+          newEstado = 'activo';
+          break;
+        default:
+          break;
+      }
+      await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
+      fetchData(); // Actualizar los datos después de la actualización
+    } catch (error) {
+      console.error('Error al cambiar el estado de la actividad:', error);
+    }
+  };
 
   const columns = [
     /*{
@@ -102,8 +102,27 @@ const handleEstadoBotonClick = async (id, estado) => {
       sortable: true,
     },*/
     {
+      name: 'Editar',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} />
+        </button>
+      ),
+    },
+    {
       name: 'Nombre Actividad',
       selector: (row) => row.nombre_actividad,
+      sortable: true,
+    },
+
+    {
+      name: 'Nombre Variedad',
+      selector: (row) => row.nombre_variedad,
       sortable: true,
     },
     {
@@ -122,18 +141,15 @@ const handleEstadoBotonClick = async (id, estado) => {
       sortable: true,
     },
     {
-      name: 'Nombre Variedad',
-      selector: (row) => row.nombre_variedad,
-      sortable: true,
-    },
-    {
       name: 'Estado',
       cell: (row) => (
-        <span style={{ color: 
-          row.estado === 'activo' ? 'green' : 
-          row.estado === 'ejecutandose' ? 'orange' : 
-          row.estado === 'terminado' ? '#2A5CB5' : 
-          'red',fontWeight:'700'  }}>
+        <span style={{
+          color:
+            row.estado === 'activo' ? 'green' :
+              row.estado === 'ejecutandose' ? 'orange' :
+                row.estado === 'terminado' ? '#2A5CB5' :
+                  'red', fontWeight: '700'
+        }}>
           {row.estado}
         </span>
       ),
@@ -141,16 +157,8 @@ const handleEstadoBotonClick = async (id, estado) => {
     },
     {
       name: 'Acciones',
-    cell: (row) => (
-      <>
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-        </button>
+      cell: (row) => (
+
         <button
           className="btn p-2 rounded-lg estado-button"
           style={{
@@ -158,7 +166,8 @@ const handleEstadoBotonClick = async (id, estado) => {
             border: 'none',
             color: 'white',
             height: '40px',
-            width: '1040px',
+            width: '100px',
+            marginLeft: '-18px',
             transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
           }}
           type="button"
@@ -168,52 +177,52 @@ const handleEstadoBotonClick = async (id, estado) => {
         >
           {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
         </button>
-      </>
-    ),
-  },
-];
 
-return (
-  <div>
-    <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Header />
-      <div className="main-content" style={{ flex: 1 }}>
-        {/* Contenido principal */}
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-          <div className="white-container">
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
+
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
           </div>
-        </div>
-        <br />
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+
+          <br />
+
           <Datatable columns={columns} data={data} title="Actividades" />
+
         </div>
+
+        <ModalRecuRegeContrasenia
+          mostrar={showRegistroModal}
+          cerrarModal={handleCloseRegistroModal}
+          titulo="Registro"
+          actionLabel="Registrar"
+          initialData={registroFormData}
+          mode="registro"
+          handleSubmit={() => setShowRegistroModal(false)}
+        />
+        <ModalRecuRegeContrasenia
+          mostrar={showActualizacionModal}
+          cerrarModal={handleCloseActualizacionModal}
+          titulo="Actualización"
+          handleSubmit={handleActualizacionFormSubmit}
+          actionLabel="Actualizar"
+          initialData={initialData}
+          mode={mode}
+        />
+        <br />
       </div>
-      
-      <ModalRecuRegeContrasenia
-        mostrar={showRegistroModal}
-        cerrarModal={handleCloseRegistroModal}
-        titulo="Registro"
-        actionLabel="Registrar"
-        initialData={registroFormData}
-        mode="registro"
-        handleSubmit={() => setShowRegistroModal(false)}
-      />
-      <ModalRecuRegeContrasenia
-        mostrar={showActualizacionModal}
-        cerrarModal={handleCloseActualizacionModal}
-        titulo="Actualización"
-        handleSubmit={handleActualizacionFormSubmit}
-        actionLabel="Actualizar"
-        initialData={initialData}
-        mode={mode}
-      />
-      <br />
+      <Footer />
     </div>
-    <Footer />
-  </div>
-);
+  );
 }
 
 export default Actividad;

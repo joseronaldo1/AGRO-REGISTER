@@ -93,6 +93,19 @@ function Recursos() {
         sortable: true,
       }, */
     {
+      name: 'Editar',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} />
+        </button>
+      ),
+    },
+    {
       name: 'Nombre',
       selector: (row) => row.nombre_recursos,
       sortable: true,
@@ -124,34 +137,26 @@ function Recursos() {
     {
       name: 'Acciones',
       cell: (row) => (
-        <>
-          <button
-            className="btn p-2 rounded-lg"
-            style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
-            type="button"
-            onClick={() => handleOpenActualizacionModal(row)}
-          >
-            <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-          </button>
-          <button
-            className="btn p-2 rounded-lg estado-button"
-            style={{
-              backgroundColor: row.estado === 'existe' ? '#E83636' : 'green',
-              border: 'none',
-              color: 'white',
-              height: '40px',
-              width: '600px',
-              transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-            }}
-            type="button"
-            onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
-            onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-            onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
-          >
-            {row.estado === 'existe' ? 'No hay' : 'Si hay'}
-          </button>
 
-        </>
+        <button
+          className="btn p-2 rounded-lg estado-button"
+          style={{
+            backgroundColor: row.estado === 'existe' ? '#E83636' : 'green',
+            border: 'none',
+            color: 'white',
+            height: '40px',
+            marginLeft: '-18px',
+            width: '100px',
+            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+          }}
+          type="button"
+          onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+        >
+          {row.estado === 'existe' ? 'No hay' : 'Si hay'}
+        </button>
+
       ),
     },
   ];
@@ -163,15 +168,15 @@ function Recursos() {
         <div className="main-content" style={{ flex: 1 }}>
           {/* Contenido principal */}
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-            <div className="white-container">
-              <SearchBar onSearch={handleSearch} />
-              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            </div>
+
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
           </div>
+
           <br />
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-            <Datatable columns={columns} data={data} title="Recursos" />
-          </div>
+
+          <Datatable columns={columns} data={data} title="Recursos" />
+
         </div>
 
         <ModalRecuRegeContrasenia

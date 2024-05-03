@@ -22,7 +22,7 @@ function Produccion() {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
@@ -61,29 +61,37 @@ function Produccion() {
   };
 
 
- // Función para buscar produccion por nombre
- const handleSearch = async (searchTerm) => {
-  try {
-    if (searchTerm.trim() === '') {
-      // Si el término de búsqueda está vacío, restaurar los datos originales
-      setData(originalData);
-    } else {
-      const response = await axios.get(`http://localhost:3000/BuscarProduccion/${searchTerm}`);
-      setData(response.data);
+  // Función para buscar produccion por nombre
+  const handleSearch = async (searchTerm) => {
+    try {
+      if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
+        setData(originalData);
+      } else {
+        const response = await axios.get(`http://localhost:3000/BuscarProduccion/${searchTerm}`);
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error('Error searching for resources:', error);
     }
-  } catch (error) {
-    console.error('Error searching for resources:', error);
-  }
-};
+  };
 
 
 
   const columns = [
     {
-      name: 'ID',
-      selector: (row) => row.id_produccion,
-      sortable: true,
-    }, 
+      name: 'Editar',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} />
+        </button>
+      ),
+    },
     {
       name: 'Cantidad Producción',
       selector: (row) => row.cantidad_produccion,
@@ -99,22 +107,8 @@ function Produccion() {
       selector: (row) => row.nombre_actividad,
       sortable: true,
     },
- 
-    {
-      name: 'Acciones',
-      cell: (row) => (
-        <>
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-        </button>
-        </>
-      ),
-    },
+
+
   ];
 
   return (

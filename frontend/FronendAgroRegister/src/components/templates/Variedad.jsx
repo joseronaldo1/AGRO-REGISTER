@@ -23,7 +23,7 @@ function Variedad() {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
@@ -61,41 +61,26 @@ function Variedad() {
   };
 
 
- // Función para buscar fincas por nombre_variedad
- const handleSearch = async (searchTerm) => {
-  try {
-    if (searchTerm.trim() === '') {
-      // Si el término de búsqueda está vacío, restaurar los datos originales
-      setData(originalData);
-    } else {
-      const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
-      setData(response.data);
+  // Función para buscar fincas por nombre_variedad
+  const handleSearch = async (searchTerm) => {
+    try {
+      if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
+        setData(originalData);
+      } else {
+        const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error('Error searching for resources:', error);
     }
-  } catch (error) {
-    console.error('Error searching for resources:', error);
-  }
-};
+  };
 
 
 
   const columns = [
     {
-      name: 'ID',
-      selector: (row) => row.id_variedad,
-      sortable: true,
-    },
-    {
-      name: 'Nombre Variedad',
-      selector: (row) => row.nombre_variedad,
-      sortable: true,
-    },
-    {
-      name: 'Tipo Cultivo',
-      selector: (row) => row.tipo_cultivo,
-      sortable: true,
-    },
-    {
-      name: 'Acciones',
+      name: 'Editar',
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
@@ -107,25 +92,35 @@ function Variedad() {
         </button>
       ),
     },
+    {
+      name: 'Nombre Variedad',
+      selector: (row) => row.nombre_variedad,
+      sortable: true,
+    },
+    {
+      name: 'Tipo Cultivo',
+      selector: (row) => row.tipo_cultivo,
+      sortable: true,
+    },
+
   ];
 
   return (
     <div>
-      <div className="recursos-container">
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
-        <div className="container mt-5">
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-            <div className="white-container">
 
-              <SearchBar onSearch={handleSearch} />
-
-              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            </div>
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
           </div>
+
           <br />
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-            <Datatable columns={columns} data={data} title="Variedad" />
-          </div>
+
+          <Datatable columns={columns} data={data} title="Variedad" />
+
         </div>
 
         <ModalRecuRegeContrasenia

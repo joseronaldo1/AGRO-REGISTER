@@ -18,10 +18,10 @@ const SearchBar = ({ onSearch }) => {
       onSearch(searchTerm);
     }
   };
-  
+
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginLeft: '75%' }}>
+    <form onSubmit={handleSubmit} style={{ marginLeft: '75%', marginTop: '12px' }}>
       <input
         type="text"
         placeholder="Buscar por Nombre"

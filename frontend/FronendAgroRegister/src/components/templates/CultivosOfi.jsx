@@ -92,13 +92,21 @@ function Cultivos() {
     //   sortable: true,
     // },
     {
-      name: 'Fecha Inicio',
-      selector: (row) => row.fecha_inicio,
-      sortable: true,
+      name: 'Editar',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} />
+        </button>
+      ),
     },
     {
-      name: 'Cantidad Sembrada',
-      selector: (row) => row.cantidad_sembrada,
+      name: 'Nombre Variedad',
+      selector: (row) => row.nombre_variedad,
       sortable: true,
     },
     {
@@ -107,8 +115,13 @@ function Cultivos() {
       sortable: true,
     },
     {
-      name: 'Nombre Variedad',
-      selector: (row) => row.nombre_variedad,
+      name: 'Cantidad Sembrada',
+      selector: (row) => row.cantidad_sembrada,
+      sortable: true,
+    },
+    {
+      name: 'Fecha Inicio',
+      selector: (row) => row.fecha_inicio,
       sortable: true,
     },
     {
@@ -123,33 +136,26 @@ function Cultivos() {
     {
       name: 'Acciones',
       cell: (row) => (
-        <>
-          <button
-            className="btn p-2 rounded-lg"
-            style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
-            type="button"
-            onClick={() => handleOpenActualizacionModal(row)}
-          >
-            <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-          </button>
-          <button
-            className="btn p-2 rounded-lg estado-button"
-            style={{
-              backgroundColor: row.estado === 'activo' ? '#E83636' : 'green',
-              border: 'none',
-              color: 'white',
-              height: '40px',
-              width: '550px',
-              transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-            }}
-            type="button"
-            onClick={() => handleEstadoBotonClick(row.id_cultivo, row.estado)}
-            onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-            onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
-          >
-            {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
-          </button>
-        </>
+
+        <button
+          className="btn p-2 rounded-lg estado-button"
+          style={{
+            backgroundColor: row.estado === 'activo' ? '#E83636' : 'green',
+            border: 'none',
+            color: 'white',
+            height: '40px',
+            width: '120px',
+            marginLeft: '-18px',
+            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+          }}
+          type="button"
+          onClick={() => handleEstadoBotonClick(row.id_cultivo, row.estado)}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+        >
+          {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
+        </button>
+
       ),
     },
   ];
@@ -161,15 +167,15 @@ function Cultivos() {
         <div className="main-content" style={{ flex: 1 }}>
           {/* Contenido principal */}
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-            <div className="white-container">
-              <SearchBar onSearch={handleSearch} />
-              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            </div>
+
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
           </div>
+
           <br />
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-            <Datatable columns={columns} data={data} title="Cultivos" />
-          </div>
+
+          <Datatable columns={columns} data={data} title="Cultivos" />
+
         </div>
 
         <ModalRecuRegeContrasenia

@@ -23,7 +23,7 @@ function Programacion() {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
@@ -110,6 +110,37 @@ function Programacion() {
       sortable: true,
     },*/
     {
+      name: 'Editar',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} />
+        </button>
+      ),
+    },
+
+    {
+      name: 'Nombre Usuario',
+      selector: (row) => row.nombre,
+      sortable: true,
+    },
+
+    {
+      name: 'Nombre Actividad',
+      selector: (row) => row.nombre_actividad,
+      sortable: true,
+    },
+
+    {
+      name: 'ID Cultivo',
+      selector: (row) => row.id_cultivo,
+      sortable: true,
+    },
+    {
       name: 'Fecha Inicio',
       selector: (row) => row.fecha_inicio,
       sortable: true,
@@ -120,28 +151,15 @@ function Programacion() {
       sortable: true,
     },
     {
-      name: 'Nombre Usuario',
-      selector: (row) => row.nombre,
-      sortable: true,
-    },
-    {
-      name: 'Nombre Actividad',
-      selector: (row) => row.nombre_actividad,
-      sortable: true,
-    },
-    {
-      name: 'ID Cultivo',
-      selector: (row) => row.id_cultivo,
-      sortable: true,
-    },
-    {
       name: 'Estado',
       cell: (row) => (
-        <span style={{ color: 
-          row.estado === 'activo' ? 'green' : 
-          row.estado === 'ejecutandose' ? 'orange' : 
-          row.estado === 'terminado' ? '#2A5CB5' : 
-          'red',fontWeight:'700'  }}>
+        <span style={{
+          color:
+            row.estado === 'activo' ? 'green' :
+              row.estado === 'ejecutandose' ? 'orange' :
+                row.estado === 'terminado' ? '#2A5CB5' :
+                  'red', fontWeight: '700'
+        }}>
           {row.estado}
         </span>
       ),
@@ -150,23 +168,16 @@ function Programacion() {
     {
       name: 'Acciones',
       cell: (row) => (
-        <>
-          <button
-            className="btn p-2 rounded-lg"
-            style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
-            type="button"
-            onClick={() => handleOpenActualizacionModal(row)}
-          >
-            <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-          </button>
-          <button
+
+        <button
           className="btn p-2 rounded-lg estado-button"
           style={{
             backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
             border: 'none',
             color: 'white',
             height: '40px',
-            width: '700px',
+            width: '100px',
+            marginLeft: '-18px',
             transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
           }}
           type="button"
@@ -176,7 +187,6 @@ function Programacion() {
         >
           {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
         </button>
-        </>
       ),
     },
   ];
@@ -188,17 +198,17 @@ function Programacion() {
         <div className="main-content" style={{ flex: 1 }}>
           {/* Contenido principal */}
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-            <div className="white-container">
-              <SearchBar onSearch={handleSearch} />
-              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            </div>
+
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
           </div>
+
           <br />
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-            <Datatable columns={columns} data={data} title="Programacion" />
-          </div>
+
+          <Datatable columns={columns} data={data} title="Programacion" />
+
         </div>
-        
+
         <ModalRecuRegeContrasenia
           mostrar={showRegistroModal}
           cerrarModal={handleCloseRegistroModal}

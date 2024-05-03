@@ -9,14 +9,14 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
     fk_id_lote: initialData && initialData.fk_id_lote ? initialData.fk_id_lote : '',
     fk_id_variedad: initialData && initialData.fk_id_variedad ? initialData.fk_id_variedad : ''
   };
-  
+
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
 
   // Nuevo estado para almacenar los nombres de los lotes y variedades
   const [nombre_lote, setNombreLote] = useState([]);
   const [nombre_variedad, setNombreVariedad] = useState([]);
-  
+
   // Obtener los nombres de los lotes y variedades al cargar el componente
   useEffect(() => {
     axios.get('http://localhost:3000/listarlote')
@@ -26,7 +26,7 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
       .catch(error => {
         console.error('Error al obtener los datos:', error);
       });
-      
+
     axios.get('http://localhost:3000/listarVariedades')
       .then(response => {
         setNombreVariedad(response.data);
@@ -44,7 +44,7 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
   useEffect(() => {
     setShowWarning(false);
   }, [formData.fk_id_variedad]);
-  
+
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -52,7 +52,7 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
       [name]: value
     }));
   };
-  
+
   const validarCantidadSembrada = cantidad_sembrada => {
     const soloNumeros = /^\d+$/;
     return soloNumeros.test(cantidad_sembrada);
@@ -84,7 +84,7 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
         });
         return;
       }
-  
+
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/registrarCultivos',
@@ -113,7 +113,7 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
           text: 'El cultivo se ha actualizado exitosamente'
         });
       }
-  
+
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
@@ -177,10 +177,10 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
         <select
           label='Nombre de Lote'
           name='fk_id_lote'
-          style={{borderColor: '#1bc12e', width: '50%', height: '40px',  borderRadius: '6px'}}
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
           id=''
           required={true}
-          value={formData.fk_id_lote} 
+          value={formData.fk_id_lote}
           onChange={handleChange}
         >
           <option value="" disabled>Seleccione</option>
@@ -204,10 +204,10 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
         <select
           label='Nombre de Variedad'
           name='fk_id_variedad'
-          style={{borderColor: '#1bc12e', width: '50%', height: '40px',  borderRadius: '6px'}}
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
           id=''
           required={true}
-          value={formData.fk_id_variedad} 
+          value={formData.fk_id_variedad}
           onChange={handleChange}
         >
           <option value="" disabled>Seleccione</option>
@@ -227,7 +227,7 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
         className="boton"
         type="submit"
         style={{
-          backgroundColor: '#1bc12e',
+          backgroundColor: 'green',
           borderRadius: '10px',
           color: 'white',
           border: 'none',
