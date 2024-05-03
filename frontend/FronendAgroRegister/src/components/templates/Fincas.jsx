@@ -17,15 +17,19 @@ function fincas() {
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
+  
+
 
   useEffect(() => {
     fetchData();
-  }, [data]);
-
+  }, []);
+  
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
+      setOriginalData(response.data); // Guardar los datos originales sin filtrar
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -61,8 +65,13 @@ function fincas() {
   // Función para buscar fincas por nombre_finca
   const handleSearch = async (searchTerm) => {
     try {
-      const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
-      setData(response.data);
+      if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
+        setData(originalData);
+      } else {
+        const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
+        setData(response.data);
+      }
     } catch (error) {
       console.error('Error searching for resources:', error);
     }

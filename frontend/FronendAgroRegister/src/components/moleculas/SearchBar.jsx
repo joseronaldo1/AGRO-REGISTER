@@ -10,8 +10,15 @@ const SearchBar = ({ onSearch }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(searchTerm);
+    if (searchTerm.trim() === '') {
+      // Si el término de búsqueda está vacío, mostrar todas las fincas
+      onSearch('');
+    } else {
+      // Si hay un término de búsqueda, realizar la búsqueda normalmente
+      onSearch(searchTerm);
+    }
   };
+  
 
   return (
     <form onSubmit={handleSubmit} style={{ marginLeft: '75%' }}>
