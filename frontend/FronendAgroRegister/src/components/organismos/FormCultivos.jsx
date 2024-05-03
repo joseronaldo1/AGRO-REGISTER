@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'; // Importa SweetAlert
 
-
-const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
-    nombre_actividad: initialData && initialData.nombre_actividad ? initialData.nombre_actividad : '',
-    tiempo: initialData && initialData.tiempo ? initialData.tiempo : '',
-    observaciones: initialData && initialData.observaciones ? initialData.observaciones : '',
-    valor_actividad: initialData && initialData.valor_actividad ? initialData.valor_actividad : '',
+    fecha_inicio: initialData && initialData.fecha_inicio ? initialData.fecha_inicio : '',
+    cantidad_sembrada: initialData && initialData.cantidad_sembrada ? initialData.cantidad_sembrada : '',
+    fk_id_lote: initialData && initialData.fk_id_lote ? initialData.fk_id_lote : '',
     fk_id_variedad: initialData && initialData.fk_id_variedad ? initialData.fk_id_variedad : ''
-
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [showWarning, setShowWarning] = useState(false);
+  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
+
+  // Nuevo estado para almacenar los nombres de los lotes y variedades
+  const [nombre_lote, setNombreLote] = useState([]);
   const [nombre_variedad, setNombreVariedad] = useState([]);
 
+  // Obtener los nombres de los lotes y variedades al cargar el componente
   useEffect(() => {
+    axios.get('http://localhost:3000/listarlote')
+      .then(response => {
+        setNombreLote(response.data);
+      })
+      .catch(error => {
+        console.error('Error al obtener los datos:', error);
+      });
+
     axios.get('http://localhost:3000/listarVariedades')
       .then(response => {
         setNombreVariedad(response.data);
@@ -27,6 +36,14 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
       });
   }, []);
 
+  // Restablecer la advertencia cuando cambia el lote seleccionado
+  useEffect(() => {
+    setShowWarning(false);
+  }, [formData.fk_id_lote]);
+
+  useEffect(() => {
+    setShowWarning(false);
+  }, [formData.fk_id_variedad]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -36,96 +53,75 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
     }));
   };
 
-  const validarNombreActividad = nombre_actividad => {
-    const soloLetras = /^[a-zA-Z\s]*$/;
-    return soloLetras.test(nombre_actividad);
+  const validarCantidadSembrada = cantidad_sembrada => {
+    const soloNumeros = /^\d+$/;
+    return soloNumeros.test(cantidad_sembrada);
   };
 
-  const validarObservaciones = observaciones => {
-    const soloLetras = /^[a-zA-Z\s]*$/;
-    return soloLetras.test(observaciones);
-  };
-
-  const handleFormSubmit = async e => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!formData.nombre_actividad || !formData.tiempo || !formData.observaciones || !formData.valor_actividad || !formData.fk_id_variedad) {
+      if (!formData.fecha_inicio || !formData.cantidad_sembrada || !formData.fk_id_lote || !formData.fk_id_variedad) {
         setShowWarning(true);
-
         return;
       }
-      if (!validarNombreActividad(formData.nombre_actividad)) {
+
+      if (!validarCantidadSembrada(formData.cantidad_sembrada)) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'El nombre de la actividad solo puede contener letras'
+          text: 'La cantidad sembrada debe contener solo números'
         });
         return;
       }
 
-      const tiempo = formData.tiempo;
-      if (!tiempo || !/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(tiempo)) {
+      const fechaInicio = formData.fecha_inicio;
+      if (!fechaInicio || !Date.parse(fechaInicio)) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'El campo tiempo debe tener el formato HH:MM:SS'
+          text: 'La fecha de inicio debe estar en formato ISO 8601 (YYYY-MM-DD)'
         });
         return;
       }
 
-      if (!validarObservaciones(formData.observaciones)) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'La observación solo puede contener letras'
-        });
-
-        return;
-      }
-  
       if (mode === 'registro') {
         const response = await axios.post(
-
-          'http://localhost:3000/RegistrarActividad',
+          'http://localhost:3000/registrarCultivos',
           formData,
           {
             headers: {
               'Content-Type': 'application/json'
             }
           }
-
         );
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'La actividad se ha registrado exitosamente'
+          text: 'El cultivo se ha registrado exitosamente'
         });
         console.log(response.data);
-      } else if (mode === 'update' && initialData && initialData.id) {
+      } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
-          `http://localhost:3000/ActualizarActividad/${id}`,
+          `http://localhost:3000/actualizarCultivo/${id}`,
           formData
         );
-
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'La actividad se ha actualizado exitosamente'
+          text: 'El cultivo se ha actualizado exitosamente'
         });
-
       }
-  
+
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
       console.error('Error al procesar el formulario:', error);
     }
   };
-  
 
   return (
-
     <form
       className={className}
       onSubmit={handleFormSubmit}
@@ -135,10 +131,9 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         textAlign: 'center'
       }}
     >
-
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Nombre de la Actividad:{' '}
+          Fecha de inicio:{' '}
         </label>
         <br />
         <input
@@ -148,54 +143,16 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
             width: '50%',
             height: '40px'
           }}
-          type="text"
-          name="nombre_actividad"
-          placeholder="Nombre de la actvidad"
-          value={formData.nombre_actividad}
+          type="date"
+          name="fecha_inicio"
+          placeholder="Fecha de Inicio"
+          value={formData.fecha_inicio}
           onChange={handleChange}
         />
       </div>
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Tiempo:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="text"
-          name="tiempo"
-          placeholder="Formato: HH:MM:SS"
-          value={formData.tiempo}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Observaciones:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="text"
-          name="observaciones"
-          placeholder="observaciones"
-          value={formData.observaciones}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Valor de la Actividad:{' '}
+          Cantidad Sembrada:{' '}
         </label>
         <br />
         <input
@@ -206,12 +163,39 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
             height: '40px'
           }}
           type="number"
-          name="valor_actividad"
-          placeholder="Valor de la Actividad"
-          value={formData.valor_actividad}
+          name="cantidad_sembrada"
+          placeholder="Cantidad Sembrada"
+          value={formData.cantidad_sembrada}
           onChange={handleChange}
         />
       </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Selecciona tu Lote:
+        </label>
+        <br />
+        <select
+          label='Nombre de Lote'
+          name='fk_id_lote'
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+          id=''
+          required={true}
+          value={formData.fk_id_lote}
+          onChange={handleChange}
+        >
+          <option value="" disabled>Seleccione</option>
+          {nombre_lote.map(lote => (
+            <option key={lote.id_lote} value={lote.id_lote}>
+              {lote.nombre}
+            </option>
+          ))}
+        </select>
+      </div>
+      {showWarning && (
+        <p style={{ color: 'red', marginBottom: '10px' }}>
+          Por favor seleccione un lote
+        </p>
+      )}
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Selecciona tu Variedad:
@@ -221,6 +205,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           label='Nombre de Variedad'
           name='fk_id_variedad'
           style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+          id=''
           required={true}
           value={formData.fk_id_variedad}
           onChange={handleChange}
@@ -233,10 +218,9 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           ))}
         </select>
       </div>
-
       {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor seleccione una variedad
+          Por favor seleccione una Variedad
         </p>
       )}
       <button
@@ -254,11 +238,10 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           height: '40px'
         }}
       >
-
         {mode === 'registro' ? 'Registrar' : 'Actualizar'}
       </button>
     </form>
   );
 };
 
-export default FormularioVariedad;
+export default Formulariocultivo;

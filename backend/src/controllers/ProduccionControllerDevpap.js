@@ -55,6 +55,7 @@ export const registrarProduccion = async (req, res) => {
                 message: 'Se requieren todos los campos para registrar la producción.'
             });
         }
+        
 
         const [Registrar] = await pool.query('INSERT INTO produccion (cantidad_produccion, precio, fk_id_programacion) VALUES (?, ?, ?)',
             [cantidad_produccion, precio, fk_id_programacion]);
