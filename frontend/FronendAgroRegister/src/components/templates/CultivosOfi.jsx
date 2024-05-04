@@ -80,7 +80,7 @@ function Cultivos() {
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Error al buscar recursos'); // Establecer mensaje de error
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
     }
   };
 

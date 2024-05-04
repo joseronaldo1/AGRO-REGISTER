@@ -17,6 +17,7 @@ function lotes() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
+  const [error, setError] = useState(null); // Estado para manejar errores
 
   useEffect(() => {
     fetchData();
@@ -60,18 +61,26 @@ function lotes() {
   };
 
 
-  // Función para buscar fincas por nombre
+  // Función para buscar lotes por nombre
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
         // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
+        setError(null); // Limpiar el error
       } else {
         const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
         setData(response.data);
+        if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
+          setError('No se encontraron resultados');
+        } else {
+          setError(null); // Limpiar el error si se encontraron resultados
+        }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
     }
   };
 
@@ -173,9 +182,11 @@ function lotes() {
           </div>
 
           <br />
-
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
           <Datatable columns={columns} data={data} title="Lotes" />
-
+        )}
         </div>
 
         <ModalRecuRegeContrasenia

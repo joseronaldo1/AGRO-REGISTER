@@ -17,6 +17,7 @@ function Actividad() {
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
+  const [error, setError] = useState(null); // Estado para manejar errores
 
 
   useEffect(() => {
@@ -63,12 +64,26 @@ function Actividad() {
   // Función para buscar actividades por nombre
   const handleSearch = async (searchTerm) => {
     try {
-      const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
-      setData(response.data);
+      if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
+        setData(originalData);
+        setError(null); // Limpiar el error
+      } else {
+        const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
+        setData(response.data);
+        if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
+          setError('No se encontraron resultados');
+        } else {
+          setError(null); // Limpiar el error si se encontraron resultados
+        }
+      }
     } catch (error) {
       console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
     }
   };
+
   const handleEstadoBotonClick = async (id, estado) => {
     try {
       let newEstado;
@@ -195,9 +210,11 @@ function Actividad() {
           </div>
 
           <br />
-
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
           <Datatable columns={columns} data={data} title="Actividades" />
-
+        )}
         </div>
 
         <ModalRecuRegeContrasenia

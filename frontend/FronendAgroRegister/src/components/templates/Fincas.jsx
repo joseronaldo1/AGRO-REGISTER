@@ -8,7 +8,7 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 
-function fincas() {
+function Fincas() {
   const baseURL = 'http://localhost:3000/listarFinca';
 
   const [data, setData] = useState([]);
@@ -18,8 +18,7 @@ function fincas() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-
-
+  const [error, setError] = useState(null); // Estado para manejar errores
 
   useEffect(() => {
     fetchData();
@@ -68,12 +67,20 @@ function fincas() {
       if (searchTerm.trim() === '') {
         // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
+        setError(null); // Limpiar el error
       } else {
         const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
         setData(response.data);
+        if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
+          setError('No se encontraron resultados');
+        } else {
+          setError(null); // Limpiar el error si se encontraron resultados
+        }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
     }
   };
 
@@ -169,7 +176,11 @@ function fincas() {
 
           <br />
 
-          <Datatable columns={columns} data={data} title="Fincas" />
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
+            <Datatable columns={columns} data={data} title="Fincas" />
+          )}
 
         </div>
 
@@ -198,5 +209,4 @@ function fincas() {
   );
 }
 
-export default fincas;
-
+export default Fincas;
