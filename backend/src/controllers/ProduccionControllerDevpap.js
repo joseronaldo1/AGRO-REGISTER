@@ -3,12 +3,14 @@ import { validationResult } from "express-validator";
 
 export const listarProduccion = async (req, res) => {
     try {
-        let sql = `SELECT produ.id_producccion,produ.cantidad_produccion, 
-        produ.fk_id_programacion  AS id_programacion,  
-        pro.fecha_inicio, 
-        pro.fecha_fin
-FROM produccion AS produ
-JOIN programacion AS pro ON produ.fk_id_programacion  = pro.id_programacion`;
+        let sql = `SELECT 
+            produ.id_producccion,
+            produ.cantidad_produccion,
+            produ.precio,
+            act.nombre_actividad AS nombre_actividad
+        FROM produccion AS produ
+        JOIN programacion AS pro ON produ.fk_id_programacion = pro.id_programacion
+        JOIN actividad AS act ON pro.fk_id_actividad = act.id_actividad`;
 
         const [listar] = await pool.query(sql);
 
@@ -17,67 +19,62 @@ JOIN programacion AS pro ON produ.fk_id_programacion  = pro.id_programacion`;
         } else {
             res.status(400).json({
                 status: 400,
-                message: 'no hay ningun produccion'
+                message: 'No hay ninguna producción'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: 'error en el servidor',
+            message: 'Error en el servidor',
         });
         console.log(error);
     }
 };
+
 
 export const registrarProduccion = async (req, res) => {
     try {
-        const error = validationResult(req);
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors })
+        }
+        
+        const { cantidad_produccion, precio, nombre_actividad } = req.body;
+        
+        // Obtener el ID de programación correspondiente al nombre de la actividad proporcionada
+        const nombreActividadLowerCase = nombre_actividad.toLowerCase();
+        const [programacion] = await pool.query("SELECT id_programacion FROM programacion WHERE fk_id_actividad = (SELECT id_actividad FROM actividad WHERE LOWER(nombre_actividad) = ?)", [nombreActividadLowerCase]);
+        
 
-        if (!error.isEmpty()) {
+        
+        if (programacion.length === 0) {
             return res.status(400).json({
-                errors: error.array()
+                "mensaje": "La actividad proporcionada no tiene una programación asociada"
             });
         }
+        
+        const fk_id_programacion = programacion[0].id_programacion;
+        
+        const [resultado] = await pool.query("INSERT INTO produccion (cantidad_produccion, precio, fk_id_programacion) VALUES (?, ?, ?)", [cantidad_produccion, precio, fk_id_programacion]);
 
-        const { cantidad_produccion, precio, fk_id_programacion } = req.body;
-
-        const [variedadExiste] = await pool.query('SELECT * FROM programacion WHERE id_programacion = ?', [fk_id_programacion]);
-
-        if (variedadExiste.length === 0) {
-            return res.status(404).json({
-                status: 404,
-                message: 'Este ID no existe. Por favor, registre la programacion primero.'
-            });
-        }
-
-        if (!cantidad_produccion || !precio || !fk_id_programacion) {
-            return res.status(400).json({
-                message: 'Se requieren todos los campos para registrar la producción.'
-            });
-        }
-
-        const [Registrar] = await pool.query('INSERT INTO produccion (cantidad_produccion, precio, fk_id_programacion) VALUES (?, ?, ?)',
-            [cantidad_produccion, precio, fk_id_programacion]);
-
-        if (Registrar.affectedRows > 0) {
+        if (resultado.affectedRows > 0) {
             res.status(200).json({
-                status: 200,
-                message: 'Se registró correctamente la producción.'
-            });
+                "mensaje": "Producción registrada con éxito"
+            })
         } else {
             res.status(400).json({
-                status: 400,
-                message: 'No se ha podido registrar la producción.'
-            });
+                "mensaje": "Hubo un error y no se pudo guardar la producción"
+            })
         }
     } catch (error) {
         res.status(500).json({
-            status: 500,
-            message: 'Error en el servidor'
-        });
-        console.log(error);
+            "mensaje": "Error en el servidor",
+            "error": error
+        })
     }
-};
+}
+
+
 
 export const BuscarProduccion = async (req, res) => {
     try {

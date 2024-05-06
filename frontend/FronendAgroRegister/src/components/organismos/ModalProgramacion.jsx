@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
-import Formulariolote from '../organismos/FormActividad';
+import Formulariolote from '../organismos/FormProgramacion';
 
 
 function ModalRecuRegeContrasenia({ titulo, mostrar, cerrarModal, handleSubmit, actionLabel, initialData, mode }) {

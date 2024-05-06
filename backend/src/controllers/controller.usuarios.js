@@ -11,7 +11,7 @@ export const listarUsuarios = async (req, res) => {
         } else {
             res.status(404).json({
                 status: 404,
-                "message": 'El usuario no esta registrados'
+                "message": 'El usuario no esta registrado'
             });
         }
     } catch (error) {
@@ -56,9 +56,10 @@ export const registrarUsuarios = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const [rows] = await pool.query(
+
             `INSERT INTO usuarios (nombre, apellido, correo, password, rol) VALUES (?, ?, ?, ?, ?)`,
             [nombre, apellido, correo, hashedPassword, rol]
-        );
+);
 
         if (rows.affectedRows > 0) {
             return res.status(200).json({

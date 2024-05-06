@@ -9,7 +9,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
     latitud: initialData && initialData.latitud ? initialData.latitud : '',
     fk_id_finca: initialData && initialData.fk_id_finca ? initialData.fk_id_finca : ''
   };
-  
+
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
   const [nombre_finca, setNombreFinca] = useState([]);
@@ -24,7 +24,8 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
       });
   }, []);
 
-  
+
+
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -54,7 +55,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         });
         return;
       }
-  
+
       // Validar longitud
       if (isNaN(formData.longitud) || formData.longitud < -180 || formData.longitud > 180) {
         // Mostrar alerta si la longitud no es válida
@@ -65,7 +66,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         });
         return;
       }
-  
+
       // Validar latitud
       if (isNaN(formData.latitud) || formData.latitud < -80 || formData.latitud > 90) {
         // Mostrar alerta si la latitud no es válida
@@ -76,7 +77,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         });
         return;
       }
-  
+
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/Registrarlote',
@@ -108,7 +109,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
           text: 'El lote se ha actualizado exitosamente'
         });
       }
-  
+
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
@@ -191,7 +192,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         <select
           label='Nombre de Finca'
           name='fk_id_finca'
-          style={{borderColor: '#1bc12e', width: '50%', height: '40px',  borderRadius: '6px'}}
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
           id=''
           required={true}
           value={formData.fk_id_finca}
@@ -215,7 +216,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         className="boton"
         type="submit"
         style={{
-          backgroundColor: '#1bc12e',
+          backgroundColor: 'green',
           borderRadius: '10px',
           color: 'white',
           border: 'none',

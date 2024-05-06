@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import { FaEdit } from 'react-icons/fa';
 import Botones from '../atomos/BotonRegiApi';
 import { Datatable } from '../moleculas/Datatable';
 import ModalRecuRegeContrasenia from '../organismos/ModalRecur';
 import Header from '../organismos/Header/Header';
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
-import '../../styles/FondoTable.css'; // Importa el archivo CSS para los estilos personalizados
+import '../../styles/FondoTable.css';
 
 function Recursos() {
   const baseURL = 'http://localhost:3000/listarRecurso';
@@ -18,6 +18,9 @@ function Recursos() {
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
+  const [error, setError] = useState(null);
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -27,6 +30,7 @@ function Recursos() {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
+      setOriginalData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -52,7 +56,7 @@ function Recursos() {
       console.log('Actualización de recurso:', formData);
       const { id } = formData;
       await axios.put(`http://localhost:3000/actualizarRecurso/${id}`, formData);
-      fetchData(); // Actualizar los datos después de la actualización
+      fetchData();
       setShowActualizacionModal(false);
     } catch (error) {
       console.error('Error al actualizar el recurso:', error);
@@ -61,18 +65,57 @@ function Recursos() {
 
   const handleSearch = async (searchTerm) => {
     try {
-      const response = await axios.get(`http://localhost:3000/buscarRecurso/${searchTerm}`);
-      setData(response.data);
+      if (searchTerm.trim() === '') {
+        setData(originalData);
+        setError(null);
+      } else {
+        const response = await axios.get(`http://localhost:3000/buscarRecurso/${searchTerm}`);
+        setData(response.data);
+        if (response.data.length === 0) {
+          setError('No se encontraron resultados');
+        } else {
+          setError(null);
+        }
+      }
     } catch (error) {
       console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada');
+    }
+  };
+
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      const newEstado = estado === 'existe' ? 'agotado' : 'existe';
+      await axios.put(`http://localhost:3000/desactivar/Recurso/${id}`, { estado: newEstado });
+      fetchData();
+    } catch (error) {
+      console.error('Error al cambiar el estado del recurso:', error);
+    }
+  };
+
+  const handleEstadoSeleccionado = (event) => {
+    setEstadoSeleccionado(event.target.value);
+    if (event.target.value === '') {
+      setData(originalData);
+    } else {
+      const filteredData = originalData.filter(item => item.estado === event.target.value);
+      setData(filteredData);
     }
   };
 
   const columns = [
     {
-      name: 'ID',
-      selector: (row) => row.id_tipo_recursos,
-      sortable: true,
+      name: 'Editar',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} />
+        </button>
+      ),
     },
     {
       name: 'Nombre',
@@ -95,15 +138,34 @@ function Recursos() {
       sortable: true,
     },
     {
+      name: 'Estado',
+      cell: (row) => (
+        <span style={{ color: row.estado === 'existe' ? 'green' : '#E83636', fontWeight: '700' }}>
+          {row.estado}
+        </span>
+      ),
+      sortable: true,
+    },
+    {
       name: 'Acciones',
       cell: (row) => (
         <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '18px', border: 'none' }}
+          className="btn p-2 rounded-lg estado-button"
+          style={{
+            backgroundColor: row.estado === 'existe' ? '#E83636' : 'green',
+            border: 'none',
+            color: 'white',
+            height: '40px',
+            marginLeft: '-18px',
+            width: '100px',
+            transition: 'background-color 0.2s',
+          }}
           type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
+          onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }}
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }}
         >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+          {row.estado === 'existe' ? 'No hay' : 'Si hay'}
         </button>
       ),
     },
@@ -111,19 +173,43 @@ function Recursos() {
 
   return (
     <div>
-      <div className="recursos-container">
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
-        <div className="container mt-5">
+        <div className="main-content" style={{ flex: 1 }}>
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-            <div className="white-container">
-              <SearchBar onSearch={handleSearch} />
-              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            </div>
+
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            <select
+              style={{
+                position: 'absolute',
+                marginTop: '-36px',
+                marginLeft: '520px',
+                padding: '8px',
+                fontSize: '16px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+                boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                width: '100px',
+              }}
+              value={estadoSeleccionado}
+              onChange={handleEstadoSeleccionado}
+            >
+              <option value="">Estado</option>
+              <option value="agotado">Agotado</option>
+              <option value="existe">Existe</option>
+            </select>
           </div>
+
           <br />
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
             <Datatable columns={columns} data={data} title="Recursos" />
-          </div>
+          )}
         </div>
 
         <ModalRecuRegeContrasenia

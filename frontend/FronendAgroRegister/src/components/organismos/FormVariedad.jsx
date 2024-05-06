@@ -73,7 +73,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           text: 'La variedad se ha actualizado exitosamente'
         });
       }
-      
+
 
       onSubmit(formData);
       cerrarModal();
@@ -144,7 +144,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         className="boton"
         type="submit"
         style={{
-          backgroundColor: '#1bc12e',
+          backgroundColor: 'green',
           borderRadius: '10px',
           color: 'white',
           border: 'none',
