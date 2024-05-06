@@ -13,12 +13,13 @@ function Variedad() {
   const baseURL = 'http://localhost:3000/listarVariedades';
 
   const [data, setData] = useState([]);
-  const [originalData, setOriginalData] = useState([]); // Estado separado para los datos originales
   const [showRegistroModal, setShowRegistroModal] = useState(false);
   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
+  const [error, setError] = useState(null); // Estado para manejar errores
 
   useEffect(() => {
     fetchData();
@@ -30,7 +31,7 @@ function Variedad() {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
-      setOriginalData(response.data); // Almacena los datos originales al cargar
+      setOriginalData(response.data); // Guardar los datos originales sin filtrar
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -62,37 +63,33 @@ function Variedad() {
     }
   };
 
-
- // Función para buscar fincas por nombre_variedad
- const handleSearch = async (searchTerm) => {
-  try {
-    const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
-    setData(response.data);
-  } catch (error) {
-    console.error('Error searching for resources:', error);
-  }
-};
-
+  // Función para buscar fincas por nombre_variedad
+  const handleSearch = async (searchTerm) => {
+    try {
+      if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
+        setData(originalData);
+        setError(null); // Limpiar el error
+      } else {
+        const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
+        setData(response.data);
+        if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
+          setError('No se encontraron resultados');
+        } else {
+          setError(null); // Limpiar el error si se encontraron resultados
+        }
+      }
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
+    }
+  };
 
 
   const columns = [
     {
-      name: 'ID',
-      selector: (row) => row.id_variedad,
-      sortable: true,
-    },
-    {
-      name: 'Nombre Variedad',
-      selector: (row) => row.nombre_variedad,
-      sortable: true,
-    },
-    {
-      name: 'Tipo Cultivo',
-      selector: (row) => row.tipo_cultivo,
-      sortable: true,
-    },
-    {
-      name: 'Acciones',
+      name: 'Editar',
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
@@ -104,25 +101,37 @@ function Variedad() {
         </button>
       ),
     },
+    {
+      name: 'Nombre Variedad',
+      selector: (row) => row.nombre_variedad,
+      sortable: true,
+    },
+    {
+      name: 'Tipo Cultivo',
+      selector: (row) => row.tipo_cultivo,
+      sortable: true,
+    },
+
   ];
 
   return (
     <div>
-      <div className="recursos-container">
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
-        <div className="container mt-5">
+        <div className="main-content" style={{ flex: 1 }}>
+          {/* Contenido principal */}
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-            <div className="white-container">
 
-              <SearchBar onSearch={handleSearch} />
-
-              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            </div>
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
           </div>
+
           <br />
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-            <Datatable columns={columns} data={data} title="Variedad" />
-          </div>
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
+          <Datatable columns={columns} data={data} title="Variedad" />
+        )}
         </div>
 
         <ModalRecuRegeContrasenia

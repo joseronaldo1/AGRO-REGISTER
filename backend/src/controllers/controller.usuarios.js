@@ -56,9 +56,10 @@ export const registrarUsuarios = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const [rows] = await pool.query(
+
             `INSERT INTO usuarios (nombre, apellido, correo, password, rol) VALUES (?, ?, ?, ?, ?)`,
             [nombre, apellido, correo, hashedPassword, rol]
-        );
+);
 
         if (rows.affectedRows > 0) {
             return res.status(200).json({

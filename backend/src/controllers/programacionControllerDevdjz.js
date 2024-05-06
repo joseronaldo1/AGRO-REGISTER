@@ -166,28 +166,30 @@ export const desactivar = async (req, res) => {
 // CRUD -buscar
 export const buscarProgramacion = async (req, res) => {
     try {
-        const { id } = req.params;
-        const consultar = `SELECT 
-                                p.id_programacion,
-                                p.fecha_inicio, p.fecha_fin,
-                                u.nombre AS usuario,
-                                a.nombre_actividad,
-                                v.nombre_variedad,
-                                l.nombre AS lote,
-                                p.estado
-                            FROM 
-                                programacion AS p
-                            JOIN 
-                                usuarios AS u ON p.fk_id_usuario = u.id_usuario
-                            JOIN 
-                                actividad AS a ON p.fk_id_actividad = a.id_actividad
-                            JOIN 
-                                lotes AS l ON p.fk_id_cultivo = l.id_lote
-                            JOIN 
-                                variedad AS v ON p.fk_id_cultivo = v.id_variedad
-                            WHERE p.id_programacion = ?`;
-        const [result] = await pool.query(consultar, [id]);
-                        
+        const { nombre } = req.params; // Obtener el nombre de usuario desde los parámetros
+        const searchTerm = `%${nombre}%`; // Preparar el término de búsqueda para buscar coincidencias parciales
+        const consultar = `
+            SELECT 
+                p.id_programacion,
+                p.fecha_inicio, p.fecha_fin,
+                u.nombre AS usuario,
+                a.nombre_actividad,
+                v.nombre_variedad,
+                l.nombre AS lote,
+                p.estado
+            FROM 
+                programacion AS p
+            JOIN 
+                usuarios AS u ON p.fk_id_usuario = u.id_usuario
+            JOIN 
+                actividad AS a ON p.fk_id_actividad = a.id_actividad
+            JOIN 
+                lotes AS l ON p.fk_id_cultivo = l.id_lote
+            JOIN 
+                variedad AS v ON p.fk_id_cultivo = v.id_variedad
+            WHERE u.nombre LIKE ?`; // Utilizar el operador LIKE para buscar coincidencias parciales en el nombre de usuario
+        const [result] = await pool.query(consultar, [searchTerm]); // Pasar el término de búsqueda como parámetro
+
         if (result.length > 0) {
             res.status(200).json(result);
         } else {
@@ -202,5 +204,5 @@ export const buscarProgramacion = async (req, res) => {
             message: error.message || 'Error interno del servidor'
         });
     }
-}
+};
 

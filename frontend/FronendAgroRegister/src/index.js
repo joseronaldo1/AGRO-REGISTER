@@ -1,8 +1,7 @@
 
-export { default as App} from './App';
-
-export { InicioSesionPage } from './pages/inicio_sesion';
-export { RegistroPage } from './pages/Registro';
+export { default as App} from './App.jsx';
+export { InicioSesionPage } from './pages/inicio_sesion.jsx';
+export { RegistroPage } from './pages/Registro.jsx';
 export { EditarPerfilUsuarioPage } from './pages/editar_perfil_usuario';
 export { OlvidopassonePage } from './pages/olvido_contrase1';
 export { OlvidopasstwoPage } from './pages/olvido_contrase2';

@@ -16,8 +16,10 @@ function lotes() {
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
+  const [error, setError] = useState(null); // Estado para manejar errores
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState(''); 
 
-  
   useEffect(() => {
     fetchData();
   }, [data]);
@@ -26,6 +28,7 @@ function lotes() {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
+      setOriginalData(response.data); // Guardar los datos originales sin filtrar
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -58,33 +61,67 @@ function lotes() {
     }
   };
 
+  // Función para buscar lotes por nombre
+  const handleSearch = async (searchTerm) => {
+    try {
+      if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
+        setData(originalData);
+        setError(null); // Limpiar el error
+      } else {
+        const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
+        setData(response.data);
+        if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
+          setError('No se encontraron resultados');
+        } else {
+          setError(null); // Limpiar el error si se encontraron resultados
+        }
+      }
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
+    }
+  };
 
- // Función para buscar fincas por nombre
- const handleSearch = async (searchTerm) => {
-  try {
-    const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
-    setData(response.data);
-  } catch (error) {
-    console.error('Error searching for resources:', error);
-  }
-};
-
-const handleEstadoBotonClick = async (id, estado) => {
-  try {
-    const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; // Cambiar los estados existentes por "activo" e "inactivo"
-    await axios.put(`http://localhost:3000/desactivar/Lote/${id}`, { estado: newEstado });
-    fetchData(); // Actualizar los datos después de la actualización
-  } catch (error) {
-    console.error('Error al cambiar el estado del lote:', error);
-  }
-};
-
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; // Cambiar los estados existentes por "activo" e "inactivo"
+      await axios.put(`http://localhost:3000/desactivar/Lote/${id}`, { estado: newEstado });
+      fetchData(); // Actualizar los datos después de la actualización
+    } catch (error) {
+      console.error('Error al cambiar el estado del lote:', error);
+    }
+  };
+  
+  const handleEstadoSeleccionado = (event) => {
+    setEstadoSeleccionado(event.target.value);
+    if (event.target.value === '') {
+      setData(originalData);
+    } else {
+      const filteredData = originalData.filter(item => item.estado === event.target.value);
+      setData(filteredData);
+    }
+  };
   const columns = [
     /* {
       name: 'ID',
       selector: (row) => row.id_lote,
       sortable: true,
     }, */
+    {
+      name: 'Editar',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} />
+        </button>
+      ),
+    },
     {
       name: 'Nombre',
       selector: (row) => row.nombre,
@@ -107,39 +144,34 @@ const handleEstadoBotonClick = async (id, estado) => {
     },
     {
       name: 'Estado',
-      selector: (row) => row.estado,
+      cell: (row) => (
+        <span style={{ color: row.estado === 'activo' ? 'green' : '#E83636', fontWeight: '700' }}>
+          {row.estado}
+        </span>
+      ),
       sortable: true,
     },
     {
       name: 'Acciones',
       cell: (row) => (
-        <>
         <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
+          className="btn p-2 rounded-lg estado-button"
+          style={{
+            backgroundColor: row.estado === 'activo' ? '#E83636' : 'green',
+            border: 'none',
+            color: 'white',
+            height: '40px',
+            marginLeft: '-18px',
+            width: '100px',
+            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+          }}
           type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
+          onClick={() => handleEstadoBotonClick(row.id_lote, row.estado)}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
         >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
+          {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
         </button>
-        <button
-            className="btn p-2 rounded-lg estado-button"
-            style={{
-              backgroundColor: row.estado === 'activo' ? 'red' : 'green',
-              border: 'none',
-              color: 'white',
-              height: '40px',
-              width: '650px',
-              transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-            }}
-            type="button"
-            onClick={() => handleEstadoBotonClick(row.id_lote, row.estado)}
-            onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-            onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
-          >
-            {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
-          </button>
-        </>
       ),
     },
   ];
@@ -149,17 +181,41 @@ const handleEstadoBotonClick = async (id, estado) => {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-          {/* Contenido principal */}
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-            <div className="white-container">
-              <SearchBar onSearch={handleSearch} />
-              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            </div>
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
+
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            {/* Select para seleccionar el estado */}
+            <select 
+  style={{ 
+    position: 'absolute',
+    marginTop: '-36px',
+    marginLeft: '520px',
+    padding: '8px',
+    fontSize: '16px',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+    background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+    width: '100px',  // Ajusta el ancho según tus necesidades
+  }}
+  value={estadoSeleccionado}
+  onChange={handleEstadoSeleccionado}
+>
+  <option value="">Estados</option>
+  <option value="activo">Activo</option>
+  <option value="inactivo">Inactivo</option>
+</select>
           </div>
+
           <br />
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-            <Datatable columns={columns} data={data} title="Lotes" />
-          </div>
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
+          <Datatable columns={columns} data={data} title="Lotes" />
+        )}
         </div>
 
         <ModalRecuRegeContrasenia

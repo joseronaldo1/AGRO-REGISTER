@@ -10,18 +10,18 @@ function Reportes() {
       <div className="container" style={{ marginTop: "8%" }}>
         <Header />
         <h2 style={{ display: "inline-block", marginRight: "20px", textAlign: "center" }}>Reporte inversiones</h2>
-     
+
         <div style={{ float: "right", marginRight: "20px" }}>
           <Boton children="Descargar" onClick={() => handleOpenModal("Registrar")} />
         </div>
         <hr />
         <div className="row">
           <div className="col-md-6" style={{ borderRight: "1px solid #ccc" }}>
-         
+
             <div className="row">
               <div className="col-md-12">
-                <h3 style={{marginLeft:'180px', fontSize:'1.3em'}}>Ingresos y Egresos</h3>
-                <p style={{fontWeight: 'bolder'}}>Hasta el mes de junio:</p>
+                <h3 style={{ marginLeft: '180px', fontSize: '1.3em' }}>Ingresos y Egresos</h3>
+                <p style={{ fontWeight: 'bolder' }}>Hasta el mes de junio:</p>
                 <BarChart
                   width={500}
                   height={300}
@@ -46,8 +46,8 @@ function Reportes() {
             </div>
           </div>
           <div className="col-md-6">
-            <h4 style={{textAlign:'center', fontSize:'1.3em'}}>Ingresos y Egresos</h4>
-            <p style={{fontWeight: 'bolder'}}>Despues de junio:</p>
+            <h4 style={{ textAlign: 'center', fontSize: '1.3em' }}>Ingresos y Egresos</h4>
+            <p style={{ fontWeight: 'bolder' }}>Despues de junio:</p>
             <div className="row">
               <div className="col-md-6">
                 <BarChart

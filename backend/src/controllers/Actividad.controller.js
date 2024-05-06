@@ -58,6 +58,7 @@ export const RegistrarA = async (req, res) => {
     }
 }
 
+
 export const ActualizarA = async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -67,8 +68,10 @@ export const ActualizarA = async (req, res) => {
 
         const { id } = req.params;
         const { nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado } = req.body;
-        if (!nombre_actividad && !tiempo && !observaciones && !fk_id_variedad && !valor_actividad && !estado) {
-            return res.status(400).json({ message: 'Al menos uno de los campos (nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad) debe estar presente en la solicitud para realizar la actualización.' });
+
+        // Comprueba si al menos uno de los campos de actualización está presente en la solicitud
+        if (!nombre_actividad && !tiempo && !observaciones && !fk_id_variedad && !valor_actividad && estado === undefined) {
+            return res.status(400).json({ message: 'Al menos uno de los campos (nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
         // Realiza una consulta para obtener la actividad antes de actualizarla
@@ -93,7 +96,7 @@ export const ActualizarA = async (req, res) => {
             WHERE id_actividad = ?`,
             [id]
         );
-     
+
         if (result.affectedRows > 0) {
             return res.status(200).json({
                 status: 200,
@@ -112,6 +115,7 @@ export const ActualizarA = async (req, res) => {
         });
     }
 };
+
 
 //CRUD - Desactivar
 export const DesactivarA = async (req, res) => {

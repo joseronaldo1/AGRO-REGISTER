@@ -75,9 +75,10 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           title: 'Error',
           text: 'La observación solo puede contener letras'
         });
+
         return;
       }
-
+  
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistrarActividad',
@@ -87,6 +88,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
               'Content-Type': 'application/json'
             }
           }
+
         );
         Swal.fire({
           icon: 'success',
@@ -94,25 +96,28 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           text: 'La actividad se ha registrado exitosamente'
         });
         console.log(response.data);
-      } else if (mode === 'update') {
+      } else if (mode === 'update' && initialData && initialData.id) {
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/ActualizarActividad/${id}`,
           formData
         );
+
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
           text: 'La actividad se ha actualizado exitosamente'
         });
-      }
 
+      }
+  
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
       console.error('Error al procesar el formulario:', error);
     }
   };
+  
 
   return (
     <form
@@ -221,6 +226,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           ))}
         </select>
       </div>
+
       {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>
           Por favor seleccione una variedad
@@ -230,7 +236,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         className="boton"
         type="submit"
         style={{
-          backgroundColor: '#1bc12e',
+          backgroundColor: 'green',
           borderRadius: '10px',
           color: 'white',
           border: 'none',

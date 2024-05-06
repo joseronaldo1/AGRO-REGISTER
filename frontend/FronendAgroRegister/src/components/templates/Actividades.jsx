@@ -15,10 +15,12 @@ function Actividad() {
   const [showRegistroModal, setShowRegistroModal] = useState(false);
   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
   const [registroFormData, setRegistroFormData] = useState({});
-  const [mode, setMode] = useState('create');
+  const [mode, setMode] = useState('create'); // Agrega mode al estado
+  const [originalData, setOriginalData] = useState([]);
   const [initialData, setInitialData] = useState(null);
+  const [error, setError] = useState(null); // Estado para manejar errores
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState(''); 
 
-  
   useEffect(() => {
     fetchData();
   }, []);
@@ -27,6 +29,7 @@ function Actividad() {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
+      setOriginalData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -59,51 +62,85 @@ function Actividad() {
     }
   };
 
-
- // Función para buscar actividades por nombre
- const handleSearch = async (searchTerm) => {
-  try {
-    const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
-    setData(response.data);
-  } catch (error) {
-    console.error('Error searching for resources:', error);
-  }
-};
-const handleEstadoBotonClick = async (id, estado) => {
-  try {
-    let newEstado;
-    switch (estado) {
-      case 'activo':
-        newEstado = 'ejecutandose';
-        break;
-      case 'ejecutandose':
-        newEstado = 'terminado';
-        break;
-      case 'terminado':
-        newEstado = 'inactivo';
-        break;
-      case 'inactivo':
-        newEstado = 'activo';
-        break;
-      default:
-        break;
+  const handleSearch = async (searchTerm) => {
+    try {
+      if (searchTerm.trim() === '') {
+        setData(originalData);
+        setError(null);
+      } else {
+        const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
+        setData(response.data);
+        if (response.data.length === 0) {
+          setError('No se encontraron resultados');
+        } else {
+          setError(null);
+        }
+      }
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada');
     }
-    await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
-    fetchData(); // Actualizar los datos después de la actualización
-  } catch (error) {
-    console.error('Error al cambiar el estado de la actividad:', error);
-  }
-};
+  };
+
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      let newEstado;
+      switch (estado) {
+        case 'activo':
+          newEstado = 'ejecutandose';
+          break;
+        case 'inactivo':
+          newEstado = 'activo';
+          break;
+        case 'ejecutandose':
+          newEstado = 'terminado';
+          break;
+        case 'terminado':
+          newEstado = 'inactivo';
+          break;
+        default:
+          break;
+      }
+      await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
+      fetchData();
+    } catch (error) {
+      console.error('Error al cambiar el estado de la actividad:', error);
+    }
+  };
+
+  const handleEstadoSeleccionado = (event) => {
+    setEstadoSeleccionado(event.target.value);
+    if (event.target.value === '') {
+      setData(originalData);
+    } else {
+      const filteredData = originalData.filter(item => item.estado === event.target.value);
+      setData(filteredData);
+    }
+  };
 
   const columns = [
-    /*{
-      name: 'ID',
-      selector: (row) => row.id_actividad,
-      sortable: true,
-    },*/
+    {
+      name: 'Editar',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaEdit style={{ color: 'white' }} />
+        </button>
+      ),
+    },
     {
       name: 'Nombre Actividad',
       selector: (row) => row.nombre_actividad,
+      sortable: true,
+    },
+
+    {
+      name: 'Nombre Variedad',
+      selector: (row) => row.nombre_variedad,
       sortable: true,
     },
     {
@@ -122,90 +159,116 @@ const handleEstadoBotonClick = async (id, estado) => {
       sortable: true,
     },
     {
-      name: 'Nombre Variedad',
-      selector: (row) => row.nombre_variedad,
-      sortable: true,
-    },
-    {
       name: 'Estado',
-      selector: (row) => row.estado,
+      cell: (row) => (
+        <span style={{
+          color:
+            row.estado === 'activo' ? 'green' :
+              row.estado === 'ejecutandose' ? 'orange' :
+                row.estado === 'terminado' ? '#2A5CB5' :
+                  'red', fontWeight: '700'
+        }}>
+          {row.estado}
+        </span>
+      ),
       sortable: true,
     },
     {
       name: 'Acciones',
-    cell: (row) => (
-      <>
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} /> {/* Icono de edición */}
-        </button>
-        <button
-          className="btn p-2 rounded-lg estado-button"
-          style={{
-            backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
-            border: 'none',
-            color: 'white',
-            height: '40px',
-            width: '1040px',
-            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-          }}
-          type="button"
-          onClick={() => handleEstadoBotonClick(row.id_actividad, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#377AF0' : row.estado === 'terminado' ? '#E54444' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
-        >
-          {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
-        </button>
-      </>
-    ),
-  },
-];
+      cell: (row) => (
+        <>
+          {row.estado === 'terminado' ? null : (
+            <button
+              className="btn p-2 rounded-lg estado-button"
+              style={{
+                backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
+                border: 'none',
+                color: 'white',
+                height: '40px',
+                width: '100px',
+                marginLeft: '-18px',
+                transition: 'background-color 0.2s',
+              }}
+              type="button"
+              onClick={() => handleEstadoBotonClick(row.id_actividad, row.estado)}
+              onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#377AF0' : row.estado === 'terminado' ? '#E54444' : '#2DBC28' }}
+              onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green' }}
+            >
+              {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
+            </button>
+          )}
+        </>
+      ),
+    },
+    
+  ];
 
-return (
-  <div>
-    <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Header />
-      <div className="main-content" style={{ flex: 1 }}>
-        {/* Contenido principal */}
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-          <div className="white-container">
+  return (
+    <div>
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <div className="main-content" style={{ flex: 1 }}>
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
+
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            <select 
+              style={{ 
+                position: 'absolute',
+                marginTop: '-36px',
+                marginLeft: '500px',
+                padding: '8px',
+                fontSize: '16px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+                boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                width: '133px',
+              }}
+              value={estadoSeleccionado}
+              onChange={handleEstadoSeleccionado}
+            >
+              <option value="">Estados</option>
+              <option value="activo">Activo</option>
+              <option value="ejecutandose">Ejecutandose</option>
+              <option value="inactivo">Inactivo</option>
+              <option value="terminado">Terminado</option>
+            </select>
           </div>
+
+          <br />
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
+            <Datatable columns={columns} data={data} title="Actividades" />
+          )}
         </div>
+
+        <ModalRecuRegeContrasenia
+          mostrar={showRegistroModal}
+          cerrarModal={handleCloseRegistroModal}
+          titulo="Registro"
+          actionLabel="Registrar"
+          initialData={registroFormData}
+          mode="registro"
+          handleSubmit={() => setShowRegistroModal(false)}
+        />
+        <ModalRecuRegeContrasenia
+          mostrar={showActualizacionModal}
+          cerrarModal={handleCloseActualizacionModal}
+          titulo="Actualización"
+          handleSubmit={handleActualizacionFormSubmit}
+          actionLabel="Actualizar"
+          initialData={initialData}
+          mode={mode}
+        />
         <br />
-        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
-          <Datatable columns={columns} data={data} title="Actividades" />
-        </div>
       </div>
-      
-      <ModalRecuRegeContrasenia
-        mostrar={showRegistroModal}
-        cerrarModal={handleCloseRegistroModal}
-        titulo="Registro"
-        actionLabel="Registrar"
-        initialData={registroFormData}
-        mode="registro"
-        handleSubmit={() => setShowRegistroModal(false)}
-      />
-      <ModalRecuRegeContrasenia
-        mostrar={showActualizacionModal}
-        cerrarModal={handleCloseActualizacionModal}
-        titulo="Actualización"
-        handleSubmit={handleActualizacionFormSubmit}
-        actionLabel="Actualizar"
-        initialData={initialData}
-        mode={mode}
-      />
-      <br />
+      <Footer />
     </div>
-    <Footer />
-  </div>
-);
+  );
 }
 
 export default Actividad;

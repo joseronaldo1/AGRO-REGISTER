@@ -29,7 +29,7 @@ export const Datatable = (props) => {
     const containerStyles = {
         boxShadow: '0 4px 8px rgba(0, 0, 0)', // Sombra para simular que la tabla está flotando
         border: '1px solid #dee2e6', // Borde alrededor del contenedor
-        borderRadius: '3px', // Borde redondeado del contenedor
+        borderRadius: '5px', // Borde redondeado del contenedor
         marginBottom: '20px', // Margen inferior para separar de otros elementos
     };
 
@@ -41,7 +41,7 @@ export const Datatable = (props) => {
 
     return (
         <div style={containerStyles}>
-            <h2 style={{marginLeft: '15px'}}>{props.title}</h2>
+            <h2 style={{ marginLeft: '15px', textAlign: 'center' }}>{props.title}</h2>
             <div style={tableStyles}>
                 <DataTable
                     columns={props.columns}

@@ -9,7 +9,9 @@ export const validarRR = [
         check('valor_actividad', 'El campo de valor de actividad debe ser un número').isInt().isNumeric(),
 
 
+
     ];
+
     
 //ACTUALIZAR
 export const validarRA = [

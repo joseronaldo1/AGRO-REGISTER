@@ -1,17 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Importa SweetAlert
+import Swal from 'sweetalert2';
 
-const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
-    nombre_finca: initialData && initialData.nombre_finca ? initialData.nombre_finca : '',
-    longitud: initialData && initialData.longitud ? initialData.longitud : '',
-    latitud: initialData && initialData.latitud ? initialData.latitud : ''
+    cantidad_produccion: initialData && initialData.cantidad_produccion ? initialData.cantidad_produccion : '',
+    precio: initialData && initialData.precio ? initialData.precio : '',
+    fk_id_actividad: initialData && initialData.fk_id_actividad ? initialData.fk_id_actividad : ''
   };
 
-
   const [formData, setFormData] = useState(initialFormData);
-  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
+  const [showWarning, setShowWarning] = useState(false);
+  const [nombre_actividad, setNombreActividad] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/listarActividad')
+      .then(response => {
+        setNombreActividad(response.data);
+      })
+      .catch(error => {
+        console.error('Error al obtener los datos:', error);
+      });
+  }, []);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -20,52 +30,45 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
       [name]: value
     }));
   };
-  const validarNombreFinca = nombre => {
-    const soloLetras = /^[a-zA-Z\s]*$/;
-    return soloLetras.test(nombre);
+
+  const validarCantidadProduccion = cantidad_produccion => {
+    const soloNumeros = /^\d+$/;
+    return soloNumeros.test(cantidad_produccion);
   };
+
+  const validarPrecio = precio => {
+    const soloNumeros = /^\d+$/;
+    return soloNumeros.test(precio);
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!formData.nombre_finca || !formData.longitud || !formData.latitud) {
-        setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+      if (!formData.cantidad_produccion || !formData.precio || !formData.fk_id_actividad) {
+        setShowWarning(true);
         return;
       }
-      if (!validarNombreFinca(formData.nombre_finca)) {
-        // Mostrar alerta si el nombre contiene números
+      if (!validarCantidadProduccion(formData.cantidad_produccion)) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'El nombre de la finca solo puede contener letras'
+          text: 'La cantidad de producción debe contener solo números'
         });
         return;
       }
 
-      // Validar longitud
-      if (isNaN(formData.longitud) || formData.longitud < -180 || formData.longitud > 180) {
-        // Mostrar alerta si la longitud no es válida
+      if (!validarPrecio(formData.precio)) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'La longitud debe ser un número válido entre -180 y 180'
-        });
-        return;
-      }
-
-      // Validar latitud
-      if (isNaN(formData.latitud) || formData.latitud < -90 || formData.latitud > 90) {
-        // Mostrar alerta si la latitud no es válida
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'La latitud debe ser un número válido entre -90 y 90'
+          text: 'El precio debe contener solo números'
         });
         return;
       }
 
       if (mode === 'registro') {
         const response = await axios.post(
-          'http://localhost:3000/RegistroFinca',
+          'http://localhost:3000/RegistraProduccion',
           formData,
           {
             headers: {
@@ -73,25 +76,21 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
             }
           }
         );
-        console.log(response.data);
-        // Mostrar alerta de registro exitoso
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'La finca se ha registrado exitosamente'
+          text: 'La Producción se ha registrado exitosamente'
         });
-        console.log(response.data);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
-          `http://localhost:3000/actualizarFinca/${id}`,
+          `http://localhost:3000/ActualizarProduccion/${id}`,
           formData
         );
-        // Mostrar alerta de actualización exitosa
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'La finca se ha actualizado exitosamente'
+          text: 'La Producción se ha actualizado exitosamente'
         });
       }
 
@@ -101,7 +100,6 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
       console.error('Error al procesar el formulario:', error);
     }
   };
-
 
   return (
     <form
@@ -113,68 +111,69 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         textAlign: 'center'
       }}
     >
-      {showWarning && ( // Mostrar advertencia si showWarning es true
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Cantidad Producción:{' '}
+        </label>
+        <br />
+        <input
+          style={{
+            borderColor: '#1bc12e',
+            borderRadius: '6px',
+            width: '50%',
+            height: '40px'
+          }}
+          type="number"
+          name="cantidad_produccion"
+          placeholder="Cantidad Producción"
+          value={formData.cantidad_produccion}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Precio:{' '}
+        </label>
+        <br />
+        <input
+          style={{
+            borderColor: '#1bc12e',
+            borderRadius: '6px',
+            width: '50%',
+            height: '40px'
+          }}
+          type="number"
+          name="precio"
+          placeholder="Precio"
+          value={formData.precio}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Selecciona tu Actividad:
+        </label>
+        <br />
+        <select
+          name='fk_id_actividad'
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+          required={true}
+          value={formData.fk_id_actividad}
+          onChange={handleChange}
+        >
+          <option value="" disabled>Seleccione</option>
+          {nombre_actividad.map(actividad => (
+            <option key={actividad.id_actividad} value={actividad.id_actividad}>
+              {actividad.nombre_actividad}
+            </option>
+          ))}
+        </select>
+      </div>
+      {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor complete todos los campos
+          Por favor seleccione una Actividad
         </p>
       )}
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Nombre de la finca:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="text"
-          name="nombre_finca"
-          placeholder="Nombre de la finca"
-          value={formData.nombre_finca}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Longitud:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="number"
-          name="longitud"
-          placeholder="longitud"
-          value={formData.longitud}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          latitud:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="number"
-          name="latitud"
-          placeholder="latitud"
-          value={formData.latitud}
-          onChange={handleChange}
-        />
-      </div>
       <button
         className="boton"
         type="submit"
@@ -196,4 +195,4 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
   );
 };
 
-export default Formulariofinca;
+export default Formulariolote;
