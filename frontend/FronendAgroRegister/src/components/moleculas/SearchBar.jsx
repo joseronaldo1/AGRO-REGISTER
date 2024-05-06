@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaSearch } from 'react-icons/fa'; // Importa el ícono de búsqueda de FontAwesome
 
 const SearchBar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,19 +18,34 @@ const SearchBar = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginLeft: '75%', marginTop: '12px' }}>
-      <input
-        type="text"
-        placeholder="Buscar por Nombre"
-        style={{ borderRadius: '6px' }}
-        value={searchTerm}
-        onChange={handleChange}
-      />
-      <button type="submit" style={{
-        backgroundColor: '#975C29',
-        color: 'white', border: 'none', borderRadius: '6px', height: '35px'
-        , width: '25%', fontSize: '17px'
-      }}>Buscar</button>
+
+    <form onSubmit={handleSubmit} style={{ marginLeft: '77%', marginTop: '30px' }}>
+      <div style={{ position: 'relative' }}>
+        <input
+          type="text"
+          placeholder="Buscar por Nombre"
+          style={{
+            borderRadius: '20px',
+            paddingLeft: '40px', // Agregar espacio para el ícono de búsqueda
+            paddingRight: '10px', // Agregar espacio para el botón de búsqueda
+            height: '35px',
+            border: 'none',
+            boxShadow: '0px 0px 5px rgba(0, 0, 0, 2.0)', // Agregar una sombra suave
+          }}
+          value={searchTerm}
+          onChange={handleChange}
+        />
+        <FaSearch
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '10px', // Posiciona el ícono a la izquierda del input
+            transform: 'translateY(-50%)', // Centra verticalmente el ícono
+            color: '#ccc', // Color del ícono de búsqueda
+            zIndex: '1', // Asegura que el ícono esté sobre el input
+          }}
+        />
+      </div>
     </form>
   );
 };

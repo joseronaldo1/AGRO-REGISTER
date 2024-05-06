@@ -17,6 +17,11 @@ function lotes() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
+<<<<<<< HEAD
+=======
+  const [error, setError] = useState(null); // Estado para manejar errores
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState(''); 
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
 
   useEffect(() => {
     fetchData();
@@ -59,7 +64,30 @@ function lotes() {
     }
   };
 
+  // Función para buscar lotes por nombre
+  const handleSearch = async (searchTerm) => {
+    try {
+      if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
+        setData(originalData);
+        setError(null); // Limpiar el error
+      } else {
+        const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
+        setData(response.data);
+        if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
+          setError('No se encontraron resultados');
+        } else {
+          setError(null); // Limpiar el error si se encontraron resultados
+        }
+      }
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
+    }
+  };
 
+<<<<<<< HEAD
   // Función para buscar fincas por nombre
   const handleSearch = async (searchTerm) => {
     try {
@@ -75,6 +103,8 @@ function lotes() {
     }
   };
 
+=======
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
   const handleEstadoBotonClick = async (id, estado) => {
     try {
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; // Cambiar los estados existentes por "activo" e "inactivo"
@@ -84,7 +114,20 @@ function lotes() {
       console.error('Error al cambiar el estado del lote:', error);
     }
   };
+<<<<<<< HEAD
 
+=======
+  
+  const handleEstadoSeleccionado = (event) => {
+    setEstadoSeleccionado(event.target.value);
+    if (event.target.value === '') {
+      setData(originalData);
+    } else {
+      const filteredData = originalData.filter(item => item.estado === event.target.value);
+      setData(filteredData);
+    }
+  };
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
   const columns = [
     /* {
       name: 'ID',
@@ -136,7 +179,10 @@ function lotes() {
     {
       name: 'Acciones',
       cell: (row) => (
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
         <button
           className="btn p-2 rounded-lg estado-button"
           style={{
@@ -155,7 +201,10 @@ function lotes() {
         >
           {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
         </button>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
       ),
     },
   ];
@@ -165,6 +214,7 @@ function lotes() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
+<<<<<<< HEAD
           {/* Contenido principal */}
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
 
@@ -176,6 +226,43 @@ function lotes() {
 
           <Datatable columns={columns} data={data} title="Lotes" />
 
+=======
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
+
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            {/* Select para seleccionar el estado */}
+            <select 
+  style={{ 
+    position: 'absolute',
+    marginTop: '-36px',
+    marginLeft: '520px',
+    padding: '8px',
+    fontSize: '16px',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+    background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+    width: '100px',  // Ajusta el ancho según tus necesidades
+  }}
+  value={estadoSeleccionado}
+  onChange={handleEstadoSeleccionado}
+>
+  <option value="">Estados</option>
+  <option value="activo">Activo</option>
+  <option value="inactivo">Inactivo</option>
+</select>
+          </div>
+
+          <br />
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
+          <Datatable columns={columns} data={data} title="Lotes" />
+        )}
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
         </div>
 
         <ModalRecuRegeContrasenia

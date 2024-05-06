@@ -19,6 +19,10 @@ function Variedad() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
+<<<<<<< HEAD
+=======
+  const [error, setError] = useState(null); // Estado para manejar errores
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
 
   useEffect(() => {
     fetchData();
@@ -60,13 +64,17 @@ function Variedad() {
     }
   };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
   // Función para buscar fincas por nombre_variedad
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
         // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
+<<<<<<< HEAD
       } else {
         const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
         setData(response.data);
@@ -76,6 +84,24 @@ function Variedad() {
     }
   };
 
+=======
+        setError(null); // Limpiar el error
+      } else {
+        const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
+        setData(response.data);
+        if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
+          setError('No se encontraron resultados');
+        } else {
+          setError(null); // Limpiar el error si se encontraron resultados
+        }
+      }
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
+    }
+  };
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
 
 
   const columns = [
@@ -118,9 +144,17 @@ function Variedad() {
           </div>
 
           <br />
+<<<<<<< HEAD
 
           <Datatable columns={columns} data={data} title="Variedad" />
 
+=======
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
+          <Datatable columns={columns} data={data} title="Variedad" />
+        )}
+>>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
         </div>
 
         <ModalRecuRegeContrasenia
