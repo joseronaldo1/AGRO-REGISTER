@@ -174,12 +174,12 @@ function Programacion() {
     },
     {
       name: 'Nombre Usuario',
-      selector: (row) => row.nombre,
+      selector: (row) => row.nombre || row.usuario,
       sortable: true,
     },
     {
       name: 'Nombre Actividad',
-      selector: (row) => row.nombre_actividad,
+      selector: (row) => row.nombre_actividad ,
       sortable: true,
     },
     {
