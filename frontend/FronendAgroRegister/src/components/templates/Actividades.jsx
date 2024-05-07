@@ -21,10 +21,7 @@ function Actividad() {
   const [error, setError] = useState(null); // Estado para manejar errores
   const [estadoSeleccionado, setEstadoSeleccionado] = useState(''); 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
   useEffect(() => {
     fetchData();
   }, []);
@@ -66,18 +63,7 @@ function Actividad() {
     }
   };
 
-<<<<<<< HEAD
 
-  // Función para buscar actividades por nombre
-  const handleSearch = async (searchTerm) => {
-    try {
-      const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
-      setData(response.data);
-    } catch (error) {
-      console.error('Error searching for resources:', error);
-    }
-  };
-=======
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
@@ -98,7 +84,6 @@ function Actividad() {
     }
   };
 
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
   const handleEstadoBotonClick = async (id, estado) => {
     try {
       let newEstado;
@@ -106,39 +91,33 @@ function Actividad() {
         case 'activo':
           newEstado = 'ejecutandose';
           break;
-<<<<<<< HEAD
-=======
+
         case 'inactivo':
           newEstado = 'activo';
           break;
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
         case 'ejecutandose':
           newEstado = 'terminado';
           break;
         case 'terminado':
           newEstado = 'inactivo';
           break;
-<<<<<<< HEAD
+
         case 'inactivo':
           newEstado = 'activo';
           break;
-=======
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
         default:
           break;
       }
       await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
-<<<<<<< HEAD
-      fetchData(); // Actualizar los datos después de la actualización
-=======
+
       fetchData();
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
     } catch (error) {
       console.error('Error al cambiar el estado de la actividad:', error);
     }
   };
-<<<<<<< HEAD
-=======
+
 
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
@@ -149,22 +128,9 @@ function Actividad() {
       setData(filteredData);
     }
   };
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
 
   const columns = [
-    {
-      name: 'Editar',
-      cell: (row) => (
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} />
-        </button>
-      ),
-    },
+    
     {
       name: 'Editar',
       cell: (row) => (
@@ -222,40 +188,7 @@ function Actividad() {
     {
       name: 'Acciones',
       cell: (row) => (
-<<<<<<< HEAD
 
-        <button
-          className="btn p-2 rounded-lg estado-button"
-          style={{
-            backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
-            border: 'none',
-            color: 'white',
-            height: '40px',
-            width: '100px',
-            marginLeft: '-18px',
-            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-          }}
-          type="button"
-          onClick={() => handleEstadoBotonClick(row.id_actividad, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#377AF0' : row.estado === 'terminado' ? '#E54444' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
-        >
-          {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
-        </button>
-
-      ),
-    },
-  ];
-
-  return (
-    <div>
-      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Header />
-        <div className="main-content" style={{ flex: 1 }}>
-          {/* Contenido principal */}
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-
-=======
         <>
           {row.estado === 'terminado' ? null : (
             <button
@@ -290,7 +223,7 @@ function Actividad() {
         <div className="main-content" style={{ flex: 1 }}>
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
 
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
             <select 
@@ -320,17 +253,13 @@ function Actividad() {
           </div>
 
           <br />
-<<<<<<< HEAD
 
-          <Datatable columns={columns} data={data} title="Actividades" />
-
-=======
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
             <Datatable columns={columns} data={data} title="Actividades" />
           )}
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
         </div>
 
         <ModalRecuRegeContrasenia

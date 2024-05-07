@@ -19,11 +19,9 @@ function Recursos() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-<<<<<<< HEAD
-=======
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
 
   useEffect(() => {
     fetchData();
@@ -33,11 +31,8 @@ function Recursos() {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
-<<<<<<< HEAD
-      setOriginalData(response.data); // Guardar los datos originales sin filtrar
-=======
+
       setOriginalData(response.data);
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -73,13 +68,7 @@ function Recursos() {
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
-<<<<<<< HEAD
-        // Si el término de búsqueda está vacío, restaurar los datos originales
-        setData(originalData);
-      } else {
-        const response = await axios.get(`http://localhost:3000/buscarRecurso/${searchTerm}`);
-        setData(response.data);
-=======
+
         setData(originalData);
         setError(null);
       } else {
@@ -90,7 +79,6 @@ function Recursos() {
         } else {
           setError(null);
         }
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
@@ -98,10 +86,7 @@ function Recursos() {
     }
   };
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
   const handleEstadoBotonClick = async (id, estado) => {
     try {
       const newEstado = estado === 'existe' ? 'agotado' : 'existe';
@@ -112,14 +97,6 @@ function Recursos() {
     }
   };
 
-<<<<<<< HEAD
-  const columns = [
-    /*   {
-        name: 'ID',
-        selector: (row) => row.id_tipo_recursos,
-        sortable: true,
-      }, */
-=======
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
     if (event.target.value === '') {
@@ -131,7 +108,7 @@ function Recursos() {
   };
 
   const columns = [
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
     {
       name: 'Editar',
       cell: (row) => (
@@ -177,10 +154,7 @@ function Recursos() {
     {
       name: 'Acciones',
       cell: (row) => (
-<<<<<<< HEAD
 
-=======
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
         <button
           className="btn p-2 rounded-lg estado-button"
           style={{
@@ -190,18 +164,7 @@ function Recursos() {
             height: '40px',
             marginLeft: '-18px',
             width: '100px',
-<<<<<<< HEAD
-            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-          }}
-          type="button"
-          onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
-        >
-          {row.estado === 'existe' ? 'No hay' : 'Si hay'}
-        </button>
 
-=======
             transition: 'background-color 0.2s',
           }}
           type="button"
@@ -211,7 +174,7 @@ function Recursos() {
         >
           {row.estado === 'existe' ? 'No hay' : 'Si hay'}
         </button>
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
       ),
     },
   ];
@@ -225,14 +188,7 @@ function Recursos() {
 
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-<<<<<<< HEAD
-          </div>
 
-          <br />
-
-          <Datatable columns={columns} data={data} title="Recursos" />
-
-=======
             <select
               style={{
                 position: 'absolute',
@@ -263,7 +219,7 @@ function Recursos() {
           ) : (
             <Datatable columns={columns} data={data} title="Recursos" />
           )}
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
         </div>
 
         <ModalRecuRegeContrasenia

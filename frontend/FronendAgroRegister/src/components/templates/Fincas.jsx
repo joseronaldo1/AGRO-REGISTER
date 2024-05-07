@@ -19,13 +19,10 @@ function Fincas() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-<<<<<<< HEAD
 
-
-=======
   const [error, setError] = useState(null); 
   const [estadoSeleccionado, setEstadoSeleccionado] = useState(''); 
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
 
   useEffect(() => {
     fetchData();
@@ -35,11 +32,9 @@ function Fincas() {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
-<<<<<<< HEAD
-      setOriginalData(response.data); // Guardar los datos originales sin filtrar
-=======
+
       setOriginalData(response.data);
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -75,13 +70,7 @@ function Fincas() {
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
-<<<<<<< HEAD
-        // Si el término de búsqueda está vacío, restaurar los datos originales
-        setData(originalData);
-      } else {
-        const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
-        setData(response.data);
-=======
+
         setData(originalData);
         setError(null); 
       } else {
@@ -92,7 +81,7 @@ function Fincas() {
         } else {
           setError(null); 
         }
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
+
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
@@ -183,21 +172,13 @@ function Fincas() {
             height: '40px',
             width: '120px',
             marginLeft: '-18px',
-<<<<<<< HEAD
-            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-          }}
-          type="button"
-          onClick={() => handleEstadoBotonClick(row.id_finca, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
-=======
+
             transition: 'background-color 0.2s', 
           }}
           type="button"
           onClick={() => handleEstadoBotonClick(row.id_finca, row.estado)}
           onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} 
           onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} 
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
         >
           {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
         </button>
@@ -210,13 +191,7 @@ function Fincas() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-<<<<<<< HEAD
-          {/* Contenido principal */}
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
 
-            <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-=======
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
 
             <SearchBar onSearch={handleSearch} />
@@ -249,20 +224,16 @@ function Fincas() {
 
 
 
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
           </div>
 
           <br />
 
-<<<<<<< HEAD
-          <Datatable columns={columns} data={data} title="Fincas" />
-=======
+
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
             <Datatable columns={columns} data={data} title="Fincas" />
           )}
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
 
         </div>
 

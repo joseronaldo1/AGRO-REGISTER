@@ -18,11 +18,9 @@ function Programacion() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-<<<<<<< HEAD
-=======
+
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
 
   useEffect(() => {
     fetchData();
@@ -32,11 +30,7 @@ function Programacion() {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
-<<<<<<< HEAD
-      setOriginalData(response.data); // Guardar los datos originales sin filtrar
-=======
       setOriginalData(response.data);
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -65,20 +59,13 @@ function Programacion() {
       fetchData();
       setShowActualizacionModal(false);
     } catch (error) {
-      console.error('Error al actualizar la programacion:', error);
+      console.error('Error al actualizar la programación:', error);
     }
   };
 
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
-<<<<<<< HEAD
-        // Si el término de búsqueda está vacío, restaurar los datos originales
-        setData(originalData);
-      } else {
-        const response = await axios.get(`http://localhost:3000/buscarProgramacion/${searchTerm}`);
-        setData(response.data);
-=======
         setData(originalData);
         setError(null);
       } else {
@@ -89,14 +76,12 @@ function Programacion() {
         } else {
           setError(null);
         }
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Busqueda no encontrada');
+      setError('Búsqueda no encontrada');
     }
   };
-
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
@@ -147,50 +132,10 @@ function Programacion() {
           <FaEdit style={{ color: 'white' }} />
         </button>
       ),
-<<<<<<< HEAD
-    },
-
-    {
-      name: 'Nombre Usuario',
-      selector: (row) => row.nombre,
-      sortable: true,
-    },
-
-    {
-      name: 'Nombre Actividad',
-      selector: (row) => row.nombre_actividad,
-      sortable: true,
-    },
-
-    {
-      name: 'ID Cultivo',
-      selector: (row) => row.id_cultivo,
-      sortable: true,
-    },
-    {
-      name: 'Fecha Inicio',
-      selector: (row) => row.fecha_inicio,
-      sortable: true,
-    },
-    {
-      name: 'Fecha Fin',
-      selector: (row) => row.fecha_fin,
-      sortable: true,
-    },
-    {
-      name: 'Estado',
-      cell: (row) => (
-        <span style={{
-          color:
-            row.estado === 'activo' ? 'green' :
-              row.estado === 'ejecutandose' ? 'orange' :
-                row.estado === 'terminado' ? '#2A5CB5' :
-                  'red', fontWeight: '700'
-=======
     },
     {
       name: 'Nombre Usuario',
-      selector: (row) => row.nombre,
+      selector: (row) => row.usuario || row.nombre,
       sortable: true,
     },
     {
@@ -221,7 +166,6 @@ function Programacion() {
             row.estado === 'ejecutandose' ? 'orange' :
               row.estado === 'terminado' ? '#2A5CB5' :
                 'red', fontWeight: '700'
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
         }}>
           {row.estado}
         </span>
@@ -231,27 +175,6 @@ function Programacion() {
     {
       name: 'Acciones',
       cell: (row) => (
-<<<<<<< HEAD
-
-        <button
-          className="btn p-2 rounded-lg estado-button"
-          style={{
-            backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
-            border: 'none',
-            color: 'white',
-            height: '40px',
-            width: '100px',
-            marginLeft: '-18px',
-            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
-          }}
-          type="button"
-          onClick={() => handleEstadoBotonClick(row.id_programacion, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#377AF0' : row.estado === 'terminado' ? '#E54444' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
-        >
-          {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
-        </button>
-=======
         <>
           {row.estado === 'terminado' ? null : (
             <button
@@ -274,7 +197,6 @@ function Programacion() {
             </button>
           )}
         </>
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
       ),
     },
   ];
@@ -284,23 +206,11 @@ function Programacion() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-<<<<<<< HEAD
-          {/* Contenido principal */}
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
 
-            <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-          </div>
-
-          <br />
-
-          <Datatable columns={columns} data={data} title="Programacion" />
-
-=======
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
 
             <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} /> 
             <select 
               style={{ 
                 position: 'absolute',
@@ -333,7 +243,6 @@ function Programacion() {
           ) : (
             <Datatable columns={columns} data={data} title="Programacion" />
           )}
->>>>>>> 7be821d016eefc676955a01b26496d46b92e3738
         </div>
 
         <ModalRecuRegeContrasenia
