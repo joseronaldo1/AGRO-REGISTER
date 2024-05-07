@@ -162,10 +162,10 @@ function Recursos() {
           }}
           type="button"
           onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }}
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#F54949' : '#2DBC28' }}
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#E83636' : 'green' }}
         >
-          {row.estado === 'existe' ? 'No hay' : 'Si hay'}
+          {row.estado === 'existe' ? 'Agotado' : 'Si hay'}
         </button>
       ),
     },
@@ -190,7 +190,7 @@ function Recursos() {
                 borderRadius: '5px',
                 border: '1px solid #ccc',
                 background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-                boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
+                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
                 width: '100px',

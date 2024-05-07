@@ -19,7 +19,7 @@ function Cultivos() {
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
   const [error, setError] = useState(null); // Estado para manejar errores
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState(''); 
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -186,33 +186,33 @@ function Cultivos() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
 
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
             {/* Select para seleccionar el estado */}
-            <select 
-  style={{ 
-    position: 'absolute',
-    marginTop: '-36px',
-    marginLeft: '520px',
-    padding: '8px',
-    fontSize: '16px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-    background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
-    transition: 'all 0.3s ease',
-    cursor: 'pointer',
-    width: '100px',  // Ajusta el ancho según tus necesidades
-  }}
-  value={estadoSeleccionado}
-  onChange={handleEstadoSeleccionado}
->
-  <option value="">Estados</option>
-  <option value="activo">Activo</option>
-  <option value="inactivo">Inactivo</option>
-</select>
+            <select
+              style={{
+                position: 'absolute',
+                marginTop: '-36px',
+                marginLeft: '520px',
+                padding: '8px',
+                fontSize: '16px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                width: '100px',  // Ajusta el ancho según tus necesidades
+              }}
+              value={estadoSeleccionado}
+              onChange={handleEstadoSeleccionado}
+            >
+              <option value="">Estados</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
           </div>
 
           <br />

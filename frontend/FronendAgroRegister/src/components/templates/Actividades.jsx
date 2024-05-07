@@ -7,6 +7,7 @@ import ModalRecuRegeContrasenia from "../organismos/ModalActividad.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
+import Swal from 'sweetalert2';
 
 function Actividad() {
   const baseURL = 'http://localhost:3000/listarActividad';
@@ -19,7 +20,7 @@ function Actividad() {
   const [originalData, setOriginalData] = useState([]);
   const [initialData, setInitialData] = useState(null);
   const [error, setError] = useState(null); // Estado para manejar errores
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState(''); 
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -82,31 +83,75 @@ function Actividad() {
     }
   };
 
+
+
   const handleEstadoBotonClick = async (id, estado) => {
     try {
       let newEstado;
+      let confirmMessage;
       switch (estado) {
         case 'activo':
-          newEstado = 'ejecutandose';
-          break;
-        case 'inactivo':
-          newEstado = 'activo';
+          confirmMessage = '¿Deseas marcar esta actividad como ejecutándose?';
           break;
         case 'ejecutandose':
-          newEstado = 'terminado';
+          confirmMessage = '¿Deseas marcar esta actividad como inactiva?';
+          break;
+        case 'inactivo':
+          confirmMessage = '¿Deseas marcar esta actividad como terminada?';
           break;
         case 'terminado':
-          newEstado = 'inactivo';
+          confirmMessage = '¿Deseas marcar esta actividad como activa nuevamente?';
           break;
         default:
           break;
       }
+
+      const { isConfirmed } = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: confirmMessage,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'Cancelar'
+      });
+
+      if (!isConfirmed) {
+        return; // Si el usuario cancela, salimos de la función sin hacer nada
+      }
+
+      switch (estado) {
+        case 'activo':
+          newEstado = 'ejecutandose';
+          break;
+        case 'ejecutandose':
+          newEstado = 'inactivo';
+          break;
+        case 'inactivo':
+          newEstado = 'terminado';
+          break;
+        case 'terminado':
+          newEstado = 'activo';
+          break;
+        default:
+          break;
+      }
+
       await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
       fetchData();
+
+      // Mostrar mensaje solo si la acción se completó con éxito
+      if (newEstado) {
+        Swal.fire('¡Listo!', `El estado de la actividad se ha cambiado a: ${newEstado}`, 'success');
+      }
     } catch (error) {
       console.error('Error al cambiar el estado de la actividad:', error);
     }
   };
+
+
+
+
+
 
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
@@ -181,7 +226,7 @@ function Actividad() {
             <button
               className="btn p-2 rounded-lg estado-button"
               style={{
-                backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
+                backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#E83333' : row.estado === 'inactivo' ? '#366BED' : '#3484F0',
                 border: 'none',
                 color: 'white',
                 height: '40px',
@@ -191,16 +236,16 @@ function Actividad() {
               }}
               type="button"
               onClick={() => handleEstadoBotonClick(row.id_actividad, row.estado)}
-              onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#377AF0' : row.estado === 'terminado' ? '#E54444' : '#2DBC28' }}
-              onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green' }}
+              onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#F75050' : row.estado === 'inactivo' ? '#3484F0' : '#2DBC28' }}
+              onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#E83333' : row.estado === 'inactivo' ? '#366BED' : '#2A5CB5' }}
             >
-              {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
+              {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Desactivar' : 'Terminar'}
             </button>
           )}
         </>
       ),
     },
-    
+
   ];
 
   return (
@@ -208,12 +253,12 @@ function Actividad() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
 
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            <select 
-              style={{ 
+            <select
+              style={{
                 position: 'absolute',
                 marginTop: '-36px',
                 marginLeft: '500px',
@@ -222,7 +267,7 @@ function Actividad() {
                 borderRadius: '5px',
                 border: '1px solid #ccc',
                 background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-                boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
+                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
                 width: '133px',

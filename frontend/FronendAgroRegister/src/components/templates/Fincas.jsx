@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa'; 
+import { FaEdit } from 'react-icons/fa';
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalFincas.jsx";
@@ -19,8 +19,8 @@ function Fincas() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-  const [error, setError] = useState(null); 
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState(''); 
+  const [error, setError] = useState(null);
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -67,27 +67,27 @@ function Fincas() {
     try {
       if (searchTerm.trim() === '') {
         setData(originalData);
-        setError(null); 
+        setError(null);
       } else {
         const response = await axios.get(`http://localhost:3000/buscarFinca/${searchTerm}`);
         setData(response.data);
         if (response.data.length === 0) {
           setError('No se encontraron resultados');
         } else {
-          setError(null); 
+          setError(null);
         }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Busqueda no encontrada'); 
+      setError('Busqueda no encontrada');
     }
   };
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
-      const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; 
+      const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
       await axios.put(`http://localhost:3000/desactivar/Finca/${id}`, { estado: newEstado });
-      fetchData(); 
+      fetchData();
     } catch (error) {
       console.error('Error al cambiar el estado de la finca:', error);
     }
@@ -153,12 +153,12 @@ function Fincas() {
             height: '40px',
             width: '120px',
             marginLeft: '-18px',
-            transition: 'background-color 0.2s', 
+            transition: 'background-color 0.2s',
           }}
           type="button"
           onClick={() => handleEstadoBotonClick(row.id_finca, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} 
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} 
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }}
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }}
         >
           {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
         </button>
@@ -171,33 +171,33 @@ function Fincas() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
 
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
             {/* Select para seleccionar el estado */}
-            <select 
-  style={{ 
-    position: 'absolute',
-    marginTop: '-36px',
-    marginLeft: '520px',
-    padding: '8px',
-    fontSize: '16px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-    background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
-    transition: 'all 0.3s ease',
-    cursor: 'pointer',
-    width: '100px',  // Ajusta el ancho según tus necesidades
-  }}
-  value={estadoSeleccionado}
-  onChange={handleEstadoSeleccionado}
->
-  <option value="">Estados</option>
-  <option value="activo">Activo</option>
-  <option value="inactivo">Inactivo</option>
-</select>
+            <select
+              style={{
+                position: 'absolute',
+                marginTop: '-36px',
+                marginLeft: '520px',
+                padding: '8px',
+                fontSize: '16px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                width: '100px',  // Ajusta el ancho según tus necesidades
+              }}
+              value={estadoSeleccionado}
+              onChange={handleEstadoSeleccionado}
+            >
+              <option value="">Estados</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
 
 
 
