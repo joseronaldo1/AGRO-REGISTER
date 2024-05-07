@@ -28,10 +28,10 @@ const IniciarSesion = () => {
             setLoading(true);
             const response = await axios.post('http://localhost:3000/validacion', formData);
             const responseData = response.data;
-    
+
             localStorage.setItem('token', responseData.token);
             alert('Inicio de sesión exitoso');
-          
+
             window.location.href = "/dashboard";
 
         } catch (error) {
