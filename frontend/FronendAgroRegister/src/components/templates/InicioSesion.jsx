@@ -6,7 +6,7 @@ import Footer from '../organismos/Footer/Footer.jsx';
 import InputAtom from '../atomos/Inputs.jsx';
 import Botones from '../atomos/Botones.jsx';
 import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Import the background image if not already imported
-import Logo from '../../assets/logoOrigi.png';// Import the logo image if not already imported
+import Logo from '../../assets/logoT.png';// Import the logo image if not already imported
 
 
 const IniciarSesion = () => {
