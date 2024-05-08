@@ -32,7 +32,7 @@ function NavbarHeader() {
         </div>
       </nav>
 
-      <Modal dialogClassName="modal-sm" show={showModal} onHide={handleModalClose} backdrop={false} style={{ marginLeft: '490px', marginTop: '70px' }}>
+      <Modal dialogClassName="modal-sm" show={showModal} onHide={handleModalClose} backdrop={false} style={{ marginLeft: '400px', marginTop: '70px' }}>
         <Modal.Header closeButton>
           <Modal.Title>Información</Modal.Title>
         </Modal.Header>

@@ -57,17 +57,17 @@
 
 .perfil:hover {
   background-color: rgb(46, 165, 46);
-  height: 35px;
+  color: white !important;
 }
 
 .soporte:hover {
   background-color: rgb(46, 165, 46);
-  height: 35px;
+  color: white !important;
 }
 
 .salir:hover {
   background-color: rgb(209, 40, 40);
-  height: 35px;
+
   color: white !important;
 }
 
