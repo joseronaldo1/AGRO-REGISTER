@@ -1,47 +1,93 @@
-import React from 'react';
-import Formulario from '../organismos/Formulario.jsx';
-import Botones from '../atomos/Botones.jsx';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Botones from '../atomos/Botones.jsx';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
-import Footer from '../organismos/Footer/Footer';
+import InputAtom from '../atomos/Inputs.jsx';
+import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png';
+import Logo from '../../assets/logoOrigi.png';
+import Footer from '../organismos/Footer/Footer.jsx';
 
- const Olvidopasstree = () => {
-     const campos = [
-         { name: 'password', type: 'password', placeholder: 'Contraseña Nueva' },
-         { name: 'password2', type: 'password', placeholder: 'Confirmación de Contraseña' },
-     ];
-    
-     const formularioStyle = {
-         border: '1px solid #ccc', 
-         borderRadius: '5px', 
-         padding: '20px', 
-         margin: '20px auto', 
-         maxWidth: '400px', 
-       
+const Olvidopasstree = () => {
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-     };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password.trim() === '' || confirmPassword.trim() === '') {
+      alert('Por favor, completa todos los campos.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert('Las contraseñas no coinciden. Por favor, inténtalo de nuevo.');
+      return;
+    }
 
-     return (
-         <div className='flex' style={{margin:'150px'}}>
-             <HeaderInicio/>
-             <div className='flex items-center justify-center'>
-                 <form style={formularioStyle}>
-                     <label className="text-xl font-bold flex justify-center items-center p-10">Cambio de Contraseña</label>
-                     <div style={{marginTop :'100px'}}>
-                         <Formulario campos={campos} />
-                     </div>
-                     <div className='flex flex-col m-5 justify-center items-center'>
-                         <Link to='/'>
-                         <Botones children='Enviar' />
-                         </Link>
-                    </div>
-                
-                 </form>
-               
-                
-             </div>
-             <Footer/>
-         </div>
-     );
- };
+    alert('Contraseña cambiada exitosamente.');
+    window.location.href = "/";
+  };
+
+  // Estilo para el contenedor principal
+  const mainContainerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    padding: '0px',
+    boxSizing: 'border-box',
+    position: 'relative',
+    marginTop:"180px"
+  };
+
+  // Estilo para el formulario
+  const formStyle = {
+    width: '100%',
+    maxWidth: '420px',
+    padding: '70px',
+    boxSizing: 'border-box',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: '8px',
+    border: '1px solid #ccc'
+  };
+
+  return (
+    <div style={mainContainerStyle}>
+      <div style={{
+        backgroundImage: `url(${fondo})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: -1,
+      }}></div>
+      <HeaderInicio />
+
+      <form onSubmit={handleSubmit} style={formStyle}>
+        <label style={{ fontSize: '2em', fontWeight: 'bold', marginBottom: '20px', marginLeft:"50px" }}>Cambio de Contraseña</label>
+        <img src={Logo} alt="Logo" style={{ maxWidth: '160px', marginBottom: '20px', marginLeft:"62px" }} />
+        <InputAtom
+          type="password"
+          placeholder="Contraseña Nueva"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <InputAtom
+          type="password"
+          placeholder="Confirmación de Contraseña"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <div style={{ textAlign: 'center', paddingTop: "20px" }}>
+          <Botones type="submit">Enviar</Botones>
+        </div>
+      </form>
+      div
+      <Footer />
+    </div>
+  );
+};
+
 export default Olvidopasstree;

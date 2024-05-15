@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Footer from '../organismos/Footer/Footer.jsx';
 import axios from 'axios';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
-import Footer from '../organismos/Footer/Footer.jsx';
 import InputAtom from '../atomos/Inputs.jsx';
 import Botones from '../atomos/Botones.jsx';
-import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Import the background image if not already imported
-import Logo from '../../assets/logoOrigi.png';// Import the logo image if not already imported
+import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png';
+import Logo from '../../assets/logoOrigi.png';
 
 const IniciarSesion = () => {
     const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ const IniciarSesion = () => {
         password: ''
     });
 
-    const [loading, setLoading] = useState(false); // Estado para indicar si se está procesando la solicitud
+    const [loading, setLoading] = useState(false); 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,15 +24,13 @@ const IniciarSesion = () => {
         }
 
         try {
-            setLoading(true); // Indicar que se está cargando
+            setLoading(true); 
 
             const response = await axios.post('http://localhost:3000/validacion', formData);
             const responseData = response.data;
 
             localStorage.setItem('token', responseData.token);
-            console.log(localStorage);
             alert('Inicio de sesión exitoso');
-
             window.location.href = "/dashboard";
         } catch (error) {
             alert('Error al iniciar sesión:', error.response.data.message);
@@ -51,57 +49,48 @@ const IniciarSesion = () => {
 
     const formularioStyle = {
         border: '1px solid #ccc',
-        borderRadius: '15px',
-        padding: '40px',
-        margin: '20px auto',
-        maxWidth: '400px',
+        borderRadius: '25px',
+        padding: '80px',
+        marginTop: '150px',
+        maxWidth: '800px',
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    };
-
-    const fondoStyle = {
-        backgroundImage: `url(${fondo})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        height: 'calc(100vh - 100px)', // Restar la altura del encabezado al 100vh
-        maxHeight: '100%',
-        width: '100%',
-        overflowY: 'auto',
-        position: 'fixed',
-        top: '100px', // Ajustar la posición superior para que comience debajo del encabezado
-        left: 0,
-        zIndex: -1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
     };
 
 
     const tituloStyle = {
         fontSize: '2.3em',
-        color: 'black',
         fontWeight: 'bold',
         textAlign: 'center',
         padding: '1.30rem',
     };
 
-    const linkOlvidoContrasenaStyle = {
-
+    const buttonStyle = {
+        outline: 'none',
+        background: '#1bc12e',
+        border: 'none',
+        width: '100%',
+        marginTop: '20px',
     };
 
-    const linkOlvidoContrasenaHoverStyle = {
-        textShadow: '0 0 12px #009100',
+    const buttonsContainerStyle = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: '100%',
     };
-
-    const [isHovered, setIsHovered] = useState(false);
 
     return (
-        <div style={fondoStyle}>
-            <div className='flex' style={{ margin: '130px' }}>
-                <HeaderInicio />
-                <div className='flex items-center justify-center'>
-                    <form style={{ textAlign: 'center', ...formularioStyle }} onSubmit={handleSubmit}>
-                        <label style={tituloStyle}>Inicio de Sesión</label>
-                        <img src={Logo} alt="Logo" style={{ maxWidth: '160px' }} />
-                        <div style={{ marginTop: '20px', }}>
+        <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', position: 'relative' }}>
+            <HeaderInicio />
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - 100px)', marginBottom:"40px" }}>
+                <form style={formularioStyle} onSubmit={handleSubmit}>
+                    <label style={tituloStyle}>Inicio de Sesión</label>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
+                        <div>
                             <InputAtom
-                                className={'mb-2 height-10'}
+                                className={'mb-3 height-10'}
                                 type="email"
                                 placeholder="Correo Electrónico"
                                 name="correo"
@@ -116,44 +105,20 @@ const IniciarSesion = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className='flex items-center justify-center'>
-
-                        </div>
-                        <br />
-                        <div
-                            style={{ textAlign: 'center' }}
-                            onMouseEnter={() => setIsHovered(true)}
-                            onMouseLeave={() => setIsHovered(false)}
-                        >
-                            {loading && <span>Cargando...</span>}
-                            <Link
-                                to='/olvidocontra1'
-                                style={{
-                                    ...linkOlvidoContrasenaStyle,
-                                    ...(isHovered && linkOlvidoContrasenaHoverStyle)
-                                }}
-                            >
-                                ¿Olvidó su contraseña?
-                            </Link>
-
-                        </div>
-
-                        <div style={{ display: 'flex', justifyContent: 'center', margin: '27px', marginTop: '60px' }}>
-
-                            <p>ㅤ</p><Botones children='Iniciar' type="submit" disabled={loading} />
-                            <div>
-                                <Link style={{ textDecoration: 'none' }} to='/registrarse'>
-                                    <Botones children='Registrarse' />
-                                </Link>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
+                        <img src={Logo} alt="Logo" style={{ maxWidth: '250px', marginLeft: '50px',}} />
+                    </div>
+                    {loading && <span>Cargando...</span>}
+                    <Link to='/olvidocontra1' style={{marginBottom:"30px"}}>¿Olvidó su contraseña?</Link>
+                    <div style={buttonsContainerStyle}>
+                        <Botones style={buttonStyle} children='Iniciar' type="submit" disabled={loading} />
+                        <Link to='/registrarse' style={{ textDecoration: 'none' }}>
+                            <Botones children='Registrarse' style={buttonStyle} />
+                        </Link>
+                    </div>
+                </form>
             </div>
             <Footer />
         </div>
-
     );
 };
 
