@@ -11,7 +11,7 @@ function Sidebar() {
           <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div className="offcanvas-body">
-          <img className='imagenpersonal' src={v.imageLogo} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '100px' }} />
+          <img className='imagenpersonal' src={v.imageLogo} alt="Imagen 2" style={{ width: '120px', objectFit: 'cover', height: '125px' }} />
           <ul className="navbar-nav ">
             <NavItem icon={v.iconoFinca} text="Finca" href="/finca" />
             <NavItem icon={v.iconoCultivo} text="Cultivos" href="/cultivo" />
@@ -19,7 +19,6 @@ function Sidebar() {
             <NavItem icon={v.iconoCultivo} text="Variedad" href="/variedad" />
             <NavItem icon={v.iconoActividad} text="Actividad" href="/actividad" />
             <NavItem icon={v.iconoTractor} text="Recursos" href="/recursos" />
-            <NavItem icon={v.iconoSoporte} text="Soporte" href="/Soporte" />
             <NavItem icon={v.iconoActividad} text="Programación" href="/programacion" />
             <NavItem icon={v.iconoTractor} text="Producción" href="/produccion" />
             <NavItem icon={v.iconoReporte} text="Reportes" href="/reportes" />

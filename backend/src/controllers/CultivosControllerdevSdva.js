@@ -97,7 +97,8 @@ export const actualizar = async (req, res) => {
   
 export const buscar = async (req, res) => {
     try {
-        const { id_cultivo } = req.params;
+        const { nombre } = req.params; // Obtener el nombre de la variedad desde los parámetros
+        const searchTerm = `%${nombre}%`; // Cambio aquí: preparar el término de búsqueda para buscar coincidencias parciales
         const consultar = `
             SELECT cul.id_cultivo,
                    cul.fecha_inicio,
@@ -110,15 +111,14 @@ export const buscar = async (req, res) => {
             JOIN lotes AS lo ON cul.fk_id_lote = lo.id_lote
             JOIN finca AS fin ON lo.fk_id_finca = fin.id_finca
             JOIN variedad AS var ON cul.fk_id_variedad = var.id_variedad
-            WHERE cul.id_cultivo = ?
-        `;
-        const [resultado] = await pool.query(consultar, [id_cultivo]);
+            WHERE var.nombre_variedad LIKE ?`; // Cambio aquí: utilizar el operador LIKE para buscar coincidencias parciales
+        const [resultado] = await pool.query(consultar, [searchTerm]); // Pasar el término de búsqueda como parámetro
 
         if (resultado.length > 0) {
             res.status(200).json(resultado);
         } else {
             res.status(404).json({
-                mensaje: "No se encontró un cultivo con ese ID"
+                mensaje: "No se encontró ningún cultivo con ese nombre de variedad"
             });
         }
     } catch (error) {
@@ -127,46 +127,35 @@ export const buscar = async (req, res) => {
 };
 
 
+
+
 export const desactivar = async (req, res) => {
     try {
-        const { id_cultivo } = req.params;
-        const [oldCultivo] = await pool.query("SELECT * FROM cultivo WHERE id_cultivo = ?", [id_cultivo]); 
+        const { id } = req.params;
+        const { estado } = req.body;
 
-        if (oldCultivo.length > 0) {
-            // Obtener el estado actual del cultivo
-            const estadoActual = oldCultivo[0].estado;
+        const [oldRecurso] = await pool.query("SELECT * FROM cultivo WHERE id_cultivo = ?", [id]); 
+        
+        const [result] = await pool.query(
+            `UPDATE cultivo SET estado = ${estado ? `'${estado}'` : `'${oldRecurso[0].estado}'`} WHERE id_cultivo = ?`,[id]
+        );
 
-            // Determinar el nuevo estado
-            let nuevoEstado = '';
-            if (estadoActual === 'activo') {
-                nuevoEstado = 'inactivo';
-            } else {
-                nuevoEstado = 'activo';
-            }
-
-            // Actualizar el estado del cultivo en la base de datos
-            const [result] = await pool.query(
-                `UPDATE cultivo SET estado = ? WHERE id_cultivo = ?`, [nuevoEstado, id_cultivo]
-            );
-
-            if (result.affectedRows > 0) {
-                res.status(200).json({
-                    status: 200,
-                    message: `Se cambió el estado del cultivo a ${nuevoEstado} con éxito`
-                });
-            } else {
-                res.status(404).json({
-                    status: 404,
-                    message: 'No se encontró el cultivo para desactivar'
-                });
-            }
+        if (result.affectedRows > 0) {
+            res.status(200).json({
+                status: 200,
+                message: 'Se actualizo el estado con éxito',
+                result: result
+            });
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No se encontró el cultivo'
+                message: 'No se encontró el estado para actualizar'
             });
         }
     } catch (error) {
-        res.status(500).json({ status: 500, message: 'Error en el sistema: ' + error });
+        res.status(500).json({
+            status: 500,
+            message: error
+        });
     }
 }

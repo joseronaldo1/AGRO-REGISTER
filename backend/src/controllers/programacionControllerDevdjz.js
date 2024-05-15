@@ -34,10 +34,9 @@ export const listarProgramacion = async (req, res) => {
         let sql = ` SELECT 
         p.id_programacion,
         p.fecha_inicio, p.fecha_fin,
-        u.nombre AS usuario,
+        u.nombre,
         a.nombre_actividad,
-        v.nombre_variedad,
-        l.nombre AS lote,
+        c.id_cultivo,
         p.estado
     FROM 
         programacion AS p
@@ -46,9 +45,7 @@ export const listarProgramacion = async (req, res) => {
     JOIN 
         actividad AS a ON p.fk_id_actividad = a.id_actividad
     JOIN 
-        lotes AS l ON p.fk_id_cultivo = l.id_lote
-    JOIN 
-        variedad AS v ON p.fk_id_cultivo = v.id_variedad;
+        cultivo AS c ON p.fk_id_cultivo = c.id_cultivo;
       `;
 
         const [result] = await pool.query(sql);
@@ -135,59 +132,64 @@ export const actualizarProgramacion = async (req, res) => {
 };
 
 
-// CRUD - Estado
-export const estadoProgramacion = async (req, res) => {
+export const desactivar = async (req, res) => {
     try {
         const { id } = req.params;
         const { estado } = req.body;
-        const [oldTipoRecurso] = await pool.query("SELECT * FROM programacion WHERE id_programacion=?", [id]);
 
-        const [result] = await pool.query( `UPDATE programacion SET estado = ${estado ? `'${estado}'` : `'${oldTipoRecurso[0].estado}'`} WHERE id_programacion=?`,
-            [id]
+        const [oldRecurso] = await pool.query("SELECT * FROM programacion WHERE id_programacion = ?", [id]); 
+        
+        const [result] = await pool.query(
+            `UPDATE programacion SET estado = ${estado ? `'${estado}'` : `'${oldRecurso[0].estado}'`} WHERE id_programacion = ?`,[id]
         );
+
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: 'El estado se realizó correctamente'
+                message: 'Se actualizo el estado con éxito',
+                result: result
             });
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'El estado no se realizo correctamente'
+                message: 'No se encontró el estado para actualizar'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: error.message || 'Error interno del servidor'
+            message: error
         });
     }
-};
+}
+
 // CRUD -buscar
 export const buscarProgramacion = async (req, res) => {
     try {
-        const { id } = req.params;
-        const consultar = `SELECT 
-                                p.id_programacion,
-                                p.fecha_inicio, p.fecha_fin,
-                                u.nombre AS usuario,
-                                a.nombre_actividad,
-                                v.nombre_variedad,
-                                l.nombre AS lote,
-                                p.estado
-                            FROM 
-                                programacion AS p
-                            JOIN 
-                                usuarios AS u ON p.fk_id_usuario = u.id_usuario
-                            JOIN 
-                                actividad AS a ON p.fk_id_actividad = a.id_actividad
-                            JOIN 
-                                lotes AS l ON p.fk_id_cultivo = l.id_lote
-                            JOIN 
-                                variedad AS v ON p.fk_id_cultivo = v.id_variedad
-                            WHERE p.id_programacion = ?`;
-        const [result] = await pool.query(consultar, [id]);
-                        
+        const { nombre } = req.params; // Obtener el nombre de usuario desde los parámetros
+        const searchTerm = `%${nombre}%`; // Preparar el término de búsqueda para buscar coincidencias parciales
+        const consultar = `
+            SELECT 
+                p.id_programacion,
+                p.fecha_inicio, p.fecha_fin,
+                u.nombre AS usuario,
+                a.nombre_actividad,
+                v.nombre_variedad,
+                l.nombre AS lote,
+                p.estado
+            FROM 
+                programacion AS p
+            JOIN 
+                usuarios AS u ON p.fk_id_usuario = u.id_usuario
+            JOIN 
+                actividad AS a ON p.fk_id_actividad = a.id_actividad
+            JOIN 
+                lotes AS l ON p.fk_id_cultivo = l.id_lote
+            JOIN 
+                variedad AS v ON p.fk_id_cultivo = v.id_variedad
+            WHERE u.nombre LIKE ?`; // Utilizar el operador LIKE para buscar coincidencias parciales en el nombre de usuario
+        const [result] = await pool.query(consultar, [searchTerm]); // Pasar el término de búsqueda como parámetro
+
         if (result.length > 0) {
             res.status(200).json(result);
         } else {
@@ -202,5 +204,5 @@ export const buscarProgramacion = async (req, res) => {
             message: error.message || 'Error interno del servidor'
         });
     }
-}
+};
 

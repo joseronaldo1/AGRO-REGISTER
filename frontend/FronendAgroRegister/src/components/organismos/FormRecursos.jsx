@@ -155,7 +155,7 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
           onChange={handleChange}
         />
       </div>
-      <button className="boton" type="submit" style={{ backgroundColor: '#1bc12e', borderRadius: '10px', color: 'white', border: 'none', marginLeft: '3%', width: '20%', fontSize: '17px', marginTop: '20px', height: '40px' }}>
+      <button className="boton" type="submit" style={{ backgroundColor: 'green', borderRadius: '10px', color: 'white', border: 'none', marginLeft: '3%', width: '20%', fontSize: '17px', marginTop: '20px', height: '40px' }}>
         {mode === 'registro' ? 'Registrar' : 'Actualizar'}
       </button>
     </form>

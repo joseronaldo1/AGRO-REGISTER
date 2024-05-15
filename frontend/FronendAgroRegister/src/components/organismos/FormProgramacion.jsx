@@ -7,10 +7,10 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
     fecha_inicio: initialData && initialData.fecha_inicio ? initialData.fecha_inicio : '',
     fecha_fin: initialData && initialData.fecha_fin ? initialData.fecha_fin : '',
     fk_id_usuario: initialData && initialData.fk_id_usuario ? initialData.fk_id_usuario : '',
-    fk_id_actividad: initialData && initialData.fk_id_actividad ? initialData.fk_id_actividad: '',
+    fk_id_actividad: initialData && initialData.fk_id_actividad ? initialData.fk_id_actividad : '',
     fk_id_cultivo: initialData && initialData.fk_id_cultivo ? initialData.fk_id_cultivo : ''
   };
-  
+
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
 
@@ -19,7 +19,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
   const [nombre_actividad, setNombreActividad] = useState([]);
   const [id_cultivo, setIdCultivo] = useState([]);
 
-  
+
   // Obtener los nombres de usuarios, los nombres de las actividades y los id de los cultivos al cargar el componente
   useEffect(() => {
     axios.get('http://localhost:3000/listarUsuario')
@@ -29,7 +29,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
       .catch(error => {
         console.error('Error al obtener los datos:', error);
       });
-      
+
     axios.get('http://localhost:3000/listarActividad')
       .then(response => {
         setNombreActividad(response.data);
@@ -38,7 +38,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         console.error('Error al obtener los datos:', error);
       });
 
-      axios.get('http://localhost:3000/listarCultivos')
+    axios.get('http://localhost:3000/listarCultivos')
       .then(response => {
         setIdCultivo(response.data);
       })
@@ -63,7 +63,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
   useEffect(() => {
     setShowWarning(false);
   }, [formData.fk_id_cultivo]);
-  
+
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -71,7 +71,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
       [name]: value
     }));
   };
-  
+
 
 
   const handleFormSubmit = async (e) => {
@@ -101,7 +101,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         });
         return;
       }
-  
+
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/registrarProgramacion',
@@ -130,7 +130,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
           text: 'La programacion se ha actualizado exitosamente'
         });
       }
-  
+
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
@@ -194,10 +194,10 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         <select
           label='Nombre de Usuario'
           name='fk_id_usuario'
-          style={{borderColor: '#1bc12e', width: '50%', height: '40px',  borderRadius: '6px'}}
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
           id=''
           required={true}
-          value={formData.fk_id_usuario} 
+          value={formData.fk_id_usuario}
           onChange={handleChange}
         >
           <option value="" disabled>Seleccione</option>
@@ -221,10 +221,10 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         <select
           label='Nombre de la Actividad'
           name='fk_id_actividad'
-          style={{borderColor: '#1bc12e', width: '50%', height: '40px',  borderRadius: '6px'}}
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
           id=''
           required={true}
-          value={formData.fk_id_actividad} 
+          value={formData.fk_id_actividad}
           onChange={handleChange}
         >
           <option value="" disabled>Seleccione</option>
@@ -240,7 +240,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
           Por favor seleccione una Actividad
         </p>
       )}
-           <div className="flex flex-col">
+      <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Selecciona tu Cultivo:
         </label>
@@ -248,10 +248,10 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         <select
           label='Nombre del Cultivo'
           name='fk_id_cultivo'
-          style={{borderColor: '#1bc12e', width: '50%', height: '40px',  borderRadius: '6px'}}
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
           id=''
           required={true}
-          value={formData.fk_id_cultivo} 
+          value={formData.fk_id_cultivo}
           onChange={handleChange}
         >
           <option value="" disabled>Seleccione</option>
@@ -271,7 +271,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         className="boton"
         type="submit"
         style={{
-          backgroundColor: '#1bc12e',
+          backgroundColor: 'green',
           borderRadius: '10px',
           color: 'white',
           border: 'none',

@@ -8,7 +8,7 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
     longitud: initialData && initialData.longitud ? initialData.longitud : '',
     latitud: initialData && initialData.latitud ? initialData.latitud : ''
   };
-  
+
 
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
@@ -40,7 +40,7 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         });
         return;
       }
-  
+
       // Validar longitud
       if (isNaN(formData.longitud) || formData.longitud < -180 || formData.longitud > 180) {
         // Mostrar alerta si la longitud no es válida
@@ -51,7 +51,7 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         });
         return;
       }
-  
+
       // Validar latitud
       if (isNaN(formData.latitud) || formData.latitud < -90 || formData.latitud > 90) {
         // Mostrar alerta si la latitud no es válida
@@ -62,7 +62,7 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         });
         return;
       }
-  
+
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistroFinca',
@@ -94,14 +94,14 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
           text: 'La finca se ha actualizado exitosamente'
         });
       }
-  
+
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
       console.error('Error al procesar el formulario:', error);
     }
   };
-  
+
 
   return (
     <form
@@ -179,7 +179,7 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         className="boton"
         type="submit"
         style={{
-          backgroundColor: '#1bc12e',
+          backgroundColor: 'green',
           borderRadius: '10px',
           color: 'white',
           border: 'none',

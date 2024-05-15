@@ -5,8 +5,9 @@ import axios from 'axios';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
 import InputAtom from '../atomos/Inputs.jsx';
 import Botones from '../atomos/Botones.jsx';
-import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png';
-import Logo from '../../assets/logoOrigi.png';
+import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Import the background image if not already imported
+import Logo from '../../assets/the.png';// Import the logo image if not already imported
+
 
 const IniciarSesion = () => {
     const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ const IniciarSesion = () => {
         password: ''
     });
 
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,16 +25,16 @@ const IniciarSesion = () => {
         }
 
         try {
-            setLoading(true); 
-
+            setLoading(true);
             const response = await axios.post('http://localhost:3000/validacion', formData);
             const responseData = response.data;
 
             localStorage.setItem('token', responseData.token);
             alert('Inicio de sesión exitoso');
             window.location.href = "/dashboard";
+
         } catch (error) {
-            alert('Error al iniciar sesión:', error.response.data.message);
+            alert('Error al iniciar sesión: ' + error.response.data.message);
         } finally {
             setLoading(false);
         }
@@ -54,11 +55,21 @@ const IniciarSesion = () => {
         marginTop: '150px',
         maxWidth: '800px',
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
     };
 
+    const fondoStyle = {
+        backgroundImage: `url(${fondo})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        height: 'calc(100vh - 100px)',
+        maxHeight: '100%',
+        width: '100%',
+        overflowY: 'auto',
+        position: 'fixed',
+        top: '100px',
+        left: 0,
+        zIndex: -1,
+    };
 
     const tituloStyle = {
         fontSize: '2.3em',
@@ -67,30 +78,17 @@ const IniciarSesion = () => {
         padding: '1.30rem',
     };
 
-    const buttonStyle = {
-        outline: 'none',
-        background: '#1bc12e',
-        border: 'none',
-        width: '100%',
-        marginTop: '20px',
-    };
-
-    const buttonsContainerStyle = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        width: '100%',
-    };
-
     return (
-        <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', position: 'relative' }}>
-            <HeaderInicio />
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - 100px)', marginBottom:"40px" }}>
-                <form style={formularioStyle} onSubmit={handleSubmit}>
-                    <label style={tituloStyle}>Inicio de Sesión</label>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
-                        <div>
+        <div style={fondoStyle}>
+            <div className='flex' style={{ margin: '130px' }}>
+                <HeaderInicio />
+                <div className='flex items-center justify-center'>
+                    <form style={{ textAlign: 'center', ...formularioStyle }} onSubmit={handleSubmit}>
+                        <label style={tituloStyle}>Inicio de Sesión</label>
+                        <img src={Logo} alt="Logo" style={{ maxWidth: '160px' }} />
+                        <div style={{ marginTop: '20px' }}>
                             <InputAtom
-                                className={'mb-3 height-10'}
+                                className='mb-3 height-10'
                                 type="email"
                                 placeholder="Correo Electrónico"
                                 name="correo"
@@ -105,21 +103,28 @@ const IniciarSesion = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <img src={Logo} alt="Logo" style={{ maxWidth: '250px', marginLeft: '50px',}} />
-                    </div>
-                    {loading && <span>Cargando...</span>}
-                    <Link to='/olvidocontra1' style={{marginBottom:"30px"}}>¿Olvidó su contraseña?</Link>
-                    <div style={buttonsContainerStyle}>
-                        <Botones style={buttonStyle} children='Iniciar' type="submit" disabled={loading} />
-                        <Link to='/registrarse' style={{ textDecoration: 'none' }}>
-                            <Botones children='Registrarse' style={buttonStyle} />
-                        </Link>
-                    </div>
-                </form>
+                        <div className='flex items-center justify-center'>
+                            {loading && <span>Cargando...</span>}
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'center', margin: '15px', marginTop: '60px' }}>
+                            <Botones children='Iniciar' type="submit" disabled={loading} />
+                            <div>
+                                <Link to='/registrarse' style={{ textDecoration: 'none' }}>
+                                    <Botones children='Registrarse' />
+                                </Link>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
             <Footer />
         </div>
+
     );
 };
 
 export default IniciarSesion;
+
