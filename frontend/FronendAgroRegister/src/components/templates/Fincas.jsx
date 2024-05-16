@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa';
+import { FaRegEdit } from 'react-icons/fa';
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
+import { FaPowerOff, FaLightbulb } from "react-icons/fa";
 import ModalRecuRegeContrasenia from "../organismos/ModalFincas.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
+import { Tooltip } from "@nextui-org/react";
 
 function Fincas() {
 
@@ -24,7 +26,7 @@ function Fincas() {
 
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -109,11 +111,11 @@ function Fincas() {
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          style={{ backgroundColor: '#B5B5B5', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: 'white' }} />
+          <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
     },
@@ -151,8 +153,11 @@ function Fincas() {
             border: 'none',
             color: 'white',
             height: '40px',
-            width: '120px',
-            marginLeft: '-18px',
+            width: '135px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: '-28px',
             transition: 'background-color 0.2s',
           }}
           type="button"
@@ -160,10 +165,12 @@ function Fincas() {
           onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }}
           onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }}
         >
+          {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '1px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
           {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
         </button>
       ),
     },
+    
   ];
 
   return (

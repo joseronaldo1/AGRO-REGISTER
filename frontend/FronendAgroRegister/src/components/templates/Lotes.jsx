@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import { FaRegEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalLotes.jsx";
 import Header from "../organismos/Header/Header";
+import { FaPowerOff, FaLightbulb } from "react-icons/fa";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 function lotes() {
@@ -114,11 +115,11 @@ function lotes() {
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          style={{ backgroundColor: '#B5B5B5', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: 'white' }} />
+          <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
     },
@@ -161,8 +162,8 @@ function lotes() {
             border: 'none',
             color: 'white',
             height: '40px',
-            marginLeft: '-18px',
-            width: '100px',
+            marginLeft: '-50px',
+            width: '550px',
             transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
           }}
           type="button"
@@ -170,6 +171,7 @@ function lotes() {
           onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
           onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
         >
+            {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '1px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
           {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
         </button>
       ),

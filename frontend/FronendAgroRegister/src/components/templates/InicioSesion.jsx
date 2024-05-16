@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Footer from '../organismos/Footer/Footer.jsx';
+/* import Footer from '../organismos/Footer/Footer.jsx'; */
 import axios from 'axios';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
 import InputAtom from '../atomos/Inputs.jsx';
 import Botones from '../atomos/Botones.jsx';
-import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Import the background image if not already imported
+import v from '../../styles/variables';
+/* import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Import the background image if not already imported */
 import Logo from '../../assets/the.png';// Import the logo image if not already imported
 
 
@@ -53,12 +54,12 @@ const IniciarSesion = () => {
         borderRadius: '25px',
         padding: '80px',
         marginTop: '150px',
-        maxWidth: '800px',
+        maxWidth: '480px',
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
     };
 
     const fondoStyle = {
-        backgroundImage: `url(${fondo})`,
+        backgroundImage: `url(${v.ImgSlider1})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: 'calc(100vh - 100px)',
@@ -80,13 +81,14 @@ const IniciarSesion = () => {
 
     return (
         <div style={fondoStyle}>
-            <div className='flex' style={{ margin: '130px' }}>
+            <div className='flex' style={{ margin: '130px', marginLeft: '450px', marginTop: '-70px' }}>
                 <HeaderInicio />
                 <div className='flex items-center justify-center'>
                     <form style={{ textAlign: 'center', ...formularioStyle }} onSubmit={handleSubmit}>
                         <label style={tituloStyle}>Inicio de Sesión</label>
                         <img src={Logo} alt="Logo" style={{ maxWidth: '160px' }} />
-                        <div style={{ marginTop: '20px' }}>
+                        <div style={{ marginTop: '20px'}}>
+                            <span style={{fontSize: '1.1em', fontWeight: 'bold'}}>Ingresa tu correo electrónico: </span>
                             <InputAtom
                                 className='mb-3 height-10'
                                 type="email"
@@ -95,6 +97,7 @@ const IniciarSesion = () => {
                                 value={formData.correo}
                                 onChange={handleChange}
                             />
+                            <span style={{fontSize: '1.1em', fontWeight: 'bold'}}>Ingresa tu contraseña: </span>
                             <InputAtom
                                 type="password"
                                 placeholder="Contraseña"
@@ -106,7 +109,7 @@ const IniciarSesion = () => {
                         <div className='flex items-center justify-center'>
                             {loading && <span>Cargando...</span>}
                         </div>
-                        <div style={{ textAlign: 'center' }}>
+                        <div style={{ textAlign: 'center', marginTop: '25px', fontSize: '15px' }}>
                             <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center', margin: '15px', marginTop: '60px' }}>
@@ -120,7 +123,7 @@ const IniciarSesion = () => {
                     </form>
                 </div>
             </div>
-            <Footer />
+
         </div>
 
     );

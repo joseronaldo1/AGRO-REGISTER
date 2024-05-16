@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import { FaRegEdit } from 'react-icons/fa'; 
+import { RiPlantFill } from "react-icons/ri";
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalActividad.jsx";
+import ModalEstadoActividad from "../organismos/ModalEstadoActividad.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
@@ -15,11 +17,12 @@ function Actividad() {
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
+  const [showEstadoModal, setShowEstadoModal] = useState(false); // Estado para controlar la visibilidad del modal de estado
   const [registroFormData, setRegistroFormData] = useState({});
-  const [mode, setMode] = useState('create'); // Agrega mode al estado
+  const [mode, setMode] = useState('create'); 
   const [originalData, setOriginalData] = useState([]);
   const [initialData, setInitialData] = useState(null);
-  const [error, setError] = useState(null); // Estado para manejar errores
+  const [error, setError] = useState(null); 
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
@@ -38,6 +41,14 @@ function Actividad() {
 
   const handleOpenRegistroModal = () => setShowRegistroModal(true);
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
+
+  const handleOpenEstadoModal = (rowData) => {
+    const updatedInitialData = { ...rowData };
+    setInitialData(updatedInitialData);
+    setShowEstadoModal(true);
+  };
+
+  const handleCloseEstadoModal = () => setShowEstadoModal(false);
 
   const handleOpenActualizacionModal = (rowData) => {
     const updatedInitialData = { ...rowData, id: rowData.id_actividad };
@@ -83,76 +94,6 @@ function Actividad() {
     }
   };
 
-
-
-  const handleEstadoBotonClick = async (id, estado) => {
-    try {
-      let newEstado;
-      let confirmMessage;
-      switch (estado) {
-        case 'activo':
-          confirmMessage = '¿Deseas marcar esta actividad como ejecutándose?';
-          break;
-        case 'ejecutandose':
-          confirmMessage = '¿Deseas marcar esta actividad como inactiva?';
-          break;
-        case 'inactivo':
-          confirmMessage = '¿Deseas marcar esta actividad como terminada?';
-          break;
-        case 'terminado':
-          confirmMessage = '¿Deseas marcar esta actividad como activa nuevamente?';
-          break;
-        default:
-          break;
-      }
-
-      const { isConfirmed } = await Swal.fire({
-        title: '¿Estás seguro?',
-        text: confirmMessage,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí',
-        cancelButtonText: 'Cancelar'
-      });
-
-      if (!isConfirmed) {
-        return; // Si el usuario cancela, salimos de la función sin hacer nada
-      }
-
-      switch (estado) {
-        case 'activo':
-          newEstado = 'ejecutandose';
-          break;
-        case 'ejecutandose':
-          newEstado = 'inactivo';
-          break;
-        case 'inactivo':
-          newEstado = 'terminado';
-          break;
-        case 'terminado':
-          newEstado = 'activo';
-          break;
-        default:
-          break;
-      }
-
-      await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
-      fetchData();
-
-      // Mostrar mensaje solo si la acción se completó con éxito
-      if (newEstado) {
-        Swal.fire('¡Listo!', `El estado de la actividad se ha cambiado a: ${newEstado}`, 'success');
-      }
-    } catch (error) {
-      console.error('Error al cambiar el estado de la actividad:', error);
-    }
-  };
-
-
-
-
-
-
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
     if (event.target.value === '') {
@@ -163,17 +104,32 @@ function Actividad() {
     }
   };
 
+  const handleEstadoSubmit = async (formData) => {
+    try {
+      console.log('Manejando envío de formulario de estado:', formData);
+
+    /*   // Por ejemplo, podrías enviar una solicitud PUT con Axios
+      await axios.put('http://localhost:3000/Desactivara/actividad/${id}', formData); */
+    
+      fetchData(); 
+      setShowEstadoModal(false); 
+    } catch (error) {
+      console.error('Error al enviar el formulario de estado:', error);
+    }
+  };
+  
+
   const columns = [
     {
       name: 'Editar',
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          style={{ backgroundColor: '#B5B5B5', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: 'white' }} />
+          <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
     },
@@ -222,67 +178,26 @@ function Actividad() {
       name: 'Acciones',
       cell: (row) => (
         <>
-          {row.estado === 'terminado' ? null : (
-            <button
-              className="btn p-2 rounded-lg estado-button"
-              style={{
-                backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#E83333' : row.estado === 'inactivo' ? '#366BED' : '#3484F0',
-                border: 'none',
-                color: 'white',
-                height: '40px',
-                width: '100px',
-                marginLeft: '-18px',
-                transition: 'background-color 0.2s',
-              }}
-              type="button"
-              onClick={() => handleEstadoBotonClick(row.id_actividad, row.estado)}
-              onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#F75050' : row.estado === 'inactivo' ? '#3484F0' : '#2DBC28' }}
-              onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#E83333' : row.estado === 'inactivo' ? '#366BED' : '#2A5CB5' }}
-            >
-              {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Desactivar' : 'Terminar'}
-            </button>
-          )}
+          <button
+            className="btn p-2 rounded-lg"
+            style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
+            type="button"
+            onClick={() => handleOpenEstadoModal(row)} // Cambia la función para abrir el modal de actualización por la función para abrir el modal de estado
+          >
+            <RiPlantFill style={{ color: 'white' }} />Estado
+          </button>
         </>
       ),
     },
-
   ];
 
   return (
-    <div>
-      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Header />
-        <div className="main-content" style={{ flex: 1 }}>
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
-
-            <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            <select
-              style={{
-                position: 'absolute',
-                marginTop: '-36px',
-                marginLeft: '500px',
-                padding: '8px',
-                fontSize: '16px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer',
-                width: '133px',
-              }}
-              value={estadoSeleccionado}
-              onChange={handleEstadoSeleccionado}
-            >
-              <option value="">Estados</option>
-              <option value="activo">Activo</option>
-              <option value="ejecutandose">Ejecutandose</option>
-              <option value="inactivo">Inactivo</option>
-              <option value="terminado">Terminado</option>
-            </select>
-          </div>
-
+    <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Header />
+      <div className="main-content" style={{ flex: 1 }}>
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
+          <SearchBar onSearch={handleSearch} />
+          <Botones children="Registrar" onClick={handleOpenRegistroModal} />
           <br />
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
@@ -308,6 +223,14 @@ function Actividad() {
           actionLabel="Actualizar"
           initialData={initialData}
           mode={mode}
+        />
+        <ModalEstadoActividad
+          mostrar={showEstadoModal} 
+          cerrarModal={handleCloseEstadoModal} 
+          initialData={initialData}
+          titulo="Estados"
+          actionLabel="Guardar"
+          handleSubmit={handleEstadoSubmit} // Asegúrate de pasar la función handleSubmit
         />
         <br />
       </div>

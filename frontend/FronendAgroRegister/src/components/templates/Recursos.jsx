@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa';
+import { FaRegEdit } from 'react-icons/fa';
 import Botones from '../atomos/BotonRegiApi';
 import { Datatable } from '../moleculas/Datatable';
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { GoIssueClosed } from "react-icons/go";
 import ModalRecuRegeContrasenia from '../organismos/ModalRecur';
 import Header from '../organismos/Header/Header';
 import Footer from '../organismos/Footer/Footer';
@@ -109,11 +111,11 @@ function Recursos() {
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          style={{ backgroundColor: '#B5B5B5', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: 'white' }} />
+          <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
     },
@@ -156,8 +158,8 @@ function Recursos() {
             border: 'none',
             color: 'white',
             height: '40px',
-            marginLeft: '-18px',
-            width: '100px',
+            marginLeft: '-38px',
+            width: '500px',
             transition: 'background-color 0.2s',
           }}
           type="button"
@@ -165,6 +167,7 @@ function Recursos() {
           onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#F54949' : '#2DBC28' }}
           onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#E83636' : 'green' }}
         >
+           {row.estado === 'existe' ? <IoIosCloseCircleOutline style={{ marginRight: '1px' }} /> : <GoIssueClosed style={{ marginRight: '3px' }} />}
           {row.estado === 'existe' ? 'Agotado' : 'Si hay'}
         </button>
       ),
