@@ -164,18 +164,44 @@ export const DesactivarFincaencadena = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Llamar al procedimiento almacenado
-        await pool.query('CALL desactivar_finca(?)', [id]);
+        // Llamar al procedimiento almacenado para administrar la finca
+        await pool.query('CALL administrar_finca(?)', [id]);
 
         res.status(200).json({
             status: 200,
-            message: 'Se desactivó la finca y sus registros relacionados con éxito',
+            message: 'Se realizó la acción sobre la finca y sus registros relacionados con éxito',
         });
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: 'Error al desactivar la finca y sus registros relacionados',
+            message: 'Error al realizar la acción sobre la finca y sus registros relacionados',
             error: error.message
         });
     }
 };
+
+/**
+ * DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `administrar_finca`(IN `id_finca_param` INT)
+BEGIN
+    DECLARE finca_estado VARCHAR(10);
+
+    -- Obtener el estado actual de la finca
+    SELECT estado INTO finca_estado FROM finca WHERE id_finca = id_finca_param;
+
+    -- Si la finca está activa, desactivar todos los registros relacionados
+    IF finca_estado = 'activo' THEN
+        UPDATE lotes SET estado = 'inactivo' WHERE fk_id_finca = id_finca_param;
+        UPDATE cultivo SET estado = 'inactivo' WHERE fk_id_lote IN (SELECT id_lote FROM lotes WHERE fk_id_finca = id_finca_param);
+        UPDATE programacion SET estado = 'inactivo' WHERE fk_id_cultivo IN (SELECT id_cultivo FROM cultivo WHERE fk_id_lote IN (SELECT id_lote FROM lotes WHERE fk_id_finca = id_finca_param));
+        UPDATE finca SET estado = 'inactivo' WHERE id_finca = id_finca_param;
+    -- Si la finca está inactiva, activar todos los registros relacionados
+    ELSE
+        UPDATE lotes SET estado = 'activo' WHERE fk_id_finca = id_finca_param;
+        UPDATE cultivo SET estado = 'activo' WHERE fk_id_lote IN (SELECT id_lote FROM lotes WHERE fk_id_finca = id_finca_param);
+        UPDATE programacion SET estado = 'activo' WHERE fk_id_cultivo IN (SELECT id_cultivo FROM cultivo WHERE fk_id_lote IN (SELECT id_lote FROM lotes WHERE fk_id_finca = id_finca_param));
+        UPDATE finca SET estado = 'activo' WHERE id_finca = id_finca_param;
+    END IF;
+END$$
+DELIMITER ;
+ */
