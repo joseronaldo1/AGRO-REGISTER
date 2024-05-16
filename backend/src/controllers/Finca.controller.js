@@ -155,3 +155,27 @@ export const DesactivarFinca = async (req, res) => {
         });
     }
 }
+
+
+
+
+
+export const DesactivarFincaencadena = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Llamar al procedimiento almacenado
+        await pool.query('CALL desactivar_finca(?)', [id]);
+
+        res.status(200).json({
+            status: 200,
+            message: 'Se desactivó la finca y sus registros relacionados con éxito',
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Error al desactivar la finca y sus registros relacionados',
+            error: error.message
+        });
+    }
+};

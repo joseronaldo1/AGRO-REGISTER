@@ -92,7 +92,7 @@ function Fincas() {
   const handleEstadoBotonClick = async (id, estado) => {
     try {
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; 
-      await axios.put(`http://localhost:3000/desactivar/Finca/${id}`, { estado: newEstado });
+      await axios.put(`http://localhost:3000/desactivarEncadena/Finca/${id}`, { estado: newEstado });
       fetchData(); 
     } catch (error) {
       console.error('Error al cambiar el estado de la finca:', error);
