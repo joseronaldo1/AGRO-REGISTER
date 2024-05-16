@@ -1,44 +1,83 @@
-import React from 'react';
-import Formulario from '..components/organismos/Formulario.jsx';
-import Botones from '../atomos/Botones.jsx';
-import { Modal } from 'react-bootstrap';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Botones from '../atomos/Botones.jsx';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
-import Footer from '../organismos/Footer/Footer';
+import InputAtom from '../atomos/Inputs.jsx';
+import Logo from '../../assets/logoOrigi.png';
+import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png';
+import Footer from '../organismos/Footer/Footer.jsx';
 
 const Olvidopasstwo = () => {
-     const campos = [
-         { name: 'codigo', type: 'number', placeholder: 'Codigo ' },
-     ];
-    
-     const formularioStyle = {
-         border: '1px solid #ccc', 
-         borderRadius: '5px',
-         padding: '20px', 
-         margin: '20px auto', 
-         maxWidth: '400px'
-     };
+  const [codigo, setCodigo] = useState('');
 
-     return (
-         <div className='flex' style={{margin:'150px'}}>
-             <HeaderInicio/>
-             <div className='flex items-center justify-center'>
-                 <form style={formularioStyle}>
-                     <label className="text-xl font-bold flex justify-center items-center p-10">Codigo de Recuperación</label>
-                     <div style={{marginTop :'150px'}}>
-                         <Formulario campos={campos} />
-                     </div>
-                    <div className='flex flex-col m-5 justify-center items-center'>
-                         <Link to='/olvidocontra3'>
-                         <Botones children='Enviar' />
-                         </Link>
-                     </div>
-                
-                 </form>
-                
-             </div>
-             <Footer/>
-         </div>
-     );
- };
- export default Olvidopasstwo;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (codigo.trim() === '') {
+      alert('Por favor, ingresa el código de recuperación.');
+      return;
+    }
+
+    alert('Código de recuperación enviado correctamente.');
+    window.location.href = "/olvidocontra3";
+  };
+
+  const containerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '90vh',
+    width: '100%',
+    position: 'relative',
+    boxSizing: 'border-box'
+  };
+
+  const formularioStyle = {
+    border: '1px solid #ccc',
+    borderRadius: '5px',
+    padding: '20px',
+    width: '100%',
+    maxWidth: '400px',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+  };
+
+  const fondoStyle = {
+    backgroundImage: `url(${fondo})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
+  };
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <div style={fondoStyle}></div>
+      <HeaderInicio />
+      <div style={containerStyle}>
+        <form onSubmit={handleSubmit} style={formularioStyle}>
+          <label style={{ fontSize: '2.3em', fontWeight: 'bold', marginBottom: '20px' }}>Código de Recuperación</label>
+          <img src={Logo} alt="Logo" style={{ maxWidth: '160px', marginBottom: '20px' }} />
+          <InputAtom
+            type="number"
+            placeholder="Código"
+            value={codigo}
+            onChange={(e) => setCodigo(e.target.value)}
+          />
+          <div style={{ marginTop: '30px', marginLeft: "50px" }}>
+            <Link to='/olvidocontra3' style={{ textDecoration: 'none' }}>
+              <Botones>Enviar</Botones>
+            </Link>
+          </div>
+        </form>
+      </div>
+      <Footer />
+    </div>
+  );
+};
+
+export default Olvidopasstwo;

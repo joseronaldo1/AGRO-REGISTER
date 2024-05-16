@@ -9,8 +9,8 @@ export const listarProduccion = async (req, res) => {
             produ.precio,
             act.nombre_actividad AS nombre_actividad
         FROM produccion AS produ
-        JOIN programacion AS pro ON produ.fk_id_programacion = pro.id_programacion
-        JOIN actividad AS act ON pro.fk_id_actividad = act.id_actividad`;
+        JOIN actividad AS act ON produ.fk_id_actividad = act.id_actividad`;
+
 
         const [listar] = await pool.query(sql);
 
@@ -38,143 +38,87 @@ export const registrarProduccion = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors });
         }
-        
-        const { cantidad_produccion, precio, nombre_actividad } = req.body;
-        
-        const nombreActividadLowerCase = nombre_actividad.toLowerCase();
-        const [programacion] = await pool.query("SELECT id_programacion FROM programacion WHERE fk_id_actividad = (SELECT id_actividad FROM actividad WHERE LOWER(nombre_actividad) = ?)", [nombreActividadLowerCase]);
-        
-        if (programacion.length === 0) {
-            return res.status(400).json({
-                "mensaje": "La actividad proporcionada no tiene una programación asociada"
-            });
-        }
-        
-        const fk_id_programacion = programacion[0].id_programacion;
-        
-        const [resultado] = await pool.query("INSERT INTO produccion (cantidad_produccion, precio, fk_id_programacion) VALUES (?, ?, ?)", [cantidad_produccion, precio, fk_id_programacion]);
+
+        const { cantidad_produccion, precio, fk_id_actividad } = req.body
+        const [resultado] = await pool.query("insert into produccion(cantidad_produccion, precio, fk_id_actividad) values (?,?,?)", [cantidad_produccion, precio, fk_id_actividad])
 
         if (resultado.affectedRows > 0) {
             res.status(200).json({
-                "mensaje": "Producción registrada con éxito"
+                "mensaje": "Producción registrada con exito"
             })
         } else {
             res.status(400).json({
-                "mensaje": "Hubo un error y no se pudo guardar la producción"
+                "mensaje": "hay un error no se pudo guardar"
             })
         }
     } catch (error) {
         res.status(500).json({
-            "mensaje": "Error en el servidor",
-            "error": error
+            "mensaje": error
         })
     }
 }
 
 
-
 export const BuscarProduccion = async (req, res) => {
     try {
-        let sql = `SELECT produ.id_producccion,produ.cantidad_produccion, 
-        produ.fk_id_programacion AS id_programacion,  
-        pro.fecha_inicio, 
-        pro.fecha_fin
-FROM produccion AS produ
-JOIN programacion AS pro ON produ.fk_id_programacion  = pro.id_programacion`;
-
-        const { id } = req.params;
-        const consultar = 'SELECT * FROM produccion WHERE id_producccion  LIKE ?';
-        const [resultado] = await pool.query(consultar, [id]);
+        const { nombre } = req.params; // Obtener el nombre de la variedad desde los parámetros
+        const searchTerm = `%${nombre}%`; // Cambio aquí: preparar el término de búsqueda para buscar coincidencias parciales
+        const consultar = `
+            SELECT cul.id_programacion,
+                   cul.cantidad_produccion,
+                   cul.precio, 
+                   lo.nombre AS nombre_actividad, 
+            FROM produccion AS cul
+            JOIN actividad AS lo ON cul.fk_id_actividad = lo.id_actividad
+            WHERE lo.nombre_actividad LIKE ?`; // Cambio aquí: utilizar el operador LIKE para buscar coincidencias parciales
+        const [resultado] = await pool.query(consultar, [searchTerm]); // Pasar el término de búsqueda como parámetro
 
         if (resultado.length > 0) {
-            return res.status(200).json({ resultado });
+            res.status(200).json(resultado);
         } else {
             res.status(404).json({
-                status: 404,
-                message: "No se encontraron resultados con el id ",
+                mensaje: "No se encontró ningúna produccion con ese nombre de actividad"
             });
         }
     } catch (error) {
-        res.status(500).json({
-            status: 500,
-            message: "error en el servidor ",
-        });
-        console.log(error)
+        res.status(500).json({ status: 500, message: 'Error en el sistema: ' + error });
     }
 };
+
 
 
 export const actualizarProduccion = async (req, res) => {
     try {
         const errors = validationResult(req);
-
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { id_producccion } = req.params;
-        const { cantidad_produccion, precio, fk_id_programacion } = req.body;
+        const { id } = req.params;
+        const { cantidad_produccion, precio, fk_id_actividad } = req.body;
 
-        if (!cantidad_produccion && !precio && !fk_id_programacion) {
-            return res.status(400).json({
-                message:
-                    "se requiere uno de los campos para actualizar (cantidad_produccion, precio, fk_id_programacion)",
-            });
-        }
-        const [variedadExiste] = await pool.query('SELECT * FROM programacion WHERE id_programacion = ?', [fk_id_programacion]);
-
-        if (variedadExiste.length === 0) {
-            return res.status(404).json({
-                status: 404,
-                message: 'Este ID no existe. Por favor, registre la variedad primero.'
-            });
+        // Verifica si al menos uno de los campos está presente en la solicitud
+        if (!cantidad_produccion && !precio && !fk_id_actividad) {
+            return res.status(400).json({ message: 'Al menos uno de los campos (cantidad_produccion, precio, fk_id_actividad) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
-        const [produccionExistente] = await pool.query('SELECT * FROM produccion WHERE id_producccion =?', [id_producccion]);
 
-        if (produccionExistente.length === 0) {
-            return res.status(404).json({
-                status: 404,
-                message: 'Producción no encontrada. El ID proporcionado no existe.'
-            });
-        }
-
-        if (
-            produccionExistente[0].cantidad_produccion === cantidad_produccion &&
-            produccionExistente[0].precio === precio &&
-            produccionExistente[0].fk_id_programacion === fk_id_programacion
-        ) {
-            return res.status(400).json({
-                status: 400,
-                message: 'No se ha realizado ningún cambio. Los datos son iguales a los existentes.'
-            });
-        }
+        const [oldProduccion] = await pool.query("SELECT * FROM produccion WHERE id_producccion=?", [id]);
 
         const updateValues = {
-            cantidad_produccion: cantidad_produccion || produccionExistente[0].cantidad_produccion,
-            precio: precio || produccionExistente[0].precio,
-            fk_id_programacion: fk_id_programacion || produccionExistente[0].fk_id_programacion,
+            cantidad_produccion: cantidad_produccion ? cantidad_produccion : oldProduccion[0].cantidad_produccion,
+            precio: precio ? precio : oldProduccion[0].precio,
+            fk_id_actividad: fk_id_actividad ? fk_id_actividad : oldProduccion[0].fk_id_actividad
         };
 
-        const updateQuery = 'UPDATE produccion SET cantidad_produccion=?, precio=?, fk_id_programacion=? WHERE id_producccion=?';
+        const updateQuery = `UPDATE produccion SET cantidad_produccion=?, precio=?, fk_id_actividad=? WHERE id_producccion=?`;
 
-        const [updatedProduccion] = await pool.query(updateQuery, [
-            updateValues.cantidad_produccion,
-            updateValues.precio,
-            updateValues.fk_id_programacion,
-            id_producccion
-        ]);
+        const [resultado] = await pool.query(updateQuery, [updateValues.cantidad_produccion, updateValues.precio, updateValues.fk_id_actividad, parseInt(id)]);
 
-        if (updatedProduccion.affectedRows > 0) {
-            res.status(200).json({
-                status: 200,
-                message: updatedProduccion.changedRows > 0 ? 'Se actualizó con éxito' : 'Sin cambios realizados',
-            });
+        if (resultado.affectedRows > 0) {
+            res.status(200).json({ "mensaje": "La producción ha sido actualizada" });
         } else {
-            res.status(400).json({
-                status: 400,
-                message: 'No se encontraron resultados para la actualización',
-            });
+            res.status(404).json({ "mensaje": "No se pudo actualizar la producción" });
         }
     } catch (error) {
         res.status(500).json({

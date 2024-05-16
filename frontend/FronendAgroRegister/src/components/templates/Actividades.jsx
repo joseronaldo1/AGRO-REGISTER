@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import { FaRegEdit } from 'react-icons/fa';
+import { RiPlantFill } from "react-icons/ri";
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalActividad.jsx";
+import ModalEstadoActividad from "../organismos/ModalEstadoActividad.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
+import Swal from 'sweetalert2';
 
 function Actividad() {
   const baseURL = 'http://localhost:3000/listarActividad';
@@ -14,17 +17,18 @@ function Actividad() {
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
+  const [showEstadoModal, setShowEstadoModal] = useState(false); // Estado para controlar la visibilidad del modal de estado
   const [registroFormData, setRegistroFormData] = useState({});
-  const [mode, setMode] = useState('create'); // Agrega mode al estado
+  const [mode, setMode] = useState('create');
   const [originalData, setOriginalData] = useState([]);
   const [initialData, setInitialData] = useState(null);
-  const [error, setError] = useState(null); // Estado para manejar errores
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState(''); 
+  const [error, setError] = useState(null);
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -38,6 +42,14 @@ function Actividad() {
 
   const handleOpenRegistroModal = () => setShowRegistroModal(true);
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
+
+  const handleOpenEstadoModal = (rowData) => {
+    const updatedInitialData = { ...rowData, id: rowData.id_actividad };
+    setInitialData(updatedInitialData);
+    setShowEstadoModal(true);
+  };
+
+  const handleCloseEstadoModal = () => setShowEstadoModal(false);
 
   const handleOpenActualizacionModal = (rowData) => {
     const updatedInitialData = { ...rowData, id: rowData.id_actividad };
@@ -129,6 +141,21 @@ function Actividad() {
     }
   };
 
+  const handleEstadoSubmit = async (formData) => {
+    try {
+      console.log('Manejando envío de formulario de estado:', formData);
+
+      /*   // Por ejemplo, podrías enviar una solicitud PUT con Axios
+        await axios.put('http://localhost:3000/Desactivara/actividad/${id}', formData); */
+
+      fetchData();
+      setShowEstadoModal(false);
+    } catch (error) {
+      console.error('Error al enviar el formulario de estado:', error);
+    }
+  };
+
+
   const columns = [
     
     {
@@ -136,11 +163,11 @@ function Actividad() {
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          style={{ backgroundColor: '#B5B5B5', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: 'white' }} />
+          <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
     },
@@ -190,67 +217,52 @@ function Actividad() {
       cell: (row) => (
 
         <>
-          {row.estado === 'terminado' ? null : (
-            <button
-              className="btn p-2 rounded-lg estado-button"
-              style={{
-                backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
-                border: 'none',
-                color: 'white',
-                height: '40px',
-                width: '100px',
-                marginLeft: '-18px',
-                transition: 'background-color 0.2s',
-              }}
-              type="button"
-              onClick={() => handleEstadoBotonClick(row.id_actividad, row.estado)}
-              onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#377AF0' : row.estado === 'terminado' ? '#E54444' : '#2DBC28' }}
-              onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green' }}
-            >
-              {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
-            </button>
-          )}
+          <button
+            className="btn p-2 rounded-lg"
+            style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
+            type="button"
+            onClick={() => handleOpenEstadoModal(row)} // Cambia la función para abrir el modal de actualización por la función para abrir el modal de estado
+          >
+            <RiPlantFill style={{ color: 'white' }} />Estado
+          </button>
         </>
       ),
     },
-    
   ];
 
   return (
-    <div>
-      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Header />
-        <div className="main-content" style={{ flex: 1 }}>
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
+    <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Header />
+      <div className="main-content" style={{ flex: 1 }}>
+        <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
 
+          <SearchBar onSearch={handleSearch} />
+          <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+          <select
+            style={{
+              position: 'absolute',
+              marginTop: '-36px',
+              marginLeft: '920px',
+              padding: '8px',
+              fontSize: '16px',
+              borderRadius: '5px',
+              border: '1px solid #ccc',
+              background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+              boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+              width: '133px',
+            }}
+            value={estadoSeleccionado}
+            onChange={handleEstadoSeleccionado}
+          >
+            <option value="">Estados</option>
+            <option value="activo">Activo</option>
+            <option value="ejecutandose">Ejecutandose</option>
+            <option value="inactivo">Inactivo</option>
+            <option value="terminado">Terminado</option>
+          </select>
 
-            <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            <select 
-              style={{ 
-                position: 'absolute',
-                marginTop: '-36px',
-                marginLeft: '500px',
-                padding: '8px',
-                fontSize: '16px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-                boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer',
-                width: '133px',
-              }}
-              value={estadoSeleccionado}
-              onChange={handleEstadoSeleccionado}
-            >
-              <option value="">Estados</option>
-              <option value="activo">Activo</option>
-              <option value="ejecutandose">Ejecutandose</option>
-              <option value="inactivo">Inactivo</option>
-              <option value="terminado">Terminado</option>
-            </select>
-          </div>
 
           <br />
 
@@ -279,6 +291,14 @@ function Actividad() {
           actionLabel="Actualizar"
           initialData={initialData}
           mode={mode}
+        />
+        <ModalEstadoActividad
+          mostrar={showEstadoModal}
+          cerrarModal={handleCloseEstadoModal}
+          initialData={initialData}
+          titulo="Estados"
+          actionLabel="Guardar"
+          handleSubmit={handleEstadoSubmit} // Asegúrate de pasar la función handleSubmit
         />
         <br />
       </div>

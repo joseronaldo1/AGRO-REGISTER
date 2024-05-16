@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa';
+import { FaRegEdit } from 'react-icons/fa';
 import Botones from '../atomos/BotonRegiApi';
 import { Datatable } from '../moleculas/Datatable';
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { GoIssueClosed } from "react-icons/go";
 import ModalRecuRegeContrasenia from '../organismos/ModalRecur';
 import Header from '../organismos/Header/Header';
-import Footer from '../organismos/Footer/Footer';
+import Swal from 'sweetalert2';
+/* import Footer from '../organismos/Footer/Footer'; */
 import SearchBar from '../moleculas/SearchBar';
 import '../../styles/FondoTable.css';
 
@@ -25,7 +28,7 @@ function Recursos() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -92,6 +95,11 @@ function Recursos() {
       const newEstado = estado === 'existe' ? 'agotado' : 'existe';
       await axios.put(`http://localhost:3000/desactivar/Recurso/${id}`, { estado: newEstado });
       fetchData();
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: `El estado se cambió con éxito a ${newEstado}.`,
+      });
     } catch (error) {
       console.error('Error al cambiar el estado del recurso:', error);
     }
@@ -114,11 +122,11 @@ function Recursos() {
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          style={{ backgroundColor: '#B5B5B5', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: 'white' }} />
+          <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
     },
@@ -169,10 +177,11 @@ function Recursos() {
           }}
           type="button"
           onClick={() => handleEstadoBotonClick(row.id_tipo_recursos, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#D33B3B' : '#2DBC28' }}
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? 'red' : 'green' }}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#F54949' : '#2DBC28' }}
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#E83636' : 'green' }}
         >
-          {row.estado === 'existe' ? 'No hay' : 'Si hay'}
+          {row.estado === 'existe' ? <IoIosCloseCircleOutline style={{ marginRight: '1px' }} /> : <GoIssueClosed style={{ marginRight: '3px' }} />}
+          {row.estado === 'existe' ? 'Agotado' : 'Disponible'}
         </button>
 
       ),
@@ -193,13 +202,13 @@ function Recursos() {
               style={{
                 position: 'absolute',
                 marginTop: '-36px',
-                marginLeft: '520px',
+                marginLeft: '940px',
                 padding: '8px',
                 fontSize: '16px',
                 borderRadius: '5px',
                 border: '1px solid #ccc',
                 background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-                boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px',
+                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
                 width: '100px',
@@ -244,7 +253,7 @@ function Recursos() {
         <br />
 
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

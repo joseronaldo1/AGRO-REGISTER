@@ -5,7 +5,9 @@ import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalLotes.jsx";
 import Header from "../organismos/Header/Header";
+import { FaPowerOff, FaLightbulb } from "react-icons/fa";
 import Footer from '../organismos/Footer/Footer';
+import Swal from 'sweetalert2';
 import SearchBar from '../moleculas/SearchBar';
 
 function Lotes() {
@@ -109,11 +111,11 @@ function Lotes() {
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          style={{ backgroundColor: '#B5B5B5', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: 'white' }} />
+          <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
     },
@@ -165,6 +167,7 @@ function Lotes() {
           onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }}
           onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }}
         >
+          {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '5px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
           {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
         </button>
 

@@ -9,8 +9,8 @@ export const ValidateProduccion = [
 
 ];
 
-export const actualizar =[
-    check('cantidad_produccion','la cantidad tienen que ser un numero y no ser menos a 1').isInt().isNumeric().optional(),
-    check('precio','el precio deve ser un numero y mayor a 1').isInt().isNumeric().optional(),
-    check('fk_id_programacion').optional().isNumeric().withMessage(),
+export const actualizar = [
+    check('cantidad_produccion', 'la cantidad tienen que ser un numero y no ser menos a 1').isInt().isNumeric().optional(),
+    check('precio', 'el precio debe ser un numero y mayor a 1').isInt().isNumeric().optional(),
+
 ]

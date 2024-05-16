@@ -2,7 +2,7 @@ import React from "react";
 import Boton from "../atomos/Botones";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+// import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 function Reportes() {
   return (

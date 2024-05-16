@@ -12,14 +12,14 @@ export const Datatable = (props) => {
     const customStyles = {
         headCells: {
             style: {
-                fontSize: '18px', // Tamaño de la fuente para los encabezados de columna
+                fontSize: '15px', // Tamaño de la fuente para los encabezados de columna
                 fontWeight: 'bold', // Peso de la fuente para los encabezados de columna
                 borderBottom: '1px solid #dee2e6', // Agrega un borde inferior a los encabezados de columna
             },
         },
         cells: {
             style: {
-                fontSize: '16px', // Tamaño de la fuente para las celdas de datos
+                fontSize: '15px', // Tamaño de la fuente para las celdas de datos
                 lineHeight: '24px', // Espaciado entre líneas para las celdas de datos
                 borderBottom: '1px solid #dee2e6', // Agrega un borde inferior a las celdas de datos
             },

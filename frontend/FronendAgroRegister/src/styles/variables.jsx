@@ -1,4 +1,4 @@
-import {faLock, faUser, faFileAlt, faTimes, faArrowRight, faKey, faFile, faCircleUser, faMountainSun, faSeedling, faListCheck, faTractor, faFileContract, faGear, faUserGroup, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faUser, faFileAlt, faTimes, faArrowRight, faKey, faFile, faCircleUser, faMountainSun, faSeedling, faListCheck, faTractor, faFileContract, faGear, faUserGroup, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import Img1 from '../assets/cc1.jpg'
 import Img2 from '../assets/Ecos_del_campo_Colombiano.jpg'
 import Img3 from '../assets/foto-panoramica-hermosa-naturaleza-isla-kauai-hawaii_181624-48159.avif'

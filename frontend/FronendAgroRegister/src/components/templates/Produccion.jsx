@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import { FaRegEdit } from 'react-icons/fa';
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalProduccion.jsx";
@@ -18,6 +18,8 @@ function Produccion() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
+  const [error, setError] = useState(null); // Estado para manejar errores
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -37,8 +39,7 @@ function Produccion() {
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
   const handleOpenActualizacionModal = (rowData) => {
-    const updatedInitialData = { ...rowData, id: rowData.id_produccion };
-    setInitialData(updatedInitialData);
+    setInitialData(rowData); // No es necesario modificar los datos aquí
     setMode('update');
     setShowActualizacionModal(true);
   };
@@ -51,7 +52,7 @@ function Produccion() {
   const handleActualizacionFormSubmit = async (formData) => {
     try {
       console.log('Actualización de la producción:', formData);
-      const { id } = formData;
+      const { id } = formData; // Corregido aquí: extraer el ID de initialData en lugar de formData
       await axios.put(`http://localhost:3000/ActualizarProduccion/${id}`, formData);
       fetchData();
       setShowActualizacionModal(false);
@@ -61,34 +62,47 @@ function Produccion() {
   };
 
 
-  // Función para buscar produccion por nombre
+  // Función para buscar fincas por nombre_actividad
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
         // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
+        setError(null); // Limpiar el error
       } else {
         const response = await axios.get(`http://localhost:3000/BuscarProduccion/${searchTerm}`);
         setData(response.data);
+        if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
+          setError('No se encontraron resultados');
+        } else {
+          setError(null); // Limpiar el error si se encontraron resultados
+        }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
     }
   };
 
 
 
   const columns = [
+    // {
+    //   name: 'ID',
+    //   selector: (row) => row.id_cultivo,
+    //   sortable: true,
+    // },
     {
       name: 'Editar',
       cell: (row) => (
         <button
           className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          style={{ backgroundColor: '#B5B5B5', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
           type="button"
           onClick={() => handleOpenActualizacionModal(row)}
         >
-          <FaEdit style={{ color: 'white' }} />
+          <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
     },
@@ -106,9 +120,7 @@ function Produccion() {
       name: 'Actividad',
       selector: (row) => row.nombre_actividad,
       sortable: true,
-    },
-
-
+    }
   ];
 
   return (
@@ -116,17 +128,20 @@ function Produccion() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-          {/* Contenido principal */}
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
-            <div className="white-container">
-              <SearchBar onSearch={handleSearch} />
-              <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            </div>
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
+
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
           </div>
+
           <br />
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', borderRadius: '2px' }}>
+
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
             <Datatable columns={columns} data={data} title="Producción" />
-          </div>
+          )}
+
         </div>
 
         <ModalRecuRegeContrasenia
@@ -138,7 +153,6 @@ function Produccion() {
           mode="registro"
           handleSubmit={() => setShowRegistroModal(false)}
         />
-
         <ModalRecuRegeContrasenia
           mostrar={showActualizacionModal}
           cerrarModal={handleCloseActualizacionModal}
@@ -149,7 +163,6 @@ function Produccion() {
           mode={mode}
         />
         <br />
-
       </div>
       <Footer />
     </div>
