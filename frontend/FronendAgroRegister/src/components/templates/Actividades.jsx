@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaRegEdit } from 'react-icons/fa'; 
+import { FaRegEdit } from 'react-icons/fa';
 import { RiPlantFill } from "react-icons/ri";
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
@@ -19,15 +19,15 @@ function Actividad() {
   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
   const [showEstadoModal, setShowEstadoModal] = useState(false); // Estado para controlar la visibilidad del modal de estado
   const [registroFormData, setRegistroFormData] = useState({});
-  const [mode, setMode] = useState('create'); 
+  const [mode, setMode] = useState('create');
   const [originalData, setOriginalData] = useState([]);
   const [initialData, setInitialData] = useState(null);
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -43,7 +43,7 @@ function Actividad() {
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
   const handleOpenEstadoModal = (rowData) => {
-    const updatedInitialData = { ...rowData };
+    const updatedInitialData = { ...rowData, id: rowData.id_actividad };
     setInitialData(updatedInitialData);
     setShowEstadoModal(true);
   };
@@ -108,16 +108,16 @@ function Actividad() {
     try {
       console.log('Manejando envío de formulario de estado:', formData);
 
-    /*   // Por ejemplo, podrías enviar una solicitud PUT con Axios
-      await axios.put('http://localhost:3000/Desactivara/actividad/${id}', formData); */
-    
-      fetchData(); 
-      setShowEstadoModal(false); 
+      /*   // Por ejemplo, podrías enviar una solicitud PUT con Axios
+        await axios.put('http://localhost:3000/Desactivara/actividad/${id}', formData); */
+
+      fetchData();
+      setShowEstadoModal(false);
     } catch (error) {
       console.error('Error al enviar el formulario de estado:', error);
     }
   };
-  
+
 
   const columns = [
     {
@@ -198,6 +198,32 @@ function Actividad() {
         <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
           <SearchBar onSearch={handleSearch} />
           <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+          <select
+            style={{
+              position: 'absolute',
+              marginTop: '-36px',
+              marginLeft: '920px',
+              padding: '8px',
+              fontSize: '16px',
+              borderRadius: '5px',
+              border: '1px solid #ccc',
+              background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+              boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+              width: '133px',
+            }}
+            value={estadoSeleccionado}
+            onChange={handleEstadoSeleccionado}
+          >
+            <option value="">Estados</option>
+            <option value="activo">Activo</option>
+            <option value="ejecutandose">Ejecutandose</option>
+            <option value="inactivo">Inactivo</option>
+            <option value="terminado">Terminado</option>
+          </select>
+
+
           <br />
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
@@ -225,8 +251,8 @@ function Actividad() {
           mode={mode}
         />
         <ModalEstadoActividad
-          mostrar={showEstadoModal} 
-          cerrarModal={handleCloseEstadoModal} 
+          mostrar={showEstadoModal}
+          cerrarModal={handleCloseEstadoModal}
           initialData={initialData}
           titulo="Estados"
           actionLabel="Guardar"

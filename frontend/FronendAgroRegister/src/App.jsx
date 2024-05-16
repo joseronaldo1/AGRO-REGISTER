@@ -22,12 +22,12 @@ import { ReportesPage } from './pages';
 import { ProgramacionPage } from './pages';
 import { ProduccionPage } from './pages';
 import { PerfilprincipalPage } from './pages';
- 
+
 
 
 function App() {
   return (
-    <BrowserRouter>    
+    <BrowserRouter>
 
 
       <Routes>

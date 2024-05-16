@@ -47,7 +47,7 @@ function NavbarHeader() {
           <button className="btn shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
             <span><FaBars style={{ width: "40px", height: "40px", borderColor: '#009100' }} /></span>
           </button>
-          <h1>AGRO-REGISTER</h1>
+          <h1>AGRO-RECORDS</h1>
           <div className="d-flex align-items-center">
             <img className='imagenpersonal' src={v.Imagepersona} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '100%' }} onClick={handleModalOpen} />
             {ultimoUsuario && <strong><span style={{ marginLeft: '10px', fontSize: '20px', marginRight: '50px', cursor: 'pointer' }} onClick={handleModalOpen}>{ultimoUsuario.nombre}</span></strong>}

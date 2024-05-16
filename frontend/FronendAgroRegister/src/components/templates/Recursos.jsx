@@ -7,7 +7,8 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { GoIssueClosed } from "react-icons/go";
 import ModalRecuRegeContrasenia from '../organismos/ModalRecur';
 import Header from '../organismos/Header/Header';
-import Footer from '../organismos/Footer/Footer';
+import Swal from 'sweetalert2';
+/* import Footer from '../organismos/Footer/Footer'; */
 import SearchBar from '../moleculas/SearchBar';
 import '../../styles/FondoTable.css';
 
@@ -26,7 +27,7 @@ function Recursos() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -90,6 +91,11 @@ function Recursos() {
       const newEstado = estado === 'existe' ? 'agotado' : 'existe';
       await axios.put(`http://localhost:3000/desactivar/Recurso/${id}`, { estado: newEstado });
       fetchData();
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: `El estado se cambió con éxito a ${newEstado}.`,
+      });
     } catch (error) {
       console.error('Error al cambiar el estado del recurso:', error);
     }
@@ -167,8 +173,8 @@ function Recursos() {
           onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#F54949' : '#2DBC28' }}
           onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'existe' ? '#E83636' : 'green' }}
         >
-           {row.estado === 'existe' ? <IoIosCloseCircleOutline style={{ marginRight: '1px' }} /> : <GoIssueClosed style={{ marginRight: '3px' }} />}
-          {row.estado === 'existe' ? 'Agotado' : 'Si hay'}
+          {row.estado === 'existe' ? <IoIosCloseCircleOutline style={{ marginRight: '1px' }} /> : <GoIssueClosed style={{ marginRight: '3px' }} />}
+          {row.estado === 'existe' ? 'Agotado' : 'Disponible'}
         </button>
       ),
     },
@@ -187,7 +193,7 @@ function Recursos() {
               style={{
                 position: 'absolute',
                 marginTop: '-36px',
-                marginLeft: '520px',
+                marginLeft: '940px',
                 padding: '8px',
                 fontSize: '16px',
                 borderRadius: '5px',
@@ -237,7 +243,7 @@ function Recursos() {
         <br />
 
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

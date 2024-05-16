@@ -23,8 +23,7 @@ function Variedad() {
 
   useEffect(() => {
     fetchData();
-
-  }, []);
+  }, [data]);
 
 
   const fetchData = async () => {
@@ -130,8 +129,8 @@ function Variedad() {
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-          <Datatable columns={columns} data={data} title="Variedad" />
-        )}
+            <Datatable columns={columns} data={data} title="Variedad" />
+          )}
         </div>
 
         <ModalRecuRegeContrasenia

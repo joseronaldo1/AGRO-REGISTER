@@ -8,6 +8,7 @@ import ModalRecuRegeContrasenia from "../organismos/ModalFincas.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
+import Swal from 'sweetalert2';
 import { Tooltip } from "@nextui-org/react";
 
 function Fincas() {
@@ -26,7 +27,7 @@ function Fincas() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -90,6 +91,13 @@ function Fincas() {
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
       await axios.put(`http://localhost:3000/desactivar/Finca/${id}`, { estado: newEstado });
       fetchData();
+
+      // Mostrar alerta con SweetAlert
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: `El estado se cambió con éxito a ${newEstado}.`,
+      });
     } catch (error) {
       console.error('Error al cambiar el estado de la finca:', error);
     }
@@ -162,15 +170,15 @@ function Fincas() {
           }}
           type="button"
           onClick={() => handleEstadoBotonClick(row.id_finca, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }}
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#F54949' : '#2DBC28' }}
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }}
         >
-          {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '1px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
+          {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '5px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
           {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
         </button>
       ),
     },
-    
+
   ];
 
   return (
@@ -187,7 +195,7 @@ function Fincas() {
               style={{
                 position: 'absolute',
                 marginTop: '-36px',
-                marginLeft: '520px',
+                marginLeft: '920px',
                 padding: '8px',
                 fontSize: '16px',
                 borderRadius: '5px',

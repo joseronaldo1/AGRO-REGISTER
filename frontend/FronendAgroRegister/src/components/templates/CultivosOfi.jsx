@@ -7,6 +7,7 @@ import { FaPowerOff, FaLightbulb } from "react-icons/fa";
 import ModalRecuRegeContrasenia from "../organismos/ModalCultivos.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
+import Swal from 'sweetalert2';
 import SearchBar from '../moleculas/SearchBar';
 
 function Cultivos() {
@@ -24,7 +25,7 @@ function Cultivos() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const fetchData = async () => {
     try {
@@ -90,7 +91,12 @@ function Cultivos() {
     try {
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; //Cambiar los estados existentes por "activo" e "inactivo"
       await axios.put(`http://localhost:3000/desactivar/Cultivo/${id}`, { estado: newEstado });
-      fetchData(); // Actualizar los datos después de la actualización
+      fetchData();
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: `El estado se cambió con éxito a ${newEstado}.`,
+      });
     } catch (error) {
       console.error('Error al cambiar el estado de la finca:', error);
     }
@@ -172,10 +178,10 @@ function Cultivos() {
           }}
           type="button"
           onClick={() => handleEstadoBotonClick(row.id_cultivo, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#F54949' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
         >
-          {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '1px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
+          {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '5px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
           {row.estado === 'activo' ? 'Inactivo' : 'Activar'}
         </button>
 
@@ -197,7 +203,7 @@ function Cultivos() {
               style={{
                 position: 'absolute',
                 marginTop: '-36px',
-                marginLeft: '520px',
+                marginLeft: '920px',
                 padding: '8px',
                 fontSize: '16px',
                 borderRadius: '5px',

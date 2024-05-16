@@ -7,7 +7,7 @@ import InputAtom from '../atomos/Inputs.jsx';
 import Botones from '../atomos/Botones.jsx';
 import v from '../../styles/variables';
 /* import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Import the background image if not already imported */
-import Logo from '../../assets/the.png';// Import the logo image if not already imported
+import Logo from '../../assets/logoOrigi.png';
 
 
 const IniciarSesion = () => {
@@ -81,14 +81,14 @@ const IniciarSesion = () => {
 
     return (
         <div style={fondoStyle}>
-            <div className='flex' style={{ margin: '130px', marginLeft: '450px', marginTop: '-70px' }}>
+            <div className='flex' style={{ margin: '130px', marginLeft: '700px', marginTop: '-70px' }}>
                 <HeaderInicio />
                 <div className='flex items-center justify-center'>
                     <form style={{ textAlign: 'center', ...formularioStyle }} onSubmit={handleSubmit}>
                         <label style={tituloStyle}>Inicio de Sesión</label>
                         <img src={Logo} alt="Logo" style={{ maxWidth: '160px' }} />
-                        <div style={{ marginTop: '20px'}}>
-                            <span style={{fontSize: '1.1em', fontWeight: 'bold'}}>Ingresa tu correo electrónico: </span>
+                        <div style={{ marginTop: '20px' }}>
+                            <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>Ingresa tu correo electrónico: </span>
                             <InputAtom
                                 className='mb-3 height-10'
                                 type="email"
@@ -97,7 +97,7 @@ const IniciarSesion = () => {
                                 value={formData.correo}
                                 onChange={handleChange}
                             />
-                            <span style={{fontSize: '1.1em', fontWeight: 'bold'}}>Ingresa tu contraseña: </span>
+                            <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>Ingresa tu contraseña: </span>
                             <InputAtom
                                 type="password"
                                 placeholder="Contraseña"

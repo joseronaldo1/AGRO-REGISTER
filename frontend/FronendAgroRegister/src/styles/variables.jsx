@@ -1,4 +1,4 @@
-import {faLock, faUser, faFileAlt, faTimes, faArrowRight, faKey, faFile, faCircleUser, faMountainSun, faSeedling, faListCheck, faTractor, faFileContract, faGear, faUserGroup, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faUser, faFileAlt, faTimes, faArrowRight, faKey, faFile, faCircleUser, faMountainSun, faSeedling, faListCheck, faTractor, faFileContract, faGear, faUserGroup, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import Img1 from '../assets/cc1.jpg'
 import Img2 from '../assets/Ecos_del_campo_Colombiano.jpg'
 import Img3 from '../assets/foto-panoramica-hermosa-naturaleza-isla-kauai-hawaii_181624-48159.avif'
@@ -11,7 +11,7 @@ import Img9 from '../assets/SENA.png'
 import ImgSlider1 from '../assets/se.jpg'
 import ImgSlider2 from '../assets/cultivos.jpg'
 import ImgSlider3 from '../assets/SENA-AZUL.jpg'
-import Logo from '../assets/the.png'
+import Logo from '../assets/logoOrigi.png'
 import LogoSena from '../assets/SenaInicio.png'
 import container1 from '../assets/container1.jpg'
 import container2 from '../assets/container2.png'

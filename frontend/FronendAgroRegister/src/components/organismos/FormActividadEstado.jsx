@@ -24,18 +24,22 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
     e.preventDefault();
     try {
       if (!formData.estado) {
-        setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+        setShowWarning(true);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Por favor seleccione un estado para la actividad'
+        });
         return;
       }
-        
 
-      if  (mode === 'update' ) {
+
+      if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/Desactivara/actividad/${id}`,
           formData
         );
-        // Mostrar alerta de actualización exitosa
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
@@ -61,8 +65,8 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         textAlign: 'center'
       }}
     >
-      
-    
+
+
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Estado de la actividad:{' '}
