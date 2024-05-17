@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {registrar,  actualizar,  buscar, listar, desactivar } from '../controllers/CultivosControllerdevSdva.js';
+import {registrar,  actualizar,  buscar, listar, desactivar, desactivarCultivo } from '../controllers/CultivosControllerdevSdva.js';
 import { validacionCultivosA, validacionCultivosR } from "../../validate/CultivosValidatedevSdva.js";
 //import { validarToken } from "../controllers/autenticacion.js"; 
 
@@ -13,4 +13,6 @@ rutaCultivos.put('/actualizarCultivo/:id_cultivo', validacionCultivosA, actualiz
 
 
 rutaCultivos.put("/desactivar/Cultivo/:id", desactivar);
+
+rutaCultivos.put("/desactivarEnCadena/Cultivo/:id", desactivarCultivo);
 export default rutaCultivos;

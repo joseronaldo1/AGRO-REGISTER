@@ -83,6 +83,7 @@ function Cultivos() {
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
+
       setError('Busqueda no encontrada'); // Establecer mensaje de error
     }
   };
@@ -103,6 +104,7 @@ function Cultivos() {
   };
 
 
+
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
     if (event.target.value === '') {
@@ -112,6 +114,7 @@ function Cultivos() {
       setData(filteredData);
     }
   };
+
 
   const columns = [
     // {
@@ -194,7 +197,8 @@ function Cultivos() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
+
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
 
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
@@ -257,5 +261,7 @@ function Cultivos() {
     </div>
   );
 }
+
+
 
 export default Cultivos;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
 import Swal from 'sweetalert2';
 
 const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
@@ -10,18 +11,21 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
   };
 
   const [formData, setFormData] = useState(initialFormData);
+
   const [showWarning, setShowWarning] = useState(false);
   const [nombre_actividad, setNombreActividad] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3000/listarActividad')
       .then(response => {
+
         setNombreActividad(response.data);
       })
       .catch(error => {
         console.error('Error al obtener los datos:', error);
       });
   }, []);
+
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -36,6 +40,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
     return soloNumeros.test(cantidad_produccion);
   };
 
+
   const validarPrecio = precio => {
     const soloNumeros = /^\d+$/;
     return soloNumeros.test(precio);
@@ -45,6 +50,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
     e.preventDefault();
     try {
       if (!formData.cantidad_produccion || !formData.precio || !formData.fk_id_actividad) {
+
         setShowWarning(true);
         return;
       }
@@ -66,6 +72,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         return;
       }
 
+
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistraProduccion',
@@ -76,17 +83,21 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
             }
           }
         );
+
+
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
           text: 'La Producción se ha registrado exitosamente'
         });
+
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/ActualizarProduccion/${id}`,
           formData
         );
+
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
@@ -155,8 +166,10 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         </label>
         <br />
         <select
+
           name='fk_id_actividad'
           style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+
           required={true}
           value={formData.fk_id_actividad}
           onChange={handleChange}

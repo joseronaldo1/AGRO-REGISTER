@@ -42,6 +42,7 @@ export const RegistrarA = async (req, res) => {
         const { nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad } = req.body
         const [resultado] = await pool.query("insert into actividad(nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad) values (?,?,?,?,?)", [nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad ])
 
+
         if (resultado.affectedRows > 0) {
             res.status(200).json({
                 "mensaje": "Actividad registrada con exito"
@@ -53,6 +54,7 @@ export const RegistrarA = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({
+
             "mensaje": error
         })
     }

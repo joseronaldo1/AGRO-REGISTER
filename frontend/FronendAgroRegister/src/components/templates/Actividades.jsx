@@ -25,6 +25,7 @@ function Actividad() {
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
+
   useEffect(() => {
     fetchData();
   }, [data]);
@@ -74,6 +75,7 @@ function Actividad() {
     }
   };
 
+
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
@@ -93,6 +95,41 @@ function Actividad() {
       setError('Busqueda no encontrada');
     }
   };
+
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+      let newEstado;
+      switch (estado) {
+        case 'activo':
+          newEstado = 'ejecutandose';
+          break;
+
+        case 'inactivo':
+          newEstado = 'activo';
+          break;
+
+        case 'ejecutandose':
+          newEstado = 'terminado';
+          break;
+        case 'terminado':
+          newEstado = 'inactivo';
+          break;
+
+        case 'inactivo':
+          newEstado = 'activo';
+          break;
+
+        default:
+          break;
+      }
+      await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
+
+      fetchData();
+    } catch (error) {
+      console.error('Error al cambiar el estado de la actividad:', error);
+    }
+  };
+
 
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
@@ -120,6 +157,7 @@ function Actividad() {
 
 
   const columns = [
+    
     {
       name: 'Editar',
       cell: (row) => (
@@ -177,6 +215,7 @@ function Actividad() {
     {
       name: 'Acciones',
       cell: (row) => (
+
         <>
           <button
             className="btn p-2 rounded-lg"
@@ -196,6 +235,7 @@ function Actividad() {
       <Header />
       <div className="main-content" style={{ flex: 1 }}>
         <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
+
           <SearchBar onSearch={handleSearch} />
           <Botones children="Registrar" onClick={handleOpenRegistroModal} />
           <select
@@ -225,11 +265,13 @@ function Actividad() {
 
 
           <br />
+
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
             <Datatable columns={columns} data={data} title="Actividades" />
           )}
+
         </div>
 
         <ModalRecuRegeContrasenia

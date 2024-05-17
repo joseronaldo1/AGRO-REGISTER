@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
+
 const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
     nombre_actividad: initialData && initialData.nombre_actividad ? initialData.nombre_actividad : '',
@@ -9,6 +10,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
     observaciones: initialData && initialData.observaciones ? initialData.observaciones : '',
     valor_actividad: initialData && initialData.valor_actividad ? initialData.valor_actividad : '',
     fk_id_variedad: initialData && initialData.fk_id_variedad ? initialData.fk_id_variedad : ''
+
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -24,6 +26,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         console.error('Error al obtener los datos:', error);
       });
   }, []);
+
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -48,6 +51,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
     try {
       if (!formData.nombre_actividad || !formData.tiempo || !formData.observaciones || !formData.valor_actividad || !formData.fk_id_variedad) {
         setShowWarning(true);
+
         return;
       }
       if (!validarNombreActividad(formData.nombre_actividad)) {
@@ -81,6 +85,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
   
       if (mode === 'registro') {
         const response = await axios.post(
+
           'http://localhost:3000/RegistrarActividad',
           formData,
           {
@@ -120,6 +125,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
   
 
   return (
+
     <form
       className={className}
       onSubmit={handleFormSubmit}
@@ -129,6 +135,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         textAlign: 'center'
       }}
     >
+
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Nombre de la Actividad:{' '}
@@ -247,6 +254,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           height: '40px'
         }}
       >
+
         {mode === 'registro' ? 'Registrar' : 'Actualizar'}
       </button>
     </form>

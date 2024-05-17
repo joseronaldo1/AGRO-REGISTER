@@ -159,3 +159,26 @@ export const desactivar = async (req, res) => {
         });
     }
 }
+
+
+
+
+export const desactivarCultivo = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Llamar al procedimiento almacenado
+        await pool.query('CALL administrar_cultivo(?)', [id]);
+
+        res.status(200).json({
+            status: 200,
+            message: 'Se cambió el estado del cultivo y todas sus variedades con éxito',
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Error al cambiar el estado del cultivo y sus variedades',
+            error: error.message
+        });
+    }
+};

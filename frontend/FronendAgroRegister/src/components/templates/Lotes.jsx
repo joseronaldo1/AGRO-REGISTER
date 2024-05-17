@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaRegEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import { FaEdit } from 'react-icons/fa';
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalLotes.jsx";
@@ -9,7 +9,8 @@ import { FaPowerOff, FaLightbulb } from "react-icons/fa";
 import Footer from '../organismos/Footer/Footer';
 import Swal from 'sweetalert2';
 import SearchBar from '../moleculas/SearchBar';
-function lotes() {
+
+function Lotes() {
   const baseURL = 'http://localhost:3000/listarlote';
 
   const [data, setData] = useState([]);
@@ -19,20 +20,21 @@ function lotes() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-  const [error, setError] = useState(null); // Estado para manejar errores
+  const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
-      setOriginalData(response.data); // Guardar los datos originales sin filtrar
+      setOriginalData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setError('Error al obtener datos');
     }
   };
 
@@ -63,39 +65,31 @@ function lotes() {
     }
   };
 
-  // Función para buscar lotes por nombre
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
-        // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
-        setError(null); // Limpiar el error
+        setError(null);
       } else {
         const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
         setData(response.data);
         if (response.data.length === 0) {
-          // Si no se encontraron resultados, establecer el mensaje de error
           setError('No se encontraron resultados');
         } else {
-          setError(null); // Limpiar el error si se encontraron resultados
+          setError(null);
         }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Busqueda no encontrada'); // Establecer mensaje de error
+      setError('Búsqueda no encontrada');
     }
   };
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
-      const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; // Cambiar los estados existentes por "activo" e "inactivo"
+      const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
       await axios.put(`http://localhost:3000/desactivar/Lote/${id}`, { estado: newEstado });
       fetchData();
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: `El estado se cambió con éxito a ${newEstado}.`,
-      });
     } catch (error) {
       console.error('Error al cambiar el estado del lote:', error);
     }
@@ -110,12 +104,8 @@ function lotes() {
       setData(filteredData);
     }
   };
+
   const columns = [
-    /* {
-      name: 'ID',
-      selector: (row) => row.id_lote,
-      sortable: true,
-    }, */
     {
       name: 'Editar',
       cell: (row) => (
@@ -168,18 +158,19 @@ function lotes() {
             border: 'none',
             color: 'white',
             height: '40px',
-            marginLeft: '-50px',
-            width: '550px',
-            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+            marginLeft: '-18px',
+            width: '100px',
+            transition: 'background-color 0.2s',
           }}
           type="button"
           onClick={() => handleEstadoBotonClick(row.id_lote, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#F54949' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }}
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }}
         >
           {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '5px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
           {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
         </button>
+
       ),
     },
   ];
@@ -189,26 +180,12 @@ function lotes() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
 
+          <div className="search-bar-container" style={{ position: 'relative' }}>
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            {/* Select para seleccionar el estado */}
             <select
-              style={{
-                position: 'absolute',
-                marginTop: '-36px',
-                marginLeft: '920px',
-                padding: '8px',
-                fontSize: '16px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer',
-                width: '100px',  // Ajusta el ancho según tus necesidades
-              }}
+              className="estado-select"
               value={estadoSeleccionado}
               onChange={handleEstadoSeleccionado}
             >
@@ -222,8 +199,8 @@ function lotes() {
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-            <Datatable columns={columns} data={data} title="Lotes" />
-          )}
+              <Datatable columns={columns} data={data} title="Lotes" />
+            )}
         </div>
 
         <ModalRecuRegeContrasenia
@@ -253,4 +230,4 @@ function lotes() {
   );
 }
 
-export default lotes;
+export default Lotes;

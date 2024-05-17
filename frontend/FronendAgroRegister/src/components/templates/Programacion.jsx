@@ -22,6 +22,7 @@ function Programacion() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
+
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
@@ -90,7 +91,7 @@ function Programacion() {
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Busqueda no encontrada');
+      setError('Búsqueda no encontrada');
     }
   };
 
@@ -135,8 +136,8 @@ function Programacion() {
       ),
     },
     {
-      name: 'Usuario',
-      selector: (row) => row.nombre_usuario,
+      name: 'Nombre Usuario',
+      selector: (row) => row.usuario || row.nombre,
       sortable: true,
     },
     {
@@ -195,12 +196,13 @@ function Programacion() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
+
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
 
             <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            <select
-              style={{
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} /> 
+            <select 
+              style={{ 
                 position: 'absolute',
                 marginTop: '-36px',
                 marginLeft: '920px',

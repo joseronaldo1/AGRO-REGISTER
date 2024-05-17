@@ -19,12 +19,12 @@ function Variedad() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
+
   const [error, setError] = useState(null); // Estado para manejar errores
 
   useEffect(() => {
     fetchData();
-  }, [data]);
-
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -62,12 +62,14 @@ function Variedad() {
     }
   };
 
+
   // Función para buscar fincas por nombre_variedad
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
         // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
+
         setError(null); // Limpiar el error
       } else {
         const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
@@ -126,11 +128,13 @@ function Variedad() {
           </div>
 
           <br />
+
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-            <Datatable columns={columns} data={data} title="Variedad" />
-          )}
+          <Datatable columns={columns} data={data} title="Variedad" />
+        )}
+
         </div>
 
         <ModalRecuRegeContrasenia

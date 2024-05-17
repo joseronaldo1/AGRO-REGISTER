@@ -7,6 +7,7 @@ import { validarRA, validarRR } from "../../validate/Actividad.js";
 const rutaDeActividad = Router()
 
 //localhost:4000/VariedadCultivo
+
 rutaDeActividad.get("/listarActividad", listarA);
 rutaDeActividad.post("/RegistrarActividad",validarRR, RegistrarA);
 rutaDeActividad.put("/ActualizarActividad/:id", validarRA, ActualizarA);

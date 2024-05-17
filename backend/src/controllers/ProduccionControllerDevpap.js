@@ -36,8 +36,9 @@ export const registrarProduccion = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            res.status(400).json({ errors })
+            return res.status(400).json({ errors });
         }
+
         const { cantidad_produccion, precio, fk_id_actividad } = req.body
         const [resultado] = await pool.query("insert into produccion(cantidad_produccion, precio, fk_id_actividad) values (?,?,?)", [cantidad_produccion, precio, fk_id_actividad])
 
@@ -101,6 +102,7 @@ export const actualizarProduccion = async (req, res) => {
             return res.status(400).json({ message: 'Al menos uno de los campos (cantidad_produccion, precio, fk_id_actividad) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
+
         const [oldProduccion] = await pool.query("SELECT * FROM produccion WHERE id_producccion=?", [id]);
 
         const updateValues = {
@@ -119,6 +121,42 @@ export const actualizarProduccion = async (req, res) => {
             res.status(404).json({ "mensaje": "No se pudo actualizar la producción" });
         }
     } catch (error) {
-        res.status(500).json({ "mensaje": error.message });
+        res.status(500).json({
+            status: 500,
+            message: 'Error en el servidor',
+            error: error.message
+        });
     }
-}
+};
+
+export const eliminarProduccion = async (req, res) => {
+    try {
+        const id_produccion = req.body.id_produccion;
+
+        if (!id_produccion) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Se requiere proporcionar el ID de la producción en el cuerpo de la solicitud'
+            });
+        }
+
+        const [result] = await pool.query('DELETE FROM produccion WHERE id_produccion = ?', [id_produccion]);
+
+        if (result.affectedRows > 0) {
+            res.status(200).json({
+                status: 200,
+                message: 'Se eliminó la producción con éxito'
+            });
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: 'No se encontró ninguna producción con el ID proporcionado'
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Error en el servidor'
+        });
+    }
+};

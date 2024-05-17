@@ -179,3 +179,26 @@ export const desactivarUsuario = async (req, res) => {
         });
     }
 };
+
+
+
+
+export const desactivarUsuarioEnCadena = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Llamar al procedimiento almacenado
+        await pool.query('CALL DesactivarUsuario(?)', [id]);
+
+        res.status(200).json({
+            status: 200,
+            message: 'Se desactivó el usuario con éxito',
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Error al desactivar el usuario',
+            error: error.message
+        });
+    }
+};
