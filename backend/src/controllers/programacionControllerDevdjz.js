@@ -184,3 +184,25 @@ export const buscarProgramacion = async (req, res) => {
         });
     }
 };
+
+
+
+export const desactivarProgamacionCadena = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Llamar al procedimiento almacenado
+        await pool.query('CALL administrar_programacion(?)', [id]);
+
+        res.status(200).json({
+            status: 200,
+            message: 'Se cambió el estado de la programación y todos sus registros relacionados con éxito',
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Error al cambiar el estado de la programación y sus registros relacionados',
+            error: error.message
+        });
+    }
+};
