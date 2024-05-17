@@ -22,13 +22,12 @@ function Programacion() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -44,16 +43,17 @@ function Programacion() {
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
   const handleOpenEstadoModal = (rowData) => {
-    const updatedInitialData = { ...rowData, id: rowData.id_programacion };
-    setInitialData(updatedInitialData);
+    setInitialData(rowData); // Establece initialData directamente desde rowData
     setShowEstadoModal(true);
   };
 
-  const handleCloseEstadoModal = () => setShowEstadoModal(false);
+  const handleCloseEstadoModal = () => {
+    setInitialData(null);
+    setShowEstadoModal(false);
+  };
 
   const handleOpenActualizacionModal = (rowData) => {
-    const updatedInitialData = { ...rowData, id: rowData.id_programacion };
-    setInitialData(updatedInitialData);
+    setInitialData(rowData);
     setMode('update');
     setShowActualizacionModal(true);
   };
@@ -91,11 +91,9 @@ function Programacion() {
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Búsqueda no encontrada');
+      setError('Busqueda no encontrada');
     }
   };
-
-
 
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
@@ -110,12 +108,12 @@ function Programacion() {
   const handleEstadoSubmit = async (formData) => {
     try {
       console.log('Manejando envío de formulario de estado:', formData);
-
-      /*   // Por ejemplo, podrías enviar una solicitud PUT con Axios
-        await axios.put('http://localhost:3000/Desactivara/actividad/${id}', formData); */
-
-      fetchData();
-      setShowEstadoModal(false);
+      if (initialData) { // Verifica si initialData no es null
+        const { id_programacion } = initialData; // Asegúrate de obtener el id_programacion de initialData
+        await axios.put(`http://localhost:3000/desactivar/Programacion/${id_programacion}`, formData); // Pasa el id en la URL
+        fetchData(); // Actualiza los datos después de cambiar el estado
+        setShowEstadoModal(false); // Cierra el modal después de enviar el formulario
+      }
     } catch (error) {
       console.error('Error al enviar el formulario de estado:', error);
     }
@@ -136,8 +134,8 @@ function Programacion() {
       ),
     },
     {
-      name: 'Nombre Usuario',
-      selector: (row) => row.usuario || row.nombre,
+      name: 'Usuario',
+      selector: (row) => row.nombre_usuario,
       sortable: true,
     },
     {
@@ -182,7 +180,7 @@ function Programacion() {
             className="btn p-2 rounded-lg"
             style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
             type="button"
-            onClick={() => handleOpenEstadoModal(row)} // Cambia la función para abrir el modal de actualización por la función para abrir el modal de estado
+            onClick={() => handleOpenEstadoModal(row)}
           >
             <RiPlantFill style={{ color: 'white' }} />Estado
           </button>
@@ -196,13 +194,12 @@ function Programacion() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position:'relative'}}>
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
 
             <SearchBar onSearch={handleSearch} />
-            <Botones children="Registrar" onClick={handleOpenRegistroModal} /> 
-            <select 
-              style={{ 
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+            <select
+              style={{
                 position: 'absolute',
                 marginTop: '-36px',
                 marginLeft: '920px',
@@ -261,7 +258,6 @@ function Programacion() {
           actionLabel="Guardar"
           handleSubmit={handleEstadoSubmit} // Asegúrate de pasar la función handleSubmit
         />
-
 
         <br />
       </div>

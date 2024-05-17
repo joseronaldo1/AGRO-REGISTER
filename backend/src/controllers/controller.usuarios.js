@@ -5,33 +5,39 @@ import multer from "multer";
 
 const storage = multer.diskStorage(
     {
-        destination: function(req,img,cb){
-            cb(null,"public/img")
+        destination: function (req, img, cb) {
+            cb(null, "public/img")
         },
-        filename: function(req,img,cb){
-            cb(null,img.originalname)
+        filename: function (req, img, cb) {
+            cb(null, img.originalname)
         }
     }
 );
 
-const upload = multer({storage:storage});
+const upload = multer({ storage: storage });
 export const cargarImagen = upload.single('img');
 
 export const listarUsuarios = async (req, res) => {
     try {
-        const [result] = await pool.query('SELECT * FROM usuarios');
+
+        const adminId = req.usuario;
+
+
+        const [result] = await pool.query('SELECT * FROM usuarios WHERE admin_id = ?', [adminId]);
+
         if (result.length > 0) {
             res.status(200).json(result);
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No hay usuarios registrados'
+                message: 'No se encontraron usuarios registrados por este administrador'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: 'Error en el sistema: ' + error
+            message: 'Error en el sistema',
+            error: error.message
         });
     }
 };
@@ -39,7 +45,7 @@ export const listarUsuarios = async (req, res) => {
 export const buscarUsuario = async (req, res) => {
     try {
         const { id_usuario } = req.params;
-        const [result] = await pool.query("SELECT id_usuario, nombre, apellido, correo, imagen FROM usuarios WHERE id_usuario=?", [id_usuario]);
+        const [result] = await pool.query("SELECT id_usuario, nombre, apellido, correo, imagen FROM usuarios WHERE admin_id=?", [id_usuario]);
 
         if (result.length > 0) {
             res.status(200).json(result);
@@ -156,7 +162,7 @@ export const actualizarUsuario = async (req, res) => {
     }
 };
 
-export const desactivarUsuario = async (req, res) => {
+export const DesactivarUsuario = async (req, res) => {
     try {
         const { id_usuario } = req.params;
         const [result] = await pool.query("UPDATE usuarios SET estado='inactivo' WHERE id_usuario=?", [id_usuario]);

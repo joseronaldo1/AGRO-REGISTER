@@ -171,7 +171,7 @@ function Recursos() {
             color: 'white',
             height: '40px',
             marginLeft: '-18px',
-            width: '100px',
+            width: '120px',
 
             transition: 'background-color 0.2s',
           }}
@@ -226,7 +226,7 @@ function Recursos() {
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-            <Datatable columns={columns} data={data} title="Recursos" />
+            <Datatable columns={columns} data={data} title="Materiales del cultivo" />
           )}
 
         </div>

@@ -9,7 +9,6 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 import Swal from 'sweetalert2';
-import { Tooltip } from "@nextui-org/react";
 
 function Fincas() {
 
@@ -98,7 +97,7 @@ function Fincas() {
       await axios.put(`http://localhost:3000/desactivar/Finca/${id}`, { estado: newEstado });
       fetchData();
 
-      // Mostrar alerta con SweetAlert
+
       Swal.fire({
         icon: 'success',
         title: 'Éxito',
@@ -131,19 +130,6 @@ function Fincas() {
           onClick={() => handleOpenActualizacionModal(row)}
         >
           <FaRegEdit style={{ color: 'black' }} />
-        </button>
-      ),
-    },
-    {
-      name: 'Editar',
-      cell: (row) => (
-        <button
-          className="btn p-2 rounded-lg"
-          style={{ backgroundColor: '#975C29', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
-          type="button"
-          onClick={() => handleOpenActualizacionModal(row)}
-        >
-          <FaEdit style={{ color: 'white' }} />
         </button>
       ),
     },
@@ -212,7 +198,7 @@ function Fincas() {
 
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            {/* Select para seleccionar el estado */}
+
             <select
               style={{
                 position: 'absolute',
@@ -226,7 +212,7 @@ function Fincas() {
                 boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
-                width: '100px',  // Ajusta el ancho según tus necesidades
+                width: '100px',
               }}
               value={estadoSeleccionado}
               onChange={handleEstadoSeleccionado}

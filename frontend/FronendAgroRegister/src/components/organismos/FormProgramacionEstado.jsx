@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Importa SweetAlert
+import Swal from 'sweetalert2';
 
-
-const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const FormularioVariedad = ({ onSubmit, className, initialData, cerrarModal }) => {
     const initialFormData = {
-        estado: initialData ? initialData.estado : ''
+        estado: initialData && initialData.estado ? initialData.estado : ''
     };
 
     const [formData, setFormData] = useState(initialFormData);
-    const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
+
+    useEffect(() => {
+        if (initialData && initialData.estado) {
+            setFormData(initialData);
+        }
+    }, [initialData]);
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -17,43 +21,21 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
             ...prevState,
             [name]: value
         }));
-
     };
-
 
     const handleFormSubmit = async e => {
         e.preventDefault();
-        try {
-            if (!formData.estado) {
-                setShowWarning(true);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Por favor seleccione un estado para la programación'
-                });
-                return;
-            }
-
-            if (mode === 'update') {
-                const { id } = initialData;
-                await axios.put(
-                    `http://localhost:3000/desactivar/Programacion/${id}`,
-                    formData
-                );
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Éxito!',
-                    text: 'El estado se ha actualizado exitosamente'
-                });
-            }
-
-            onSubmit(formData);
-            cerrarModal();
-        } catch (error) {
-            console.error('Error al procesar el formulario:', error);
+        if (!formData.estado) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Por favor seleccione un estado para la programación'
+            });
+            return;
         }
-    };
 
+        onSubmit(formData);
+    };
 
     return (
         <form
@@ -65,8 +47,6 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
                 textAlign: 'center'
             }}
         >
-
-
             <div className="flex flex-col">
                 <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
                     Estado de la actividad:{' '}

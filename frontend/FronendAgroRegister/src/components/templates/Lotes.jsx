@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa';
+import { FaRegEdit } from 'react-icons/fa';
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalLotes.jsx";
@@ -90,6 +90,11 @@ function Lotes() {
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
       await axios.put(`http://localhost:3000/desactivar/Lote/${id}`, { estado: newEstado });
       fetchData();
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: `El estado se cambió con éxito a ${newEstado}.`,
+      });
     } catch (error) {
       console.error('Error al cambiar el estado del lote:', error);
     }
@@ -181,11 +186,26 @@ function Lotes() {
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
 
-          <div className="search-bar-container" style={{ position: 'relative' }}>
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
+
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+
             <select
-              className="estado-select"
+              style={{
+                position: 'absolute',
+                marginTop: '-36px',
+                marginLeft: '920px',
+                padding: '8px',
+                fontSize: '16px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                width: '100px',  // Ajusta el ancho según tus necesidades
+              }}
               value={estadoSeleccionado}
               onChange={handleEstadoSeleccionado}
             >
@@ -193,14 +213,22 @@ function Lotes() {
               <option value="activo">Activo</option>
               <option value="inactivo">Inactivo</option>
             </select>
+
+
+
+
+
           </div>
 
           <br />
+
+
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-              <Datatable columns={columns} data={data} title="Lotes" />
-            )}
+            <Datatable columns={columns} data={data} title="Sector cultivos" />
+          )}
+
         </div>
 
         <ModalRecuRegeContrasenia
