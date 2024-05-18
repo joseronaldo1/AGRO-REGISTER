@@ -13,7 +13,7 @@ function NavbarHeader() {
   useEffect(() => {
     // Función para obtener el último usuario registrado
     const obtenerUltimoUsuario = () => {
-      axios.get('http://localhost:3000/listarusuario')
+      axios.get('http://localhost:3000/listarUsuario')
         .then(response => {
           const ultimo = response.data[response.data.length - 1];
           setUltimoUsuario(ultimo);

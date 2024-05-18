@@ -5,11 +5,11 @@ import { RiPlantFill } from "react-icons/ri";
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalProgramacion.jsx";
-import ModalEstadoProgramacion from "../organismos/ModalEstadoProgramacion.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 import Swal from 'sweetalert2';
+
 
 function Programacion() {
   const baseURL = 'http://localhost:3000/listarProgramacion';
@@ -17,13 +17,11 @@ function Programacion() {
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
-  const [showEstadoModal, setShowEstadoModal] = useState(false);
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-  const [error, setError] = useState(null);
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
+  const [error, setError] = useState(null); // Estado para manejar errores
 
   useEffect(() => {
     fetchData();
@@ -33,7 +31,7 @@ function Programacion() {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
-      setOriginalData(response.data);
+      setOriginalData(response.data); // Guardar los datos originales sin filtrar
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -42,18 +40,9 @@ function Programacion() {
   const handleOpenRegistroModal = () => setShowRegistroModal(true);
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
-  const handleOpenEstadoModal = (rowData) => {
-    setInitialData(rowData); // Establece initialData directamente desde rowData
-    setShowEstadoModal(true);
-  };
-
-  const handleCloseEstadoModal = () => {
-    setInitialData(null);
-    setShowEstadoModal(false);
-  };
-
   const handleOpenActualizacionModal = (rowData) => {
-    setInitialData(rowData);
+    const updatedInitialData = { ...rowData, id: rowData.id_programacion };
+    setInitialData(updatedInitialData);
     setMode('update');
     setShowActualizacionModal(true);
   };
@@ -65,57 +54,64 @@ function Programacion() {
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      console.log('Actualización de Programación:', formData);
+      console.log('Actualización de recurso:', formData);
       const { id } = formData;
       await axios.put(`http://localhost:3000/actualizarProgramacion/${id}`, formData);
       fetchData();
       setShowActualizacionModal(false);
     } catch (error) {
-      console.error('Error al actualizar la programación:', error);
+      console.error('Error al actualizar la programacion:', error);
     }
   };
 
+  // Función para buscar programacion por nombre
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
+        // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
-        setError(null);
+        setError(null); // Limpiar el error
       } else {
         const response = await axios.get(`http://localhost:3000/buscarProgramacion/${searchTerm}`);
+
         setData(response.data);
         if (response.data.length === 0) {
+          // Si no se encontraron resultados, establecer el mensaje de error
           setError('No se encontraron resultados');
         } else {
-          setError(null);
+          setError(null); // Limpiar el error si se encontraron resultados
         }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Busqueda no encontrada');
+      setError('Busqueda no encontrada'); // Establecer mensaje de error
     }
   };
 
-  const handleEstadoSeleccionado = (event) => {
-    setEstadoSeleccionado(event.target.value);
-    if (event.target.value === '') {
-      setData(originalData);
-    } else {
-      const filteredData = originalData.filter(item => item.estado === event.target.value);
-      setData(filteredData);
-    }
-  };
 
-  const handleEstadoSubmit = async (formData) => {
+  const handleEstadoBotonClick = async (id, estado) => {
     try {
-      console.log('Manejando envío de formulario de estado:', formData);
-      if (initialData) { // Verifica si initialData no es null
-        const { id_programacion } = initialData; // Asegúrate de obtener el id_programacion de initialData
-        await axios.put(`http://localhost:3000/desactivar/Programacion/${id_programacion}`, formData); // Pasa el id en la URL
-        fetchData(); // Actualiza los datos después de cambiar el estado
-        setShowEstadoModal(false); // Cierra el modal después de enviar el formulario
+      let newEstado;
+      switch (estado) {
+        case 'activo':
+          newEstado = 'ejecutandose';
+          break;
+        case 'ejecutandose':
+          newEstado = 'terminado';
+          break;
+        case 'terminado':
+          newEstado = 'inactivo';
+          break;
+        case 'inactivo':
+          newEstado = 'activo';
+          break;
+        default:
+          break;
       }
+      await axios.put(`http://localhost:3000/desactivar/Programacion/${id}`, { estado: newEstado });
+      fetchData(); // Actualizar los datos después de la actualización
     } catch (error) {
-      console.error('Error al enviar el formulario de estado:', error);
+      console.error('Error al cambiar el estado de la actividad:', error);
     }
   };
 
@@ -175,16 +171,25 @@ function Programacion() {
     {
       name: 'Acciones',
       cell: (row) => (
-        <>
-          <button
-            className="btn p-2 rounded-lg"
-            style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
-            type="button"
-            onClick={() => handleOpenEstadoModal(row)}
-          >
-            <RiPlantFill style={{ color: 'white' }} />Estado
-          </button>
-        </>
+
+        <button
+          className="btn p-2 rounded-lg estado-button"
+          style={{
+            backgroundColor: row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green',
+            border: 'none',
+            color: 'white',
+            height: '40px',
+            width: '100px',
+            marginLeft: '-18px',
+            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+          }}
+          type="button"
+          onClick={() => handleEstadoBotonClick(row.id_programacion, row.estado)}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#DC9E24' : row.estado === 'ejecutandose' ? '#377AF0' : row.estado === 'terminado' ? '#E54444' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'orange' : row.estado === 'ejecutandose' ? '#2A5CB5' : row.estado === 'terminado' ? 'red' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+        >
+          {row.estado === 'activo' ? 'Ejecutar' : row.estado === 'ejecutandose' ? 'Terminar' : row.estado === 'terminado' ? 'Desactivar' : 'Activar'}
+        </button>
       ),
     },
   ];
@@ -194,42 +199,19 @@ function Programacion() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
+          {/* Contenido principal */}
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px' }}>
 
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            <select
-              style={{
-                position: 'absolute',
-                marginTop: '-36px',
-                marginLeft: '920px',
-                padding: '8px',
-                fontSize: '16px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer',
-                width: '133px',
-              }}
-              value={estadoSeleccionado}
-              onChange={handleEstadoSeleccionado}
-            >
-              <option value="">Estados</option>
-              <option value="activo">Activo</option>
-              <option value="ejecutandose">Ejecutandose</option>
-              <option value="inactivo">Inactivo</option>
-              <option value="terminado">Terminado</option>
-            </select>
           </div>
 
           <br />
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-            <Datatable columns={columns} data={data} title="Programacion" />
-          )}
+          <Datatable columns={columns} data={data} title="Programacion" />
+        )}
         </div>
 
         <ModalRecuRegeContrasenia
@@ -247,18 +229,9 @@ function Programacion() {
           titulo="Actualización"
           handleSubmit={handleActualizacionFormSubmit}
           actionLabel="Actualizar"
-          initialData={initialData} // Pasa el estado initialData aquí
+          initialData={initialData}
           mode={mode}
         />
-        <ModalEstadoProgramacion
-          mostrar={showEstadoModal}
-          cerrarModal={handleCloseEstadoModal}
-          initialData={initialData}
-          titulo="Estados"
-          actionLabel="Guardar"
-          handleSubmit={handleEstadoSubmit} // Asegúrate de pasar la función handleSubmit
-        />
-
         <br />
       </div>
       <Footer />

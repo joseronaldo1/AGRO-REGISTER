@@ -11,7 +11,8 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
     fecha_fin: initialData?.fecha_fin || '',
     fk_id_usuario: initialData?.fk_id_usuario || '',
     fk_id_actividad: initialData?.fk_id_actividad || '',
-    fk_id_variedad: initialData?.fk_id_variedad || ''
+    fk_id_variedad: initialData?.fk_id_variedad || '',
+    estado: initialData?.estado || ''
   });
 
   useEffect(() => {
@@ -255,6 +256,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
           Por favor seleccione el nombre de la Variedad
         </p>
       )}
+     
       <button
         className="boton"
         type="submit"

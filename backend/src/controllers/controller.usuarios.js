@@ -19,25 +19,19 @@ export const cargarImagen = upload.single('img');
 
 export const listarUsuarios = async (req, res) => {
     try {
-
-        const adminId = req.usuario;
-
-
-        const [result] = await pool.query('SELECT * FROM usuarios WHERE admin_id = ?', [adminId]);
-
+        const [result] = await pool.query('SELECT * FROM usuarios');
         if (result.length > 0) {
             res.status(200).json(result);
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No se encontraron usuarios registrados por este administrador'
+                message: 'No hay usuarios registrados'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: 'Error en el sistema',
-            error: error.message
+            message: 'Error en el sistema: ' + error
         });
     }
 };
