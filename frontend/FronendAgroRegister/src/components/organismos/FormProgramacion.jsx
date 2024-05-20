@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -12,17 +11,17 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
     fk_id_usuario: initialData?.fk_id_usuario || '',
     fk_id_actividad: initialData?.fk_id_actividad || '',
     fk_id_variedad: initialData?.fk_id_variedad || '',
-    estado: initialData?.estado || ''
+    id: initialData?.id_programacion || '' // Asegurarse de incluir el id
   });
 
   useEffect(() => {
-    // Actualizar el estado del formulario cuando cambian los datos iniciales
     setFormData({
       fecha_inicio: initialData?.fecha_inicio || '',
       fecha_fin: initialData?.fecha_fin || '',
       fk_id_usuario: initialData?.fk_id_usuario || '',
       fk_id_actividad: initialData?.fk_id_actividad || '',
-      fk_id_variedad: initialData?.fk_id_variedad || ''
+      fk_id_variedad: initialData?.fk_id_variedad || '',
+      id: initialData?.id_programacion || '' // Asegurarse de incluir el id
     });
   }, [initialData]);
 
@@ -72,7 +71,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         setShowWarning(true);
         return;
       }
-
+  
       const fechaInicio = formData.fecha_inicio;
       if (!fechaInicio || !Date.parse(fechaInicio)) {
         Swal.fire({
@@ -82,7 +81,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         });
         return;
       }
-
+  
       const fechaFin = formData.fecha_fin;
       if (!fechaFin || !Date.parse(fechaFin)) {
         Swal.fire({
@@ -92,7 +91,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         });
         return;
       }
-
+  
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/registrarProgramacion',
@@ -110,9 +109,9 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         });
         console.log(response.data);
       } else if (mode === 'update') {
-        const { id } = initialData;
+        const { id_programacion } = initialData; // Utiliza el campo correcto del ID
         await axios.put(
-          `http://localhost:3000/actualizarProgramacion/${id}`,
+          `http://localhost:3000/actualizarProgramacion/${id_programacion}`,
           formData
         );
         Swal.fire({
@@ -121,13 +120,14 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
           text: 'La programación se ha actualizado exitosamente'
         });
       }
-
+  
       onSubmit(formData);
       cerrarModal();
     } catch (error) {
       console.error('Error al procesar el formulario:', error);
     }
   };
+  
 
   return (
     <form
@@ -256,7 +256,6 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
           Por favor seleccione el nombre de la Variedad
         </p>
       )}
-     
       <button
         className="boton"
         type="submit"

@@ -13,7 +13,7 @@ import rutalote from './src/routes/lotes.routes.js';
 import rutaProduccion from './src/routes/ProduccionRoutesDevpap.js';
 import rutaProgramacion from './src/routes/programacionRoutesDevdjz.js';
 import rutaDeTipoRecurso from './src/routes/TipoRecurso.route.js';
-import { rutaDeActividad } from './src/routes/Actividad.route.js';
+import rutaDeActividad  from './src/routes/Actividad.route.js';
 import rutaDeVariedad from './src/routes/variedad.routes.js';
 
 const servidor = express();

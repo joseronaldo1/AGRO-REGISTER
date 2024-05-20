@@ -21,7 +21,6 @@ function Fincas() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
@@ -134,7 +133,7 @@ function Fincas() {
       ),
     },
     {
-      name: 'Nombre finca',
+      name: 'Finca',
       selector: (row) => row.nombre_finca,
       sortable: true,
     },

@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const FormularioVariedad = ({ onSubmit, className, initialData, cerrarModal }) => {
     const initialFormData = {
-        estado: initialData && initialData.estado ? initialData.estado : ''
+        estado: initialData ? initialData.estado : ''
     };
 
     const [formData, setFormData] = useState(initialFormData);
 
     useEffect(() => {
-        if (initialData && initialData.estado) {
-            setFormData(initialData);
+        if (initialData) {
+            setFormData({ estado: initialData.estado }); // Asegúrate de que se establece el estado desde initialData
         }
     }, [initialData]);
 
@@ -26,15 +25,14 @@ const FormularioVariedad = ({ onSubmit, className, initialData, cerrarModal }) =
     const handleFormSubmit = async e => {
         e.preventDefault();
         if (!formData.estado) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Por favor seleccione un estado para la programación'
-            });
-            return;
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Por favor seleccione un estado para la programación'
+          });
+          return;
         }
-
-        onSubmit(formData);
+        onSubmit({ estado: formData.estado });
     };
 
     return (

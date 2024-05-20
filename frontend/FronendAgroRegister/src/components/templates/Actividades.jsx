@@ -5,7 +5,7 @@ import { RiPlantFill } from "react-icons/ri";
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import ModalRecuRegeContrasenia from "../organismos/ModalActividad.jsx";
-import ModalEstadoActividad from "../organismos/ModalEstadoActividad.jsx";
+import ModalEstadoProgramacion from "../organismos/ModalEstadoActividad.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
@@ -17,18 +17,18 @@ function Actividad() {
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
-  const [showEstadoModal, setShowEstadoModal] = useState(false); // Estado para controlar la visibilidad del modal de estado
+  const [showEstadoModal, setShowEstadoModal] = useState(false);
   const [registroFormData, setRegistroFormData] = useState({});
   const [mode, setMode] = useState('create');
-  const [originalData, setOriginalData] = useState([]);
   const [initialData, setInitialData] = useState(null);
+  const [actualizacionInitialData, setActualizacionInitialData] = useState(null); // Nuevo estado
+  const [originalData, setOriginalData] = useState([]);
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
-
-
+  
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -44,37 +44,47 @@ function Actividad() {
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
   const handleOpenEstadoModal = (rowData) => {
-    const updatedInitialData = { ...rowData, id: rowData.id_actividad };
-    setInitialData(updatedInitialData);
+    console.log('Opening Estado Modal with data:', rowData);
+    setInitialData(rowData); // Establece initialData directamente desde rowData
     setShowEstadoModal(true);
   };
 
-  const handleCloseEstadoModal = () => setShowEstadoModal(false);
+  const handleCloseEstadoModal = () => {
+    setInitialData(null); // Limpia initialData al cerrar el modal
+    setShowEstadoModal(false);
+  };
 
   const handleOpenActualizacionModal = (rowData) => {
-    const updatedInitialData = { ...rowData, id: rowData.id_actividad };
-    setInitialData(updatedInitialData);
+    setActualizacionInitialData(rowData);
     setMode('update');
     setShowActualizacionModal(true);
   };
-
+  
   const handleCloseActualizacionModal = () => {
-    setInitialData(null);
+    setActualizacionInitialData(null);
     setShowActualizacionModal(false);
   };
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      console.log('Actualización de la actividad:', formData);
-      const { id } = formData;
-      await axios.put(`http://localhost:3000/ActualizarActividad/${id}`, formData);
+      const { id_actividad } = formData; // Utiliza el nombre correcto del campo
+      if (!id_actividad) {
+        console.error('ID no encontrado en los datos del formulario');
+        return;
+      }
+      await axios.put(`http://localhost:3000/actualizarProgramacion/${id_actividad}`, formData);
       fetchData();
       setShowActualizacionModal(false);
+      // Mostrar mensaje de éxito
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: 'Actividad actualizada exitosamente',
+      });
     } catch (error) {
       console.error('Error al actualizar la actividad:', error);
     }
   };
-
 
   const handleSearch = async (searchTerm) => {
     try {
@@ -96,41 +106,6 @@ function Actividad() {
     }
   };
 
-  const handleEstadoBotonClick = async (id, estado) => {
-    try {
-      let newEstado;
-      switch (estado) {
-        case 'activo':
-          newEstado = 'ejecutandose';
-          break;
-
-        case 'inactivo':
-          newEstado = 'activo';
-          break;
-
-        case 'ejecutandose':
-          newEstado = 'terminado';
-          break;
-        case 'terminado':
-          newEstado = 'inactivo';
-          break;
-
-        case 'inactivo':
-          newEstado = 'activo';
-          break;
-
-        default:
-          break;
-      }
-      await axios.put(`http://localhost:3000/Desactivara/actividad/${id}`, { estado: newEstado });
-
-      fetchData();
-    } catch (error) {
-      console.error('Error al cambiar el estado de la actividad:', error);
-    }
-  };
-
-
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
     if (event.target.value === '') {
@@ -144,20 +119,54 @@ function Actividad() {
   const handleEstadoSubmit = async (formData) => {
     try {
       console.log('Manejando envío de formulario de estado:', formData);
-
-      /*   // Por ejemplo, podrías enviar una solicitud PUT con Axios
-        await axios.put('http://localhost:3000/Desactivara/actividad/${id}', formData); */
-
-      fetchData();
-      setShowEstadoModal(false);
+      console.log('initialData:', initialData);
+      if (initialData) {
+        const { id_actividad } = initialData;
+        
+        // Verificar si se ha seleccionado un estado
+        if (!formData.estado) {
+          // Mostrar mensaje de error si no se ha seleccionado un estado
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Por favor seleccione un estado',
+          });
+          return;
+        }
+        
+        // Mostrar mensaje de confirmación antes de cambiar el estado
+        const result = await Swal.fire({
+          title: 'Confirmación',
+          text: '¿Estás seguro de cambiar el estado?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sí, cambiar estado',
+          cancelButtonText: 'Cancelar',
+        });
+  
+        if (result.isConfirmed) {
+          // Realizar la solicitud PUT solo si se confirma la acción
+          await axios.put(`http://localhost:3000/Desactivara/actividad/${id_actividad}`, { estado: formData.estado });
+          fetchData();
+          setShowEstadoModal(false);
+          // Mostrar mensaje de éxito
+          Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'Estado cambiado exitosamente',
+          });
+          console.log('Solicitud PUT exitosa');
+        }
+      }
     } catch (error) {
       console.error('Error al enviar el formulario de estado:', error);
     }
   };
 
-
+  // En la definición de las columnas, modifica la columna "Acciones":
   const columns = [
-
     {
       name: 'Editar',
       cell: (row) => (
@@ -172,13 +181,12 @@ function Actividad() {
       ),
     },
     {
-      name: 'Nombre Actividad',
+      name: 'Actividad',
       selector: (row) => row.nombre_actividad,
       sortable: true,
     },
-
     {
-      name: 'Nombre Variedad',
+      name: 'Variedad',
       selector: (row) => row.nombre_variedad,
       sortable: true,
     },
@@ -201,11 +209,10 @@ function Actividad() {
       name: 'Estado',
       cell: (row) => (
         <span style={{
-          color:
-            row.estado === 'activo' ? 'green' :
-              row.estado === 'ejecutandose' ? 'orange' :
-                row.estado === 'terminado' ? '#2A5CB5' :
-                  'red', fontWeight: '700'
+          color: row.estado === 'activo' ? 'green' :
+            row.estado === 'ejecutandose' ? 'orange' :
+              row.estado === 'terminado' ? '#2A5CB5' :
+                'red', fontWeight: '700'
         }}>
           {row.estado}
         </span>
@@ -215,16 +222,17 @@ function Actividad() {
     {
       name: 'Acciones',
       cell: (row) => (
-
         <>
-          <button
-            className="btn p-2 rounded-lg"
-            style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
-            type="button"
-            onClick={() => handleOpenEstadoModal(row)} // Cambia la función para abrir el modal de actualización por la función para abrir el modal de estado
-          >
-            <RiPlantFill style={{ color: 'white' }} />Estado
-          </button>
+          {row.estado !== 'terminado' && (
+            <button
+              className="btn p-2 rounded-lg"
+              style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
+              type="button"
+              onClick={() => handleOpenEstadoModal(row)}
+            >
+              <RiPlantFill style={{ color: 'white' }} />Estado
+            </button>
+          )}
         </>
       ),
     },
@@ -235,9 +243,7 @@ function Actividad() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
-
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
-
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
             <select
@@ -270,10 +276,9 @@ function Actividad() {
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-            <Datatable columns={columns} data={data} title="Agendamiento" />
+            <Datatable columns={columns} data={data} title="Actividades" />
           )}
         </div>
-
 
         <ModalRecuRegeContrasenia
           mostrar={showRegistroModal}
@@ -284,24 +289,24 @@ function Actividad() {
           mode="registro"
           handleSubmit={() => setShowRegistroModal(false)}
         />
+
         <ModalRecuRegeContrasenia
           mostrar={showActualizacionModal}
           cerrarModal={handleCloseActualizacionModal}
           titulo="Actualización"
           handleSubmit={handleActualizacionFormSubmit}
           actionLabel="Actualizar"
-          initialData={initialData}
+          initialData={actualizacionInitialData}
           mode={mode}
         />
-        <ModalEstadoActividad
+
+        <ModalEstadoProgramacion
+          titulo="Cambiar Estado de Actividad"
           mostrar={showEstadoModal}
           cerrarModal={handleCloseEstadoModal}
+          handleSubmit={handleEstadoSubmit}
           initialData={initialData}
-          titulo="Estados"
-          actionLabel="Guardar"
-          handleSubmit={handleEstadoSubmit} // Asegúrate de pasar la función handleSubmit
         />
-        <br />
       </div>
       <Footer />
     </div>

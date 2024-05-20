@@ -7,11 +7,10 @@ import { validarRA, validarRR } from "../../validate/Actividad.js";
 const rutaDeActividad = Router()
 
 //localhost:4000/VariedadCultivo
-
 rutaDeActividad.get("/listarActividad", listarA);
 rutaDeActividad.post("/RegistrarActividad",validarRR, RegistrarA);
-rutaDeActividad.put("/ActualizarActividad/:id", validarRA, ActualizarA);
+rutaDeActividad.put("/ActualizarActividad/:id_actividad", validarRA, ActualizarA);
 rutaDeActividad.put("/Desactivara/actividad/:id", DesactivarA); 
 rutaDeActividad.get("/Buscaractividad/:nombre", BuscarA);
 
-export { rutaDeActividad };
+export default rutaDeActividad ;

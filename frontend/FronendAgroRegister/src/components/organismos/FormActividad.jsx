@@ -3,19 +3,30 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 
-const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
-  const initialFormData = {
-    nombre_actividad: initialData && initialData.nombre_actividad ? initialData.nombre_actividad : '',
-    tiempo: initialData && initialData.tiempo ? initialData.tiempo : '',
-    observaciones: initialData && initialData.observaciones ? initialData.observaciones : '',
-    valor_actividad: initialData && initialData.valor_actividad ? initialData.valor_actividad : '',
-    fk_id_variedad: initialData && initialData.fk_id_variedad ? initialData.fk_id_variedad : ''
 
-  };
+const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+  const [formData, setFormData] = useState({
+    nombre_actividad: initialData?.nombre_actividad || '',
+    tiempo: initialData?.tiempo || '',
+    observaciones: initialData?.observaciones || '',
+    valor_actividad: initialData?.valor_actividad || '',
+    fk_id_variedad: initialData?.fk_id_variedad || '',
+    id: initialData?.id_actividad || '' 
+  });
 
-  const [formData, setFormData] = useState(initialFormData);
+  useEffect(() => {
+    setFormData({
+      nombre_actividad: initialData?.nombre_actividad || '',
+      tiempo: initialData?.tiempo || '',
+      observaciones: initialData?.observaciones || '',
+      valor_actividad: initialData?.valor_actividad || '',
+      fk_id_variedad: initialData?.fk_id_variedad || '',
+      id: initialData?.id_actividad || ''  
+    });
+  }, [initialData]);
+
   const [showWarning, setShowWarning] = useState(false);
-  const [nombre_variedad, setNombreVariedad] = useState([]);
+  const [nombreVariedad, setNombreVariedad] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3000/listarVariedades')
@@ -23,10 +34,9 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         setNombreVariedad(response.data);
       })
       .catch(error => {
-        console.error('Error al obtener los datos:', error);
+        console.error('Error al obtener los datos de variedad:', error);
       });
   }, []);
-
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -46,12 +56,11 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
     return soloLetras.test(observaciones);
   };
 
-  const handleFormSubmit = async e => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!formData.nombre_actividad || !formData.tiempo || !formData.observaciones || !formData.valor_actividad || !formData.fk_id_variedad) {
+      if (!formData.nombre_actividad || !formData.tiempo || !formData.observaciones || !formData.fk_id_variedad) {
         setShowWarning(true);
-
         return;
       }
       if (!validarNombreActividad(formData.nombre_actividad)) {
@@ -82,10 +91,8 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
 
         return;
       }
-  
       if (mode === 'registro') {
         const response = await axios.post(
-
           'http://localhost:3000/RegistrarActividad',
           formData,
           {
@@ -93,7 +100,6 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
               'Content-Type': 'application/json'
             }
           }
-
         );
         Swal.fire({
           icon: 'success',
@@ -101,19 +107,17 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           text: 'La actividad se ha registrado exitosamente'
         });
         console.log(response.data);
-      } else if (mode === 'update' && initialData && initialData.id) {
-        const { id } = initialData;
+      } else if (mode === 'update') {
+        const { id_actividad } = initialData; // Utiliza el campo correcto del ID
         await axios.put(
-          `http://localhost:3000/ActualizarActividad/${id}`,
+          `http://localhost:3000/ActualizarActividad/${id_actividad}`,
           formData
         );
-
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
           text: 'La actividad se ha actualizado exitosamente'
         });
-
       }
   
       onSubmit(formData);
@@ -125,7 +129,6 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
   
 
   return (
-
     <form
       className={className}
       onSubmit={handleFormSubmit}
@@ -135,8 +138,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         textAlign: 'center'
       }}
     >
-
-      <div className="flex flex-col">
+ <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Nombre de la Actividad:{' '}
         </label>
@@ -226,7 +228,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           onChange={handleChange}
         >
           <option value="" disabled>Seleccione</option>
-          {nombre_variedad.map(variedad => (
+          {nombreVariedad.map(variedad => (
             <option key={variedad.id_variedad} value={variedad.id_variedad}>
               {variedad.nombre_variedad}
             </option>
@@ -254,11 +256,11 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           height: '40px'
         }}
       >
-
         {mode === 'registro' ? 'Registrar' : 'Actualizar'}
       </button>
     </form>
   );
 };
 
-export default FormularioVariedad;
+
+export default FormularioProgramacion;
