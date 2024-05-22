@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { FaRegEdit } from 'react-icons/fa';
@@ -39,10 +40,12 @@ function Produccion() {
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
   const handleOpenActualizacionModal = (rowData) => {
-    setInitialData(rowData); // No es necesario modificar los datos aquí
+    const updatedInitialData = { ...rowData, id: rowData.id_produccion };
+    setInitialData(updatedInitialData);
     setMode('update');
     setShowActualizacionModal(true);
   };
+
 
   const handleCloseActualizacionModal = () => {
     setInitialData(null);
@@ -52,8 +55,8 @@ function Produccion() {
   const handleActualizacionFormSubmit = async (formData) => {
     try {
       console.log('Actualización de la producción:', formData);
-      const { id } = formData; // Corregido aquí: extraer el ID de initialData en lugar de formData
-      await axios.put(`http://localhost:3000/ActualizarProduccion/${id}`, formData);
+      const { id_producccion } = formData; // Corregido aquí: extraer el ID de initialData en lugar de formData
+      await axios.put(`http://localhost:3000/ActualizarProduccion/${id_producccion}`, formData);
       fetchData();
       setShowActualizacionModal(false);
     } catch (error) {
@@ -88,11 +91,11 @@ function Produccion() {
 
 
   const columns = [
-    // {
-    //   name: 'ID',
-    //   selector: (row) => row.id_cultivo,
-    //   sortable: true,
-    // },
+    /* {
+     name: 'ID',
+     selector: (row) => row.id_produccion,
+     sortable: true,
+   },   */
     {
       name: 'Editar',
       cell: (row) => (
@@ -105,10 +108,10 @@ function Produccion() {
           <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
-    },
+    },   
     {
-      name: 'Cantidad Producción',
-      selector: (row) => row.cantidad_produccion,
+      name: 'Actividad',
+      selector: (row) => row.nombre_actividad,
       sortable: true,
     },
     {
@@ -117,10 +120,12 @@ function Produccion() {
       sortable: true,
     },
     {
-      name: 'Actividad',
-      selector: (row) => row.nombre_actividad,
+      name: 'Cantidad Producción',
+      selector: (row) => row.cantidad_produccion,
       sortable: true,
-    }
+    },
+    
+ 
   ];
 
   return (

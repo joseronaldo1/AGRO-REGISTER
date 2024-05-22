@@ -37,7 +37,7 @@
     "recharts": "^2.12.6",
     "slick-carousel": "^1.8.1",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.10.8"
+    "sweetalert2": "^11.11.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

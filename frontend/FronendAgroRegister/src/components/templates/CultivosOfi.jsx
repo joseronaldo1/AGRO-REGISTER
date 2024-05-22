@@ -123,17 +123,18 @@ function Cultivos() {
           <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
+    }, 
+    {
+      name: 'Lote',
+      selector: (row) => row.nombre_lote,
+      sortable: true,
     },
     {
       name: 'Variedad',
       selector: (row) => row.nombre_variedad,
       sortable: true,
     },
-    {
-      name: 'Lote',
-      selector: (row) => row.nombre_lote,
-      sortable: true,
-    },
+   
     {
       name: 'Cantidad Sembrada',
       selector: (row) => row.cantidad_sembrada,

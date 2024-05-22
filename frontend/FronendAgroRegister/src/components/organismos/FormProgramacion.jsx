@@ -139,6 +139,87 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         textAlign: 'center'
       }}
     >
+            <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Selecciona tu Usuario:
+        </label>
+        <br />
+        <select
+          label='Nombre de Usuario'
+          name='fk_id_usuario'
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+          id=''
+          required={true}
+          value={formData.fk_id_usuario}
+          onChange={handleChange}
+        >
+          <option value="" disabled>Seleccione</option>
+          {nombreUsuario.map(usuarios => (
+            <option key={usuarios.id_usuario} value={usuarios.id_usuario}>
+              {usuarios.nombre}
+            </option>
+          ))}
+        </select>
+      </div>
+      {showWarning && (
+        <p style={{ color: 'red', marginBottom: '10px' }}>
+          Por favor selecciona tu Usuario
+        </p>
+      )}
+            <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Selecciona tu Actividad:
+        </label>
+        <br />
+        <select
+          label='Nombre de la Actividad'
+          name='fk_id_actividad'
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+          id=''
+          required={true}
+          value={formData.fk_id_actividad}
+          onChange={handleChange}
+        >
+          <option value="" disabled>Seleccione</option>
+          {nombreActividad.map(actividad => (
+            <option key={actividad.id_actividad} value={actividad.id_actividad}>
+              {actividad.nombre_actividad}
+            </option>
+          ))}
+        </select>
+      </div>
+      {showWarning && (
+        <p style={{ color: 'red', marginBottom: '10px' }}>
+          Por favor seleccione una Actividad
+        </p>
+      )}
+          <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Selecciona tu Variedad:
+        </label>
+        <br />
+        <select
+          label='Nombre de la Variedad'
+          name='fk_id_variedad'
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+          id=''
+          required={true}
+          value={formData.fk_id_variedad}
+          onChange={handleChange}
+        >
+          <option value="" disabled>Seleccione</option>
+          {nombreVariedad.map(variedad => (
+            <option key={variedad.id_variedad} value={variedad.id_variedad}>
+              {variedad.nombre_variedad}
+            </option>
+          ))}
+        </select>
+      </div>
+      {showWarning && (
+        <p style={{ color: 'red', marginBottom: '10px' }}>
+          Por favor seleccione el nombre de la Variedad
+        </p>
+      )}
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Fecha de inicio:{' '}
@@ -175,87 +256,9 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
           onChange={handleChange}
         />
       </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Selecciona tu Usuario:
-        </label>
-        <br />
-        <select
-          label='Nombre de Usuario'
-          name='fk_id_usuario'
-          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
-          id=''
-          required={true}
-          value={formData.fk_id_usuario}
-          onChange={handleChange}
-        >
-          <option value="" disabled>Seleccione</option>
-          {nombreUsuario.map(usuarios => (
-            <option key={usuarios.id_usuario} value={usuarios.id_usuario}>
-              {usuarios.nombre}
-            </option>
-          ))}
-        </select>
-      </div>
-      {showWarning && (
-        <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor selecciona tu Usuario
-        </p>
-      )}
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Selecciona tu Actividad:
-        </label>
-        <br />
-        <select
-          label='Nombre de la Actividad'
-          name='fk_id_actividad'
-          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
-          id=''
-          required={true}
-          value={formData.fk_id_actividad}
-          onChange={handleChange}
-        >
-          <option value="" disabled>Seleccione</option>
-          {nombreActividad.map(actividad => (
-            <option key={actividad.id_actividad} value={actividad.id_actividad}>
-              {actividad.nombre_actividad}
-            </option>
-          ))}
-        </select>
-      </div>
-      {showWarning && (
-        <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor seleccione una Actividad
-        </p>
-      )}
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Selecciona tu Variedad:
-        </label>
-        <br />
-        <select
-          label='Nombre de la Variedad'
-          name='fk_id_variedad'
-          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
-          id=''
-          required={true}
-          value={formData.fk_id_variedad}
-          onChange={handleChange}
-        >
-          <option value="" disabled>Seleccione</option>
-          {nombreVariedad.map(variedad => (
-            <option key={variedad.id_variedad} value={variedad.id_variedad}>
-              {variedad.nombre_variedad}
-            </option>
-          ))}
-        </select>
-      </div>
-      {showWarning && (
-        <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor seleccione el nombre de la Variedad
-        </p>
-      )}
+
+
+  
       <button
         className="boton"
         type="submit"
