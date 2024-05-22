@@ -1,44 +1,38 @@
 import { check } from "express-validator";
 
+// Validaciones para registrar usuarios
 export const validarUsuario = [
     check('nombre', 'El nombre es obligatorio y debe contener solo letras, máximo 50 caracteres')
-        .not()
-        .isEmpty()
+        .notEmpty()
         .isLength({ max: 50 })
         .matches(/^[A-Za-z\s]+$/),
 
-    check('apellido', 'El apellido es obligatorios y debe contener solo letras, máximo 50 caracteres')
-        .not()
-        .isEmpty()
+    check('apellido', 'El apellido es obligatorio y debe contener solo letras, máximo 50 caracteres')
+        .notEmpty()
         .isLength({ max: 50 })
         .matches(/^[A-Za-z\s]+$/),
 
     check('rol', 'Rol no existe')
-        .not()
-        .isEmpty()
+        .notEmpty()
         .isIn(["administrador", "empleado"]),
-        
 ];
 
-    
-
-    export const validarUsu = [
-        check('nombre', 'El nombre es obligatorio y debe contener solo letras, máximo 50 caracteres')
+// Validaciones para actualizar usuarios (campos opcionales)
+export const validarUsu = [
+    check('nombre', 'El nombre es obligatorio y debe contener solo letras, máximo 50 caracteres')
         .optional()
-            .not().isEmpty()
-            .isLength({ max: 50 })
-            .matches(/^[A-Za-z\s]+$/),
-    
-            check('apellido', 'El apellido es obligatorio y debe contener solo letras, máximo 50 caracteres')
-            .optional()
-            .not().isEmpty()
-            .isLength({ max: 50 })
-            .matches(/^[A-Za-z\s]+$/),
-    
-        check('rol', 'Rol no existe')
-            .optional()
-            .not().isEmpty()
-            .isIn(["administrador", "empleado"]),
+        .notEmpty()
+        .isLength({ max: 50 })
+        .matches(/^[A-Za-z\s]+$/),
 
-    ];
-    //nn
+    check('apellido', 'El apellido es obligatorio y debe contener solo letras, máximo 50 caracteres')
+        .optional()
+        .notEmpty()
+        .isLength({ max: 50 })
+        .matches(/^[A-Za-z\s]+$/),
+
+    check('rol', 'Rol no existe')
+        .optional()
+        .notEmpty()
+        .isIn(["administrador", "empleado"]),
+];

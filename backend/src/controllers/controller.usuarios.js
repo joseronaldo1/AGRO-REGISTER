@@ -2,19 +2,33 @@ import { pool } from '../database/conexion.js';
 import { validationResult } from "express-validator";
 import bcrypt from 'bcrypt';
 import multer from "multer";
+import path from 'path';
 
-const storage = multer.diskStorage(
-    {
-        destination: function(req,img,cb){
-            cb(null,"public/img")
-        },
-        filename: function(req,img,cb){
-            cb(null,img.originalname)
+// Configuración de Multer para la subida de archivos
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, "public/img");
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    fileFilter: function(req, file, cb) {
+        const filetypes = /jpeg|jpg|png|gif/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+        if (mimetype && extname) {
+            return cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten imágenes (jpeg, jpg, png, gif)'));
         }
     }
-);
+});
 
-const upload = multer({storage:storage});
 export const cargarImagen = upload.single('img');
 
 export const listarUsuarios = async (req, res) => {
@@ -61,7 +75,7 @@ export const registrarUsuario = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json(errors);
+            return res.status(400).json({ errors: errors.array() });
         }
 
         const { nombre, apellido, correo, password, rol } = req.body;
@@ -107,7 +121,7 @@ export const actualizarUsuario = async (req, res) => {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, apellido, correo, password, rol, estado, imagen) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
-        const oldUsuario = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id_usuario]);
+        const [oldUsuario] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id_usuario]);
 
         if (oldUsuario.length === 0) {
             return res.status(404).json({

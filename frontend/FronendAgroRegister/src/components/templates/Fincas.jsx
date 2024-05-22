@@ -9,7 +9,6 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 import Swal from 'sweetalert2';
-import { Tooltip } from "@nextui-org/react";
 
 function Fincas() {
 
