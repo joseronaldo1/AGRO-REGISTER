@@ -19,27 +19,32 @@ export const cargarImagen = upload.single('img');
 
 export const listarEmpleado = async (req, res) => {
     try {
-        const [result] = await pool.query('SELECT * FROM usuarios');
+        // Modificamos la consulta SQL para filtrar por el rol de 'empleado'
+        const [result] = await pool.query('SELECT * FROM usuarios WHERE rol = "empleado"');
+        
         if (result.length > 0) {
             res.status(200).json(result);
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No hay usuarios registrados'
+                message: 'No hay usuarios registrados con el rol de empleado'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: 'Error en el sistema: ' + error
+            message: 'Error en el sistema: ' + error.message
         });
     }
 };
 
+
+
+
 export const buscarEmpleado = async (req, res) => {
     try {
         const { nombre } = req.params;
-        const [result] = await pool.query("SELECT * FROM usuarios WHERE nombre LIKE ?", [`%${nombre}%`]);
+        const [result] = await pool.query("SELECT * FROM usuarios WHERE nombre LIKE ? AND rol = 'empleado'", [`%${nombre}%`]);
 
         if (result.length > 0) {
             res.status(200).json(result);
@@ -56,6 +61,7 @@ export const buscarEmpleado = async (req, res) => {
         });
     }
 };
+
 
 export const registrarEmpleado = async (req, res) => {
     try {
@@ -107,7 +113,7 @@ export const actualizarEmpleado = async (req, res) => {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, apellido, correo, password, rol, estado, imagen) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
-        const oldUsuario = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id]);
+        const [oldUsuario] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id]);
 
         if (oldUsuario.length === 0) {
             return res.status(404).json({
@@ -132,7 +138,7 @@ export const actualizarEmpleado = async (req, res) => {
             imagen: imagen
         };
 
-        const result = await pool.query(
+        const [result] = await pool.query(
             `UPDATE usuarios SET nombre=?, apellido=?, correo=?, password=?, rol=?, estado=?, imagen=? WHERE id_usuario = ?`,
             [updatedUsuario.nombre, updatedUsuario.apellido, updatedUsuario.correo, updatedUsuario.password, updatedUsuario.rol, updatedUsuario.estado, updatedUsuario.imagen, id]
         );
@@ -156,16 +162,17 @@ export const actualizarEmpleado = async (req, res) => {
     }
 };
 
+
 //CRUD - Desactivar
 export const DesactivarEmpleado = async (req, res) => {
     try {
         const { id } = req.params;
         const { estado } = req.body;
 
-        const [oldRecurso] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id]);
-
+        const [oldRecurso] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id]); 
+        
         const [result] = await pool.query(
-            `UPDATE usuarios SET estado = ${estado ? `'${estado}'` : `'${oldRecurso[0].estado}'`} WHERE id_usuario = ?`, [id]
+            `UPDATE usuarios SET estado = ${estado ? `'${estado}'` : `'${oldRecurso[0].estado}'`} WHERE id_usuario = ?`,[id]
         );
 
         if (result.affectedRows > 0) {
