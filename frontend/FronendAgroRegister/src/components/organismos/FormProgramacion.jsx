@@ -31,7 +31,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
   const [nombreVariedad, setNombreVariedad] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/listarUsuario')
+    axios.get('http://localhost:3000/listarEmpleado')
       .then(response => {
         setNombreUsuario(response.data);
       })

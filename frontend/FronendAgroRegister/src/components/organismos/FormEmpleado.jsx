@@ -7,6 +7,7 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         nombre: initialData && initialData.nombre ? initialData.nombre : '',
         apellido: initialData && initialData.apellido ? initialData.apellido : '',
         correo: initialData && initialData.correo ? initialData.correo : '',
+        password: initialData && initialData.password ? initialData.password : '',
         rol: initialData && initialData.rol ? initialData.rol : ''
     };
 
@@ -28,21 +29,19 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         try {
-            if (!formData.nombre || !formData.apellido || !formData.correo || !formData.rol) {
+            if (!formData.nombre || !formData.apellido || !formData.correo || !formData.password || !formData.rol) {
                 setShowWarning(true);
                 return;
             }
             if (!validarNombres(formData.nombre, formData.apellido)) {
-
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'El nombre de la finca solo puede contener letras'
+                    text: 'El nombre o el apellido solo puede contener letras'
                 });
                 return;
             }
-
-
+    
             if (mode === 'registro') {
                 const response = await axios.post(
                     'http://localhost:3000/registrarUsuario',
@@ -54,33 +53,34 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
                     }
                 );
                 console.log(response.data);
-
+    
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
-                    text: 'La finca se ha registrado exitosamente'
+                    text: 'El empleado se ha registrado exitosamente'
                 });
                 console.log(response.data);
             } else if (mode === 'update') {
-                const { id_usuario } = initialData;
+                const { id } = initialData; // Asegúrate de que el ID esté correctamente definido aquí
                 await axios.put(
-                    `http://localhost:3000/actualizarUsuario/${id_usuario}`,
+                    `http://localhost:3000/actualizarEmpleado/${id}`,
                     formData
                 );
-
+    
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
-                    text: 'La finca se ha actualizado exitosamente'
+                    text: 'El empleado se ha actualizado exitosamente'
                 });
             }
-
+    
             onSubmit(formData);
             cerrarModal();
         } catch (error) {
             console.error('Error al procesar el formulario:', error);
         }
     };
+    
 
 
     return (
@@ -152,6 +152,25 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
                     name="correo"
                     placeholder="correo"
                     value={formData.correo}
+                    onChange={handleChange}
+                />
+            </div>
+            <div className="flex flex-col">
+                <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+                    Contraseña:{' '}
+                </label>
+                <br />
+                <input
+                    style={{
+                        borderColor: '#1bc12e',
+                        borderRadius: '6px',
+                        width: '50%',
+                        height: '40px'
+                    }}
+                    type="password"
+                    name="password"
+                    placeholder="Contraseña"
+                    value={formData.password}
                     onChange={handleChange}
                 />
             </div>

@@ -58,7 +58,7 @@ function Empleados() {
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      console.log('Actualización de recurso:', formData);
+      console.log('Actualización de empleado:', formData);
       const { id } = formData;
       await axios.put(`http://localhost:3000/actualizarEmpleado/${id}`, formData);
       fetchData();
@@ -144,12 +144,17 @@ function Empleados() {
       sortable: true,
     },
     {
-      name: 'correo',
+      name: 'Correo',
       selector: (row) => row.correo,
       sortable: true,
     },
     {
-      name: 'rol',
+      name: 'Contraseña',
+      selector: (row) => row.password,
+      sortable: true,
+    },
+    {
+      name: 'Rol',
       selector: (row) => row.rol,
       sortable: true,
     },
@@ -181,7 +186,7 @@ function Empleados() {
             transition: 'background-color 0.2s',
           }}
           type="button"
-          onClick={() => handleEstadoBotonClick(row.id_finca, row.estado)}
+          onClick={() => handleEstadoBotonClick(row.id_usuario, row.estado)}
           onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#F54949' : '#2DBC28' }}
           onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }}
         >
