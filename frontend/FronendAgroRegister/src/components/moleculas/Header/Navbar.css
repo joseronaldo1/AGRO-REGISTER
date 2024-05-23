@@ -13,13 +13,12 @@
   border-radius: 50%;
   margin-left: 80px;
   cursor: pointer;
-  transition: box-shadow 0.3s ease; /* Agregar transición para suavizar el cambio */
+  transition: box-shadow 0.3s ease;
+  /* Agregar transición para suavizar el cambio */
 }
 
 /* Estilo de sombra al pasar el cursor */
-.imagenpersonal:hover {
-  box-shadow: 0 0 10px rgba(255, 254, 254, 0.5); /* Agregar sombra oscura al pasar el cursor */
-}
+
 
 /* Contenido del header */
 .navbar-collapse {

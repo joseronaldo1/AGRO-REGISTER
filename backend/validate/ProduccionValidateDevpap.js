@@ -5,6 +5,8 @@ export const ValidateProduccion = [
     check('cantidad_produccion', 'La cantidad debe ser un número y no ser menor a 1').isInt().isNumeric(),
     check('precio', 'El precio debe ser un número y mayor a 1').isInt().isNumeric(),
 
+
+
 ];
 
 export const actualizar = [

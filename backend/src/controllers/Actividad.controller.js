@@ -61,61 +61,41 @@ export const RegistrarA = async (req, res) => {
 
 export const ActualizarA = async (req, res) => {
     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        const { id } = req.params;
-        const { nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado } = req.body;
-
-        // Comprueba si al menos uno de los campos de actualización está presente en la solicitud
-        if (!nombre_actividad && !tiempo && !observaciones && !fk_id_variedad && !valor_actividad && estado === undefined) {
-            return res.status(400).json({ message: 'Al menos uno de los campos (nombre_actividad, tiempo, observaciones, fk_id_variedad, valor_actividad, estado) debe estar presente en la solicitud para realizar la actualización.' });
-        }
-
-        // Realiza una consulta para obtener la actividad antes de actualizarla
-        const [oldActividad] = await pool.query("SELECT * FROM actividad WHERE id_actividad=?", [id]);
-
-        if (oldActividad.length === 0) {
-            return res.status(404).json({
-                status: 404,
-                message: 'Actividad no encontrada',
-            });
-        }
-
-        // Realiza la actualización en la base de datos
-        const [result] = await pool.query(
-            `UPDATE actividad
-            SET nombre_actividad = ${nombre_actividad ? `'${nombre_actividad}'` : `'${oldActividad[0].nombre_actividad}'`}, 
-            tiempo = ${tiempo !== undefined ? `'${tiempo}'` : `'${oldActividad[0].tiempo}'`},
-            observaciones = ${observaciones ? `'${observaciones}'` : `'${oldActividad[0].observaciones}'`},
-            fk_id_variedad = ${fk_id_variedad ? `'${fk_id_variedad}'` : `'${oldActividad[0].fk_id_variedad}'`},
-            valor_actividad = ${valor_actividad ? `'${valor_actividad}'` : `'${oldActividad[0].valor_actividad}'`},
-            estado = ${estado !== undefined ? `'${estado}'` : `'${oldActividad[0].estado}'`}
-            WHERE id_actividad = ?`,
-            [id]
-        );
-
-        if (result.affectedRows > 0) {
-            return res.status(200).json({
-                status: 200,
-                message: 'Actividad actualizada con éxito',
-            });
-        } else {
-            return res.status(403).json({
-                status: 403,
-                message: 'No se pudo actualizar la Actividad',
-            });
-        }
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
+      const { id_actividad } = req.params; // Asegúrate de usar id_programacion aquí
+      const { nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad } = req.body;
+  
+      if (!nombre_actividad && !tiempo && !observaciones && !valor_actividad && !fk_id_variedad) {
+        return res.status(400).json({ message: 'Al menos uno de los campos (nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad) debe estar presente en la solicitud para realizar la actualización.' });
+      }
+  
+      const [oldUser] = await pool.query("SELECT * FROM actividad WHERE id_actividad=?", [id_actividad]);
+  
+      const updateValues = {
+        nombre_actividad: nombre_actividad ? nombre_actividad : oldUser[0].nombre_actividad,
+        tiempo: tiempo ? tiempo : oldUser[0].tiempo,
+        observaciones: observaciones ? observaciones : oldUser[0].observaciones,
+        valor_actividad: valor_actividad ? valor_actividad : oldUser[0].valor_actividad,
+        fk_id_variedad: fk_id_variedad ? fk_id_variedad : oldUser[0].fk_id_variedad
+      };
+  
+      const updateQuery = `UPDATE actividad SET nombre_actividad=?, tiempo=?, observaciones=?, valor_actividad=?, fk_id_variedad=? WHERE id_actividad=?`;
+  
+      const [resultado] = await pool.query(updateQuery, [updateValues.nombre_actividad, updateValues.tiempo, updateValues.observaciones, updateValues.valor_actividad, updateValues.fk_id_variedad, parseInt(id_actividad)]);
+  
+      if (resultado.affectedRows > 0) {
+        res.status(200).json({ "mensaje": "La actividad ha sido actualizada" });
+      } else {
+        res.status(404).json({ "mensaje": "No se pudo actualizar la actividad" });
+      }
     } catch (error) {
-        return res.status(500).json({
-            status: 500,
-            message: error.message || 'Error en el sistema'
-        });
+      res.status(500).json({ "mensaje": error.message });
     }
-};
-
+  };
 
 //CRUD - Desactivar
 export const DesactivarA = async (req, res) => {
@@ -154,26 +134,26 @@ export const DesactivarA = async (req, res) => {
 // CRUD - Buscar
 export const BuscarA = async (req, res) => {
     try {
-
         const { nombre } = req.params;
-        const [result] = await pool.query("SELECT * FROM actividad WHERE nombre_actividad LIKE ?", [`%${nombre}%`]);
+        const query = `
+            SELECT a.*, v.nombre_variedad
+            FROM actividad a
+            INNER JOIN variedad v ON a.fk_id_variedad = v.id_variedad
+            WHERE a.nombre_actividad LIKE ?`;
+        const [result] = await pool.query(query, [`%${nombre}%`]);
                     
         if (result.length > 0) {
             res.status(200).json(result);
-
         } else {
             res.status(404).json({
                 status: 404,
                 message: 'No se encontraron resultados para la búsqueda'
             });
         }
-
     } catch (error) {
         res.status(500).json({
             status: 500,
             message: "error en el sistema"
         });
-
     }
 };
-

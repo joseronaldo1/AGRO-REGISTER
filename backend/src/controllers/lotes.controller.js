@@ -96,28 +96,32 @@ export const Actualizarlote = async (req, res) => {
 
 export const Buscarlote = async (req, res) => {
     try {
-
         const { nombre } = req.params;
-        const [result] = await pool.query("SELECT * FROM lotes WHERE nombre LIKE ?", [`%${nombre}%`]);
+        const query = `
+            SELECT lotes.*, finca.nombre_finca AS nombre_finca 
+            FROM lotes 
+            INNER JOIN finca ON lotes.fk_id_finca = finca.id_finca 
+            WHERE lotes.nombre LIKE ? OR finca.nombre_finca LIKE ?
+        `;
+        const [result] = await pool.query(query, [`%${nombre}%`, `%${nombre}%`]);
                     
         if (result.length > 0) {
             res.status(200).json(result);
-
         } else {
             res.status(404).json({
                 status: 404,
                 message: 'No se encontraron resultados para la búsqueda'
             });
         }
-
     } catch (error) {
         res.status(500).json({
             status: 500,
             message: "error en el sistema"
         });
-
     }
 };
+
+
 
 //CRUD - Desactivar
 export const DesactivarLote = async (req, res) => {

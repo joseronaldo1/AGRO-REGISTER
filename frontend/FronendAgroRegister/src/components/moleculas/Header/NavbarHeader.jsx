@@ -13,7 +13,7 @@ function NavbarHeader() {
   useEffect(() => {
     // Función para obtener el último usuario registrado
     const obtenerUltimoUsuario = () => {
-      axios.get('http://localhost:3000/listarusuario')
+      axios.get('http://localhost:3000/listarUsuario')
         .then(response => {
           const ultimo = response.data[response.data.length - 1];
           setUltimoUsuario(ultimo);
@@ -56,25 +56,25 @@ function NavbarHeader() {
       </nav>
 
 
-      <Modal dialogClassName="modal-sm" show={showModal} onHide={handleModalClose} backdrop={false} style={{ marginLeft: '400px', marginTop: '70px' }}>
+      <Modal dialogClassName="modal-sm" show={showModal} onHide={handleModalClose} backdrop={false} style={{ marginLeft: '28%', marginTop: '70px' }}>
         <Modal.Header closeButton>
           <Modal.Title>Información</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+
+
           <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
             <p>Visita tu perfil:</p>
           </div>
-          {/* Aquí comienza el uso de los elementos del Sidebar */}
           <NavItem icon={v.iconoPerfilUsuario} text="Perfil" href="/Perfilprincipal" className="perfil" />
-          <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
-            <p>Configura tu cuenta:</p>
-          </div>
-          <NavItem icon={v.iconoSoporte} text="Soporte" href="/soport" className="soporte" />
+
+
           <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
             <p>¿Deseas cerrar sesión?</p>
           </div>
           <NavItem icon={v.iconoSalir} text="Salir" href="/" className="salir" />
-          {/* Aquí termina el uso de los elementos del Sidebar */}
+
+
         </Modal.Body>
       </Modal>
     </>

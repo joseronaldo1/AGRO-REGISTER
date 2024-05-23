@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
     cantidad_produccion: initialData && initialData.cantidad_produccion ? initialData.cantidad_produccion : '',
     precio: initialData && initialData.precio ? initialData.precio : '',
@@ -44,6 +44,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("Datos del formulario antes de enviar:", formData);
       if (!formData.cantidad_produccion || !formData.precio || !formData.fk_id_actividad) {
         setShowWarning(true);
         return;
@@ -76,21 +77,24 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
             }
           }
         );
+
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
           text: 'La Producción se ha registrado exitosamente'
         });
+
       } else if (mode === 'update') {
-        const { id } = initialData;
+        const { id_producccion } = initialData;
         await axios.put(
-          `http://localhost:3000/ActualizarProduccion/${id}`,
+          `http://localhost:3000/ActualizarProduccion/${id_producccion}`,
           formData
         );
+        // Mostrar alerta de actualización exitosa
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'La Producción se ha actualizado exitosamente'
+          text: 'La produccion se ha actualizado exitosamente'
         });
       }
 
@@ -111,45 +115,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         textAlign: 'center'
       }}
     >
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Cantidad Producción:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="number"
-          name="cantidad_produccion"
-          placeholder="Cantidad Producción"
-          value={formData.cantidad_produccion}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Precio:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="number"
-          name="precio"
-          placeholder="Precio"
-          value={formData.precio}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
+         <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Selecciona tu Actividad:
         </label>
@@ -174,6 +140,46 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
           Por favor seleccione una Actividad
         </p>
       )}
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Precio:{' '}
+        </label>
+        <br />
+        <input
+          style={{
+            borderColor: '#1bc12e',
+            borderRadius: '6px',
+            width: '50%',
+            height: '40px'
+          }}
+          type="number"
+          name="precio"
+          placeholder="Precio"
+          value={formData.precio}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Cantidad Producción:{' '}
+        </label>
+        <br />
+        <input
+          style={{
+            borderColor: '#1bc12e',
+            borderRadius: '6px',
+            width: '50%',
+            height: '40px'
+          }}
+          type="number"
+          name="cantidad_produccion"
+          placeholder="Cantidad Producción"
+          value={formData.cantidad_produccion}
+          onChange={handleChange}
+        />
+      </div>
+      
+   
       <button
         className="boton"
         type="submit"
@@ -195,4 +201,4 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
   );
 };
 
-export default Formulariolote;
+export default FormularioProduccion;

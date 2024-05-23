@@ -1,172 +1,277 @@
-import React, { useState } from "react";
-import Botones from "../atomos/Botones";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import { FaRegEdit } from 'react-icons/fa';
+import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
-import ModalRecuRegeContrasenia from "../organismos/Modal";
+import { FaPowerOff, FaLightbulb } from "react-icons/fa";
+import ModalRecuRegeContrasenia from "../organismos/ModalEmpleado.jsx";
 import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
-import Formulario from '../organismos/Formulario.jsx';
+import SearchBar from '../moleculas/SearchBar';
+import Swal from 'sweetalert2';
 
-function Usuario() {
-   const [showRegistroModal, setShowRegistroModal] = useState(false);
-   const [showActualizacionModal, setShowActualizacionModal] = useState(false);
-   const [registroFormData, setRegistroFormData] = useState({
-     nombre_variedad: "",
-     nombre_actividad: "",
-     tipo_recurso: "",
-     tiempo: "",
-   });
-   const [actualizacionFormData, setActualizacionFormData] = useState({
-     nombre_variedad: "",
-     nombre_actividad: "",
-     tipo_recurso: "",
-     tiempo: "",
-   });
+function Empleados() {
 
-   const handleOpenRegistroModal = () => {
-     setShowRegistroModal(true);
-   };
+  const baseURL = 'http://localhost:3000/listarEmpleado';
 
-   const handleCloseRegistroModal = () => {
-     setShowRegistroModal(false);
-   };
+  const [data, setData] = useState([]);
+  const [showRegistroModal, setShowRegistroModal] = useState(false);
+  const [showActualizacionModal, setShowActualizacionModal] = useState(false);
+  const [registroFormData, setRegistroFormData] = useState({});
+  const [mode, setMode] = useState('create');
+  const [initialData, setInitialData] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
 
-   const handleOpenActualizacionModal = () => {
-     setShowActualizacionModal(true);
-   };
+  const [error, setError] = useState(null);
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
-   const handleCloseActualizacionModal = () => {
-     setShowActualizacionModal(false);
-   };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-   const handleRegistroFormSubmit = (event) => {
-     event.preventDefault();
-     console.log("Datos de registro:", registroFormData);
-     setRegistroFormData({
-       nombres: "",
-       apellidos: "",
-       correo: "",
-       contraseña: "",
-     });
-     handleCloseRegistroModal();
-   };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(baseURL);
+      setData(response.data);
 
-   const handleActualizacionFormSubmit = (event) => {
-     event.preventDefault();
-     console.log("Datos de actualización:", actualizacionFormData);
-     setActualizacionFormData({
-       nombres: "",
-       apellidos: "",
-       correo: "",
-       contraseña: "",
-     });
-     handleCloseActualizacionModal();
-   };
+      setOriginalData(response.data);
 
-   const camposRegistro = [
-     { name: "nombres", placeholder: "Nombres", type: "text" },
-     { name: "apellidos", placeholder: "Apellidos", type: "text" },
-     { name: "correo", placeholder: "correo", type: "text" },
-     { name: "contraseña", placeholder: "contraseña", type: "text" }
-   ];
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
-   const camposActualizacion = [
-     { name: "nombres", placeholder: "Nombres", type: "text" },
-     { name: "apellidos", placeholder: "Apellidos", type: "text" },
-     { name: "correo", placeholder: "correo", type: "text" },
-     { name: "contraseña", placeholder: "contraseña", type: "text" }
-   ];
+  const handleOpenRegistroModal = () => setShowRegistroModal(true);
+  const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
-   const columns = [
-     {
-       name: "Nombres",
-       selector: (row) => row.nombres,
-       sortable: true,
-     },
-     {
-       name: "Apellidos",
-       selector: (row) => row.apellidos,
-       sortable: true,
-     },
-     {
-       name: "Correo",
-       selector: (row) => row.correo,
-       sortable: true,
-     },
-     {
-       name: "Contraseña",
-       selector: (row) => row.contraseña,
-       sortable: true,
-     },
+  const handleOpenActualizacionModal = (rowData) => {
+    const updatedInitialData = { ...rowData, id: rowData.id_usuario };
+    setInitialData(updatedInitialData);
+    setMode('update');
+    setShowActualizacionModal(true);
+  };
+
+  const handleCloseActualizacionModal = () => {
+    setInitialData(null);
+    setShowActualizacionModal(false);
+  };
+
+  const handleActualizacionFormSubmit = async (formData) => {
+    try {
+      console.log('Actualización de empleado:', formData);
+      const { id } = formData;
+      await axios.put(`http://localhost:3000/actualizarEmpleado/${id}`, formData);
+      fetchData();
+      setShowActualizacionModal(false);
+    } catch (error) {
+      console.error('Error al actualizar los empleados:', error);
+    }
+  };
+
+  const handleSearch = async (searchTerm) => {
+    try {
+      if (searchTerm.trim() === '') {
+
+        setData(originalData);
+        setError(null);
+      } else {
+        const response = await axios.get(`http://localhost:3000/buscarEmpleado/${searchTerm}`);
+        setData(response.data);
+        if (response.data.length === 0) {
+          setError('No se encontraron resultados');
+        } else {
+          setError(null);
+        }
+
+      }
+    } catch (error) {
+      console.error('Error searching for resources:', error);
+      setError('Busqueda no encontrada');
+    }
+  };
+
+  const handleEstadoBotonClick = async (id, estado) => {
+    try {
+
+      const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
+      await axios.put(`http://localhost:3000/desactivar/Empleado/${id}`, { estado: newEstado });
+      fetchData();
+
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: `El estado se cambió con éxito a ${newEstado}.`,
+      });
+
+    } catch (error) {
+      console.error('Error al cambiar el estado del usuario:', error);
+    }
+  };
+
+  const handleEstadoSeleccionado = (event) => {
+    setEstadoSeleccionado(event.target.value);
+    if (event.target.value === '') {
+      setData(originalData);
+    } else {
+      const filteredData = originalData.filter(item => item.estado === event.target.value);
+      setData(filteredData);
+    }
+  };
+
+  const columns = [
     {
-       name: "Acciones",
-       cell: (row) => (
-         <button
-           className="btn btn-warning p-2 rounded-lg text-sm font-bold"
-           type="button"
-           onClick={() => handleOpenActualizacionModal()}
-         >
-           Editar
-         </button>
-       ),
-     },
-   ];
+      name: 'Editar',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg"
+          style={{ backgroundColor: '#B5B5B5', borderColor: '#ffc107', marginLeft: '10px', border: 'none' }}
+          type="button"
+          onClick={() => handleOpenActualizacionModal(row)}
+        >
+          <FaRegEdit style={{ color: 'black' }} />
+        </button>
+      ),
+    },
+    {
+      name: 'Nombre',
+      selector: (row) => row.nombre,
+      sortable: true,
+    },
+    {
+      name: 'Apellido',
+      selector: (row) => row.apellido,
+      sortable: true,
+    },
+    {
+      name: 'Correo',
+      selector: (row) => row.correo,
+      sortable: true,
+    },
+    {
+      name: 'Contraseña',
+      selector: (row) => row.password,
+      sortable: true,
+    },
+    {
+      name: 'Rol',
+      selector: (row) => row.rol,
+      sortable: true,
+    },
+    {
+      name: 'Estado',
+      cell: (row) => (
+        <span style={{ color: row.estado === 'activo' ? 'green' : '#E83636', fontWeight: '700' }}>
+          {row.estado}
+        </span>
+      ),
+      sortable: true,
+    },
+    {
+      name: 'Acciones',
+      cell: (row) => (
+        <button
+          className="btn p-2 rounded-lg estado-button"
+          style={{
+            backgroundColor: row.estado === 'activo' ? '#E83636' : 'green',
+            border: 'none',
+            color: 'white',
+            height: '40px',
 
-   const data = [
-     {
-       nombres: "juana",
-       apellidos: "Ortiz",
-       correo: "rodolfo@gmail.com",
-       contraseña: "394435",
-     }
-   ];
+            width: '135px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: '-28px',
+            transition: 'background-color 0.2s',
+          }}
+          type="button"
+          onClick={() => handleEstadoBotonClick(row.id_usuario, row.estado)}
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#F54949' : '#2DBC28' }}
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }}
+        >
+          {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '5px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
+          {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
+        </button>
+      ),
+    },
 
-   return (
-     <div style={{ marginTop: "8%" }}>
-       <Header />
-       <div className="container mt-5">
-         <Botones
-           children="Registrar"
-           onClick={() => handleOpenRegistroModal()}
-         />
-         <Datatable columns={columns} data={data} title="Usuarios" />
-       </div>
+  ];
 
-       {/* Modal de Registro */}
-       <ModalRecuRegeContrasenia
-         mostrar={showRegistroModal}
-         cerrarModal={handleCloseRegistroModal}
-         titulo="Registro"
-       >
-         <Formulario
-           campos={camposRegistro}
-           onSubmit={handleRegistroFormSubmit}
-           className="form-registro"
-         />
-         <Botones
-           children="Registrar"
-           onClick={() => handleRegistroFormSubmit()}
-         />
-       </ModalRecuRegeContrasenia>
+  return (
+    <div>
+      <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <div className="main-content" style={{ flex: 1 }}>
 
-       {/* Modal de Actualización */}
-       <ModalRecuRegeContrasenia
-         mostrar={showActualizacionModal}
-         cerrarModal={handleCloseActualizacionModal}
-         titulo="Actualización"
-       >
-         <Formulario
-           campos={camposActualizacion}
-           onSubmit={handleActualizacionFormSubmit}
-           className="form-actualizacion"
-         />
-           <Botones
-           children="Registrar"
-           onClick={() => handleRegistroFormSubmit()}
-         />
-       </ModalRecuRegeContrasenia>
-       <Footer/>
-     </div>
-   );
- }
+          <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
 
- export default Usuario;
+            <SearchBar onSearch={handleSearch} />
+            <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+
+            <select
+              style={{
+                position: 'absolute',
+                marginTop: '-36px',
+                marginLeft: '920px',
+                padding: '8px',
+                fontSize: '16px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+                background: 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
+                boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                width: '100px',
+              }}
+              value={estadoSeleccionado}
+              onChange={handleEstadoSeleccionado}
+            >
+              <option value="">Estados</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+
+
+
+
+
+          </div>
+
+          <br />
+
+
+          {error ? (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          ) : (
+            <Datatable columns={columns} data={data} title="Empleados" />
+          )}
+
+        </div>
+
+        <ModalRecuRegeContrasenia
+          mostrar={showRegistroModal}
+          cerrarModal={handleCloseRegistroModal}
+          titulo="Registro"
+          actionLabel="Registrar"
+          initialData={registroFormData}
+          mode="registro"
+          handleSubmit={() => setShowRegistroModal(false)}
+        />
+        <ModalRecuRegeContrasenia
+          mostrar={showActualizacionModal}
+          cerrarModal={handleCloseActualizacionModal}
+          titulo="Actualización"
+          handleSubmit={handleActualizacionFormSubmit}
+          actionLabel="Actualizar"
+          initialData={initialData}
+          mode={mode}
+        />
+        <br />
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+export default Empleados;

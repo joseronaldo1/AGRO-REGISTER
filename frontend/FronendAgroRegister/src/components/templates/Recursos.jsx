@@ -25,14 +25,16 @@ function Recursos() {
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
+
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
+
       setOriginalData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -69,6 +71,7 @@ function Recursos() {
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
+
         setData(originalData);
         setError(null);
       } else {
@@ -85,6 +88,7 @@ function Recursos() {
       setError('Busqueda no encontrada');
     }
   };
+
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
@@ -112,6 +116,7 @@ function Recursos() {
   };
 
   const columns = [
+
     {
       name: 'Editar',
       cell: (row) => (
@@ -157,6 +162,7 @@ function Recursos() {
     {
       name: 'Acciones',
       cell: (row) => (
+
         <button
           className="btn p-2 rounded-lg estado-button"
           style={{
@@ -164,8 +170,9 @@ function Recursos() {
             border: 'none',
             color: 'white',
             height: '40px',
-            marginLeft: '-38px',
-            width: '500px',
+            marginLeft: '-18px',
+            width: '120px',
+
             transition: 'background-color 0.2s',
           }}
           type="button"
@@ -176,6 +183,7 @@ function Recursos() {
           {row.estado === 'existe' ? <IoIosCloseCircleOutline style={{ marginRight: '1px' }} /> : <GoIssueClosed style={{ marginRight: '3px' }} />}
           {row.estado === 'existe' ? 'Agotado' : 'Disponible'}
         </button>
+
       ),
     },
   ];
@@ -189,6 +197,7 @@ function Recursos() {
 
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
+
             <select
               style={{
                 position: 'absolute',
@@ -217,8 +226,9 @@ function Recursos() {
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-            <Datatable columns={columns} data={data} title="Recursos" />
+            <Datatable columns={columns} data={data} title="Materiales del cultivo" />
           )}
+
         </div>
 
         <ModalRecuRegeContrasenia

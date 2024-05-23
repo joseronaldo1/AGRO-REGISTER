@@ -11,12 +11,14 @@ const SearchBar = ({ onSearch }) => {
     onSearch(value);
   };
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSearch(searchTerm);
   };
 
   return (
+
     <form onSubmit={handleSubmit} style={{ marginLeft: '77%', marginTop: '30px' }}>
       <div style={{ position: 'relative' }}>
         <input

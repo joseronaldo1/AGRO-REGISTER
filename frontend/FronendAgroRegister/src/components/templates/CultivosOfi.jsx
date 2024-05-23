@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { FaRegEdit } from 'react-icons/fa'; // Importa el icono de edición de FontAwesome
+import { FaRegEdit } from 'react-icons/fa';
 import Botones from "../atomos/BotonRegiApi.jsx";
 import { Datatable } from "../moleculas/Datatable";
 import { FaPowerOff, FaLightbulb } from "react-icons/fa";
@@ -9,6 +9,7 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import Swal from 'sweetalert2';
 import SearchBar from '../moleculas/SearchBar';
+import { format } from 'date-fns'; // Importa la función format de date-fns
 
 function Cultivos() {
   const baseURL = 'http://localhost:3000/listarCultivos';
@@ -20,18 +21,18 @@ function Cultivos() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-  const [error, setError] = useState(null); // Estado para manejar errores
+  const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
-      setOriginalData(response.data); // Guardar los datos originales sin filtrar
+      setOriginalData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -64,32 +65,29 @@ function Cultivos() {
     }
   };
 
-  // Función para buscar fincas por nombre_variedad
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
-        // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
-        setError(null); // Limpiar el error
+        setError(null);
       } else {
         const response = await axios.get(`http://localhost:3000/buscarCultivo/${searchTerm}`);
         setData(response.data);
         if (response.data.length === 0) {
-          // Si no se encontraron resultados, establecer el mensaje de error
           setError('No se encontraron resultados');
         } else {
-          setError(null); // Limpiar el error si se encontraron resultados
+          setError(null);
         }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Busqueda no encontrada'); // Establecer mensaje de error
+      setError('Busqueda no encontrada');
     }
   };
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
-      const newEstado = estado === 'activo' ? 'inactivo' : 'activo'; //Cambiar los estados existentes por "activo" e "inactivo"
+      const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
       await axios.put(`http://localhost:3000/desactivar/Cultivo/${id}`, { estado: newEstado });
       fetchData();
       Swal.fire({
@@ -102,7 +100,6 @@ function Cultivos() {
     }
   };
 
-
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
     if (event.target.value === '') {
@@ -114,11 +111,6 @@ function Cultivos() {
   };
 
   const columns = [
-    // {
-    //   name: 'ID',
-    //   selector: (row) => row.id_cultivo,
-    //   sortable: true,
-    // },
     {
       name: 'Editar',
       cell: (row) => (
@@ -131,17 +123,18 @@ function Cultivos() {
           <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
-    },
+    }, 
     {
-      name: 'Nombre Variedad',
-      selector: (row) => row.nombre_variedad,
-      sortable: true,
-    },
-    {
-      name: 'Nombre Lote',
+      name: 'Lote',
       selector: (row) => row.nombre_lote,
       sortable: true,
     },
+    {
+      name: 'Variedad',
+      selector: (row) => row.nombre_variedad,
+      sortable: true,
+    },
+   
     {
       name: 'Cantidad Sembrada',
       selector: (row) => row.cantidad_sembrada,
@@ -149,7 +142,7 @@ function Cultivos() {
     },
     {
       name: 'Fecha Inicio',
-      selector: (row) => row.fecha_inicio,
+      selector: (row) => format(new Date(row.fecha_inicio), 'dd/MM/yyyy'), // Formatea la fecha
       sortable: true,
     },
     {
@@ -164,7 +157,6 @@ function Cultivos() {
     {
       name: 'Acciones',
       cell: (row) => (
-
         <button
           className="btn p-2 rounded-lg estado-button"
           style={{
@@ -174,17 +166,16 @@ function Cultivos() {
             height: '40px',
             width: '220px',
             marginLeft: '-50px',
-            transition: 'background-color 0.2s', // Agregar una transición suave al color de fondo
+            transition: 'background-color 0.2s',
           }}
           type="button"
           onClick={() => handleEstadoBotonClick(row.id_cultivo, row.estado)}
-          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#F54949' : '#2DBC28' }} // Cambiar el color de fondo al pasar el mouse
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }} // Restaurar el color de fondo al dejar de pasar el mouse
+          onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#F54949' : '#2DBC28' }}
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }}
         >
           {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '5px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
           {row.estado === 'activo' ? 'Inactivo' : 'Activar'}
         </button>
-
       ),
     },
   ];
@@ -195,10 +186,8 @@ function Cultivos() {
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
-
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            {/* Select para seleccionar el estado */}
             <select
               style={{
                 position: 'absolute',
@@ -212,7 +201,7 @@ function Cultivos() {
                 boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
-                width: '100px',  // Ajusta el ancho según tus necesidades
+                width: '100px',
               }}
               value={estadoSeleccionado}
               onChange={handleEstadoSeleccionado}
@@ -222,17 +211,13 @@ function Cultivos() {
               <option value="inactivo">Inactivo</option>
             </select>
           </div>
-
           <br />
-
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
             <Datatable columns={columns} data={data} title="Cultivos" />
           )}
-
         </div>
-
         <ModalRecuRegeContrasenia
           mostrar={showRegistroModal}
           cerrarModal={handleCloseRegistroModal}

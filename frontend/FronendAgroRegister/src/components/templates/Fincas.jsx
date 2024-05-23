@@ -26,13 +26,15 @@ function Fincas() {
 
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(baseURL);
       setData(response.data);
+
       setOriginalData(response.data);
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -68,6 +70,7 @@ function Fincas() {
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
+
         setData(originalData);
         setError(null);
       } else {
@@ -78,6 +81,7 @@ function Fincas() {
         } else {
           setError(null);
         }
+
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
@@ -87,16 +91,18 @@ function Fincas() {
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
+
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
       await axios.put(`http://localhost:3000/desactivar/Finca/${id}`, { estado: newEstado });
       fetchData();
 
-      // Mostrar alerta con SweetAlert
+
       Swal.fire({
         icon: 'success',
         title: 'Éxito',
         text: `El estado se cambió con éxito a ${newEstado}.`,
       });
+
     } catch (error) {
       console.error('Error al cambiar el estado de la finca:', error);
     }
@@ -127,7 +133,7 @@ function Fincas() {
       ),
     },
     {
-      name: 'Nombre finca',
+      name: 'Finca',
       selector: (row) => row.nombre_finca,
       sortable: true,
     },
@@ -160,6 +166,7 @@ function Fincas() {
             border: 'none',
             color: 'white',
             height: '40px',
+
             width: '135px',
             display: 'flex',
             alignItems: 'center',
@@ -185,11 +192,12 @@ function Fincas() {
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="main-content" style={{ flex: 1 }}>
+
           <div style={{ boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)', padding: '20px', marginBottom: '20px', borderRadius: '7px', marginTop: '100px', position: 'relative' }}>
 
             <SearchBar onSearch={handleSearch} />
             <Botones children="Registrar" onClick={handleOpenRegistroModal} />
-            {/* Select para seleccionar el estado */}
+
             <select
               style={{
                 position: 'absolute',
@@ -203,7 +211,7 @@ function Fincas() {
                 boxShadow: 'rgba(0, 0, 0, 6.1) 0px 0px 8px',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
-                width: '100px',  // Ajusta el ancho según tus necesidades
+                width: '100px',
               }}
               value={estadoSeleccionado}
               onChange={handleEstadoSeleccionado}
@@ -220,6 +228,7 @@ function Fincas() {
           </div>
 
           <br />
+
 
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>

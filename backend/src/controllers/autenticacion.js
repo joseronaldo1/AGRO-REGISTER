@@ -18,9 +18,6 @@ export const validar = async (req, res) => {
                 // Si las contraseñas coinciden, generar el token y enviar la respuesta
                 const token = Jwt.sign({ user }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
                 return res.status(200).json({ nombre: user.nombre, token: token, message: 'Token generado con éxito' });
-            } else {
-                // Si las contraseñas no coinciden, enviar un mensaje de error
-                return res.status(404).json({ message: 'Credenciales inválidas' });
             }
         } else {
             // Si no se encuentra el usuario, enviar un mensaje de usuario no encontrado

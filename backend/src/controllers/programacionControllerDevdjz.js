@@ -74,42 +74,42 @@ export const listarProgramacion = async (req, res) => {
 // CRUD - Actualizar
 export const actualizarProgramacion = async (req, res) => {
     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() }); // Corrección en el formato de los errores de validación
-        }
-
-        const { id_programacion } = req.params;
-        const { fecha_inicio, fecha_fin, fk_id_usuario, fk_id_actividad, fk_id_variedad } = req.body;
-
-        // Verifica si al menos uno de los campos está presente en la solicitud
-        if (!fecha_inicio && !fecha_fin && !fk_id_usuario && !fk_id_actividad && !fk_id_variedad) {
-            return res.status(400).json({ message: 'Al menos uno de los campos (fecha_inicio, fecha_fin, fk_id_usuario, fk_id_actividad, fk_id_variedad) debe estar presente en la solicitud para realizar la actualización.' });
-        }
-
-        const [oldUser] = await pool.query("SELECT * FROM programacion WHERE id_programacion=?", [id_programacion]);
-
-        const updateValues = {
-            fecha_inicio: fecha_inicio ? fecha_inicio : oldUser[0].fecha_inicio,
-            fecha_fin: fecha_fin ? fecha_fin : oldUser[0].fecha_fin,
-            fk_id_usuario: fk_id_usuario ? fk_id_usuario : oldUser[0].fk_id_usuario,
-            fk_id_actividad: fk_id_actividad ? fk_id_actividad : oldUser[0].fk_id_actividad,
-            fk_id_variedad: fk_id_variedad ? fk_id_variedad : oldUser[0].fk_id_variedad
-        };
-
-        const updateQuery = `UPDATE programacion SET fecha_inicio=?, fecha_fin=?, fk_id_usuario=?, fk_id_actividad=?, fk_id_variedad=? WHERE id_programacion=?`;
-
-        const [resultado] = await pool.query(updateQuery, [updateValues.fecha_inicio, updateValues.fecha_fin, updateValues.fk_id_usuario, updateValues.fk_id_actividad, updateValues.fk_id_variedad, parseInt(id_programacion)]);
-
-        if (resultado.affectedRows > 0) {
-            res.status(200).json({ "mensaje": "La programación ha sido actualizada" });
-        } else {
-            res.status(404).json({ "mensaje": "No se pudo actualizar la programación" });
-        }
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
+      const { id_programacion } = req.params; // Asegúrate de usar id_programacion aquí
+      const { fecha_inicio, fecha_fin, fk_id_usuario, fk_id_actividad, fk_id_variedad } = req.body;
+  
+      if (!fecha_inicio && !fecha_fin && !fk_id_usuario && !fk_id_actividad && !fk_id_variedad) {
+        return res.status(400).json({ message: 'Al menos uno de los campos (fecha_inicio, fecha_fin, fk_id_usuario, fk_id_actividad, fk_id_variedad) debe estar presente en la solicitud para realizar la actualización.' });
+      }
+  
+      const [oldUser] = await pool.query("SELECT * FROM programacion WHERE id_programacion=?", [id_programacion]);
+  
+      const updateValues = {
+        fecha_inicio: fecha_inicio ? fecha_inicio : oldUser[0].fecha_inicio,
+        fecha_fin: fecha_fin ? fecha_fin : oldUser[0].fecha_fin,
+        fk_id_usuario: fk_id_usuario ? fk_id_usuario : oldUser[0].fk_id_usuario,
+        fk_id_actividad: fk_id_actividad ? fk_id_actividad : oldUser[0].fk_id_actividad,
+        fk_id_variedad: fk_id_variedad ? fk_id_variedad : oldUser[0].fk_id_variedad
+      };
+  
+      const updateQuery = `UPDATE programacion SET fecha_inicio=?, fecha_fin=?, fk_id_usuario=?, fk_id_actividad=?, fk_id_variedad=? WHERE id_programacion=?`;
+  
+      const [resultado] = await pool.query(updateQuery, [updateValues.fecha_inicio, updateValues.fecha_fin, updateValues.fk_id_usuario, updateValues.fk_id_actividad, updateValues.fk_id_variedad, parseInt(id_programacion)]);
+  
+      if (resultado.affectedRows > 0) {
+        res.status(200).json({ "mensaje": "La programación ha sido actualizada" });
+      } else {
+        res.status(404).json({ "mensaje": "No se pudo actualizar la programación" });
+      }
     } catch (error) {
-        res.status(500).json({ "mensaje": error.message }); // Corrección en el manejo de error
+      res.status(500).json({ "mensaje": error.message });
     }
-}
+  };
+  
 
 export const desactivar = async (req, res) => {
     try {
@@ -145,30 +145,16 @@ export const desactivar = async (req, res) => {
 // CRUD -buscar
 export const buscarProgramacion = async (req, res) => {
     try {
-        const { nombre } = req.params; // Obtener el nombre de usuario desde los parámetros
-        const searchTerm = `%${nombre}%`; // Preparar el término de búsqueda para buscar coincidencias parciales
-        const consultar = `
-            SELECT 
-                p.id_programacion,
-                p.fecha_inicio, p.fecha_fin,
-                u.nombre AS usuario,
-                a.nombre_actividad,
-                v.nombre_variedad,
-                l.nombre AS lote,
-                p.estado
-            FROM 
-                programacion AS p
-            JOIN 
-                usuarios AS u ON p.fk_id_usuario = u.id_usuario
-            JOIN 
-                actividad AS a ON p.fk_id_actividad = a.id_actividad
-            JOIN 
-                lotes AS l ON p.fk_id_cultivo = l.id_lote
-            JOIN 
-                variedad AS v ON p.fk_id_cultivo = v.id_variedad
-            WHERE u.nombre LIKE ?`; // Utilizar el operador LIKE para buscar coincidencias parciales en el nombre de usuario
-        const [result] = await pool.query(consultar, [searchTerm]); // Pasar el término de búsqueda como parámetro
-
+        const { nombre } = req.params;
+        const query = `
+            SELECT p.*, u.nombre AS nombre_usuario, a.nombre_actividad, v.nombre_variedad
+            FROM programacion p
+            INNER JOIN usuarios u ON p.fk_id_usuario = u.id_usuario
+            INNER JOIN actividad a ON p.fk_id_actividad = a.id_actividad
+            INNER JOIN variedad v ON p.fk_id_variedad = v.id_variedad
+            WHERE a.nombre_actividad LIKE ?`;
+        const [result] = await pool.query(query, [`%${nombre}%`]);
+                    
         if (result.length > 0) {
             res.status(200).json(result);
         } else {
@@ -177,10 +163,34 @@ export const buscarProgramacion = async (req, res) => {
                 message: 'No se encontraron resultados para la búsqueda'
             });
         }
+
+    } catch (error) {
+        console.error('Error en buscarProgramacion:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Error en el sistema"
+        });
+    }
+};
+
+
+
+export const desactivarProgamacionCadena = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Llamar al procedimiento almacenado
+        await pool.query('CALL administrar_programacion(?)', [id]);
+
+        res.status(200).json({
+            status: 200,
+            message: 'Se cambió el estado de la programación y todos sus registros relacionados con éxito',
+        });
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: error.message || 'Error interno del servidor'
+            message: 'Error al cambiar el estado de la programación y sus registros relacionados',
+            error: error.message
         });
     }
 };
