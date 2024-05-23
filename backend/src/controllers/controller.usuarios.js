@@ -51,7 +51,7 @@ export const listarUsuarios = async (req, res) => {
             });
         }
     } catch (error) {
-        res.status(500).json({
+       res.status(500).json({
             status: 500,
             message: 'Error en el sistema: ' + error
         });
