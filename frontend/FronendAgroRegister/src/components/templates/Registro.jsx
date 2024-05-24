@@ -116,7 +116,6 @@ const Registro = () => {
               <Select label="Rol:" id="rol" name="rol" value={formData.rol} onChange={handleChange}>
                 <option value="">Seleccione...</option>
                 <option value="administrador">Administrador</option>
-                <option value="empleado">Empleado</option>
               </Select>
               {loading && <span>Cargando..</span>}
             </div>

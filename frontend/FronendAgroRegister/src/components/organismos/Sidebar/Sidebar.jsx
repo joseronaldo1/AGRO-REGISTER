@@ -13,6 +13,7 @@ function Sidebar() {
         <div className="offcanvas-body">
           <img className='imagenpersonal' src={v.imageLogo} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '125px' }} />
           <ul className="navbar-nav ">
+            <NavItem icon={v.iconoHouse} text="Inicio" href="/dashboard" />
             <NavItem icon={v.iconoUsuario} text="Empleados" href="/Usuarios" />
             <NavItem icon={v.iconoFinca} text="Finca" href="/finca" />
             <NavItem icon={v.iconoCultivo} text="Cultivos" href="/cultivo" />

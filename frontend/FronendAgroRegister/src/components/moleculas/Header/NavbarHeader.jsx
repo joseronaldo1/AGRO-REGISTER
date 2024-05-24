@@ -89,7 +89,7 @@ function NavbarHeader() {
 
           <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
             <p>¿Deseas cerrar sesión?</p>
-            <button onClick={handleLogout} style={{ marginLeft: '15px', borderRadius: '10px', backgroundColor: '#E83636', border: 'none', color: 'white', fontSize: '16px', height: '38px' }}>Cerrar sesión</button>
+            <button onClick={handleLogout} className='cerrarSesion' style={{ marginLeft: '15px', borderRadius: '10px', backgroundColor: '#E83636', border: 'none', color: 'white', fontSize: '16px', height: '38px' }}>Cerrar sesión</button>
           </div>
 
         </Modal.Body>

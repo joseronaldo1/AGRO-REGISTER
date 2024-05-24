@@ -59,32 +59,32 @@ export const Actualizarlote = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() }); // Corrección en el formato de los errores de validación
         }
-        
+
         const { id_lote } = req.params;
         const { nombre, longitud, latitud, fk_id_finca } = req.body;
-        
+
         // Verifica si al menos uno de los campos está presente en la solicitud
         if (!nombre && !longitud && !latitud && !fk_id_finca) {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, longitud, latitud, fk_id_finca) debe estar presente en la solicitud para realizar la actualización.' });
         }
-        
+
         const [oldUser] = await pool.query("SELECT * FROM lotes WHERE id_lote=?", [id_lote]);
-        
+
         const updateValues = {
             nombre: nombre ? nombre : oldUser[0].nombre,
             longitud: longitud ? longitud : oldUser[0].longitud,
             latitud: latitud ? latitud : oldUser[0].latitud,
             fk_id_finca: fk_id_finca ? fk_id_finca : oldUser[0].fk_id_finca,
         };
-        
+
         const updateQuery = `UPDATE lotes SET nombre=?, longitud=?, latitud=?, fk_id_finca=? WHERE id_lote=?`;
-        
+
         const [resultado] = await pool.query(updateQuery, [updateValues.nombre, updateValues.longitud, updateValues.latitud, updateValues.fk_id_finca, parseInt(id_lote)]);
-        
-        if (resultado.affectedRows > 0) { 
+
+        if (resultado.affectedRows > 0) {
             res.status(200).json({ "mensaje": "El lote ha sido actualizado" });
         } else {
-            res.status(404).json({ "mensaje": "No se pudo actualizar el lote" }); 
+            res.status(404).json({ "mensaje": "No se pudo actualizar el lote" });
         }
     } catch (error) {
         res.status(500).json({ "mensaje": error.message }); // Corrección en el manejo de error
@@ -104,7 +104,7 @@ export const Buscarlote = async (req, res) => {
             WHERE lotes.nombre LIKE ? OR finca.nombre_finca LIKE ?
         `;
         const [result] = await pool.query(query, [`%${nombre}%`, `%${nombre}%`]);
-                    
+
         if (result.length > 0) {
             res.status(200).json(result);
         } else {
@@ -129,10 +129,10 @@ export const DesactivarLote = async (req, res) => {
         const { id } = req.params;
         const { estado } = req.body;
 
-        const [oldRecurso] = await pool.query("SELECT * FROM lotes WHERE id_lote = ?", [id]); 
-        
+        const [oldRecurso] = await pool.query("SELECT * FROM lotes WHERE id_lote = ?", [id]);
+
         const [result] = await pool.query(
-            `UPDATE lotes SET estado = ${estado ? `'${estado}'` : `'${oldRecurso[0].estado}'`} WHERE id_lote = ?`,[id]
+            `UPDATE lotes SET estado = ${estado ? `'${estado}'` : `'${oldRecurso[0].estado}'`} WHERE id_lote = ?`, [id]
         );
 
         if (result.affectedRows > 0) {

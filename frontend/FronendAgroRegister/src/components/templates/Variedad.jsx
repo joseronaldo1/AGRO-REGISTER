@@ -230,7 +230,7 @@ function Variedad() {
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-            <Datatable columns={columns} data={data} title="Variedades" />
+            <Datatable columns={columns} data={data} title="Variedades de cultivos" />
           )}
 
         </div>

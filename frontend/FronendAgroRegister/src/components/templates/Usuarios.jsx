@@ -148,14 +148,14 @@ function Empleados() {
       selector: (row) => row.correo,
       sortable: true,
     },
-    {
-      name: 'Contraseña',
-      selector: (row) => row.password,
-      sortable: true,
-    },
+
     {
       name: 'Rol',
-      selector: (row) => row.rol,
+      selector: (row) => (
+        <span style={{ color: '#2A5CB5', fontWeight: '700' }}>
+          {row.rol}
+        </span>
+      ),
       sortable: true,
     },
     {
