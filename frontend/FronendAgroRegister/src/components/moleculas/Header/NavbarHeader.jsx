@@ -3,6 +3,7 @@ import { FaBars } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import NavItem from '../../moleculas/Sidebar/NavItem';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import './Navbar.css';
 import v from '../../../styles/variables';
 
@@ -25,9 +26,7 @@ function NavbarHeader() {
 
     obtenerUltimoUsuario();
 
-
     const interval = setInterval(obtenerUltimoUsuario, 300);
-
 
     return () => clearInterval(interval);
   }, []);
@@ -38,6 +37,29 @@ function NavbarHeader() {
 
   const handleModalClose = () => {
     setShowModal(false);
+  };
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: 'Cerrar sesión',
+      text: '¿Estás seguro de que deseas cerrar sesión?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("token"); // Eliminar el token del localStorage
+        Swal.fire({
+          title: 'Sesión cerrada',
+          text: 'Su sesión ha sido cerrada exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        }).then(() => {
+          window.location.href = '/'; // Redirigir a la página de inicio de sesión
+        });
+      }
+    });
   };
 
   return (
@@ -55,25 +77,20 @@ function NavbarHeader() {
         </div>
       </nav>
 
-
       <Modal dialogClassName="modal-sm" show={showModal} onHide={handleModalClose} backdrop={false} style={{ marginLeft: '28%', marginTop: '70px' }}>
         <Modal.Header closeButton>
           <Modal.Title>Información</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-
-
           <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
             <p>Visita tu perfil:</p>
           </div>
           <NavItem icon={v.iconoPerfilUsuario} text="Perfil" href="/Perfilprincipal" className="perfil" />
 
-
           <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
             <p>¿Deseas cerrar sesión?</p>
+            <button onClick={handleLogout} style={{ marginLeft: '15px', borderRadius: '10px', backgroundColor: '#E83636', border: 'none', color: 'white', fontSize: '16px', height: '38px' }}>Cerrar sesión</button>
           </div>
-          <NavItem icon={v.iconoSalir} text="Salir" href="/" className="salir" />
-
 
         </Modal.Body>
       </Modal>
