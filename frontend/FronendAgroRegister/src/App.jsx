@@ -29,6 +29,7 @@ function App() {
       <Routes>
         <Route path="/" element={<InicioSesionPage />} />
         <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/finca" element={<FincaPage />} />
           <Route path="/usuarios" element={<UsuarioPage />} />
           <Route path="/variedad" element={<VariedadPage />} />
@@ -37,7 +38,6 @@ function App() {
           <Route path="/lotes" element={<LotesPage />} />
           <Route path="/recursos" element={<RecursosPage />} />
           <Route path="/soporte" element={<SoportePage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/reportes" element={<ReportesPage />} />
           <Route path="/programacion" element={<ProgramacionPage />} />
           <Route path="/produccion" element={<ProduccionPage />} />
