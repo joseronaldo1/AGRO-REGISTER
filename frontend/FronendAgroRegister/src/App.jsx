@@ -1,7 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { InicioSesionPage } from './pages';
 import { RegistroPage } from './pages';
 import { EditarPerfilUsuarioPage } from './pages';
@@ -21,34 +19,30 @@ import { ReportesPage } from './pages';
 import { ProgramacionPage } from './pages';
 import { ProduccionPage } from './pages';
 import { PerfilprincipalPage } from './pages';
+import ProtectedRoute from './Router/ProteccionRuta';
 
 
 
 function App() {
   return (
     <BrowserRouter>
-
-
       <Routes>
         <Route path="/" element={<InicioSesionPage />} />
-        <Route path="/Registrarse" element={<RegistroPage />} />
-        <Route path="/perfil" element={<EditarPerfilUsuarioPage />} />
-        <Route path="/olvidocontra1" element={<OlvidopassonePage />} />
-        <Route path="/olvidocontra2" element={<OlvidopasstwoPage />} />
-        <Route path="/olvidocontra3" element={<OlvidopasstreePage />} />
-        <Route path="/finca" element={<FincaPage />} />
-        <Route path="/usuarios" element={<UsuarioPage />} />
-        <Route path="/variedad" element={<VariedadPage />} />
-        <Route path="/cultivo" element={<CultivosPage />} />
-        <Route path="/actividad" element={<ActividadPage />} />
-        <Route path="/lotes" element={<LotesPage />} />
-        <Route path="/recursos" element={<RecursosPage />} />
-        <Route path="/Soporte" element={<SoportePage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/reportes" element={<ReportesPage />} />
-        <Route path="/programacion" element={<ProgramacionPage />} />
-        <Route path="/produccion" element={<ProduccionPage />} />
-        <Route path="/Perfilprincipal" element={<PerfilprincipalPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/finca" element={<FincaPage />} />
+          <Route path="/usuarios" element={<UsuarioPage />} />
+          <Route path="/variedad" element={<VariedadPage />} />
+          <Route path="/cultivo" element={<CultivosPage />} />
+          <Route path="/actividad" element={<ActividadPage />} />
+          <Route path="/lotes" element={<LotesPage />} />
+          <Route path="/recursos" element={<RecursosPage />} />
+          <Route path="/soporte" element={<SoportePage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/reportes" element={<ReportesPage />} />
+          <Route path="/programacion" element={<ProgramacionPage />} />
+          <Route path="/produccion" element={<ProduccionPage />} />
+          <Route path="/perfilprincipal" element={<PerfilprincipalPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

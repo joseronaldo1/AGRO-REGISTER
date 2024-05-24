@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 /* import Footer from '../organismos/Footer/Footer.jsx'; */
 import axios from 'axios';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
@@ -15,8 +15,8 @@ const IniciarSesion = () => {
         correo: '',
         password: ''
     });
-
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,16 +30,16 @@ const IniciarSesion = () => {
             const response = await axios.post('http://localhost:3000/validacion', formData);
             const responseData = response.data;
 
-            localStorage.setItem('token', responseData.token);
+            localStorage.setItem('token', responseData.token); // Set token in localStorage
             alert('Inicio de sesión exitoso');
-            window.location.href = "/dashboard";
+            navigate('/dashboard'); // Redirect to dashboard
 
         } catch (error) {
             alert('Error al iniciar sesión: ' + error.response.data.message);
         } finally {
             setLoading(false);
         }
-    };
+    };  
 
     const handleChange = (e) => {
         const { name, value } = e.target;
