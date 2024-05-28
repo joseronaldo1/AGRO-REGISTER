@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-/* import Footer from '../organismos/Footer/Footer.jsx'; */
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
 import InputAtom from '../atomos/Inputs.jsx';
 import Botones from '../atomos/Botones.jsx';
 import v from '../../styles/variables';
-/* import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Import the background image if not already imported */
 import Logo from '../../assets/logoOrigi.png';
-
 
 const IniciarSesion = () => {
     const [formData, setFormData] = useState({
@@ -21,7 +19,12 @@ const IniciarSesion = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.correo.trim() === '' || formData.password.trim() === '') {
-            alert('Por favor, complete todos los campos.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campos incompletos',
+                text: 'Por favor, complete todos los campos.',
+                confirmButtonText: 'Aceptar'
+            });
             return;
         }
 
@@ -30,16 +33,27 @@ const IniciarSesion = () => {
             const response = await axios.post('http://localhost:3000/validacion', formData);
             const responseData = response.data;
 
-            localStorage.setItem('token', responseData.token); // Set token in localStorage
-            alert('Inicio de sesión exitoso');
-            navigate('/dashboard'); // Redirect to dashboard
+            localStorage.setItem('token', responseData.token);
+            Swal.fire({
+                icon: 'success',
+                title: 'Inicio exitoso',
+                text: 'Haz ingresado correctamente',
+                confirmButtonText: 'Aceptar'
+            }).then(() => {
+                navigate('/dashboard');
+            });
 
         } catch (error) {
-            alert('Error al iniciar sesión: ' + error.response.data.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al iniciar sesión',
+                text: error.response?.data?.message || 'Error desconocido',
+                confirmButtonText: 'Aceptar'
+            });
         } finally {
             setLoading(false);
         }
-    };  
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -123,11 +137,8 @@ const IniciarSesion = () => {
                     </form>
                 </div>
             </div>
-
         </div>
-
     );
 };
 
 export default IniciarSesion;
-
