@@ -34,14 +34,28 @@ const IniciarSesion = () => {
             const responseData = response.data;
 
             localStorage.setItem('token', responseData.token);
-            Swal.fire({
-                icon: 'success',
-                title: 'Inicio exitoso',
-                text: 'Haz ingresado correctamente',
-                confirmButtonText: 'Aceptar'
-            }).then(() => {
-                navigate('/dashboard');
-            });
+
+            if (responseData.rol === "administrador" || responseData.rol === "empleado") {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Inicio exitoso',
+                    text: 'Haz ingresado correctamente',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    if (responseData.rol === "administrador") {
+                        navigate('/dashboard');
+                    } else {
+                        navigate('/dashboard2');
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Rol no válido',
+                    text: 'El rol del usuario no es reconocido.',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
 
         } catch (error) {
             Swal.fire({
@@ -127,7 +141,7 @@ const IniciarSesion = () => {
                             <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center', margin: '15px', marginTop: '60px' }}>
-                            <Botones children='Iniciar' type="submit" disabled={loading} />
+                        <Botones children='Iniciar' type="submit" disabled={loading} />
                             <div>
                                 <Link to='/registrarse' style={{ textDecoration: 'none' }}>
                                     <Botones children='Registrarse' />

@@ -3,16 +3,14 @@ import { validationResult } from "express-validator";
 import bcrypt from 'bcrypt';
 import multer from "multer";
 
-const storage = multer.diskStorage(
-    {
-        destination: function (req, img, cb) {
-            cb(null, "public/img")
-        },
-        filename: function (req, img, cb) {
-            cb(null, img.originalname)
-        }
+const storage = multer.diskStorage({
+    destination: function (req, img, cb) {
+        cb(null, "public/img");
+    },
+    filename: function (req, img, cb) {
+        cb(null, img.originalname);
     }
-);
+});
 
 const upload = multer({ storage: storage });
 export const cargarImagen = upload.single('img');
@@ -39,7 +37,7 @@ export const listarUsuarios = async (req, res) => {
 export const buscarUsuario = async (req, res) => {
     try {
         const { id_usuario } = req.params;
-        const [result] = await pool.query("SELECT id_usuario, nombre, apellido, correo, imagen FROM usuarios WHERE admin_id=?", [id_usuario]);
+        const [result] = await pool.query("SELECT id_usuario, nombre, apellido, correo, imagen FROM usuarios WHERE id_usuario=?", [id_usuario]);
 
         if (result.length > 0) {
             res.status(200).json(result);
@@ -66,7 +64,7 @@ export const registrarUsuario = async (req, res) => {
 
         const { nombre, apellido, correo, password, rol } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const imagen = req.file ? req.file.path : null; // Guarda la ruta de la imagen si está presente en la solicitud
+        const imagen = req.file ? req.file.path : null;
 
         const [rows] = await pool.query(
             `INSERT INTO usuarios (nombre, apellido, correo, password, rol, imagen) VALUES (?, ?, ?, ?, ?, ?)`,
@@ -107,7 +105,7 @@ export const actualizarUsuario = async (req, res) => {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, apellido, correo, password, rol, estado, imagen) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
-        const oldUsuario = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id_usuario]);
+        const [oldUsuario] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id_usuario]);
 
         if (oldUsuario.length === 0) {
             return res.status(404).json({
@@ -132,7 +130,7 @@ export const actualizarUsuario = async (req, res) => {
             imagen: imagen
         };
 
-        const result = await pool.query(
+        const [result] = await pool.query(
             `UPDATE usuarios SET nombre=?, apellido=?, correo=?, password=?, rol=?, estado=?, imagen=? WHERE id_usuario = ?`,
             [updatedUsuario.nombre, updatedUsuario.apellido, updatedUsuario.correo, updatedUsuario.password, updatedUsuario.rol, updatedUsuario.estado, updatedUsuario.imagen, id_usuario]
         );
@@ -140,7 +138,8 @@ export const actualizarUsuario = async (req, res) => {
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: "El usuario ha sido actualizado."
+                message: "El usuario ha sido actualizado.",
+                data: updatedUsuario
             });
         } else {
             res.status(404).json({
@@ -156,7 +155,7 @@ export const actualizarUsuario = async (req, res) => {
     }
 };
 
-export const DesactivarUsuario = async (req, res) => {
+export const desactivarUsuario = async (req, res) => {
     try {
         const { id_usuario } = req.params;
         const [result] = await pool.query("UPDATE usuarios SET estado='inactivo' WHERE id_usuario=?", [id_usuario]);
@@ -179,9 +178,6 @@ export const DesactivarUsuario = async (req, res) => {
         });
     }
 };
-
-
-
 
 export const desactivarUsuarioEnCadena = async (req, res) => {
     try {

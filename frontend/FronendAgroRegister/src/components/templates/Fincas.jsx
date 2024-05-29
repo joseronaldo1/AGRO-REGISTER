@@ -166,12 +166,11 @@ function Fincas() {
             border: 'none',
             color: 'white',
             height: '40px',
-
-            width: '135px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginLeft: '-28px',
+            width: '60%',
+            marginLeft: '-16px',
             transition: 'background-color 0.2s',
           }}
           type="button"

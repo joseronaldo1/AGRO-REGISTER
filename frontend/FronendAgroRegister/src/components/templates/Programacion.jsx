@@ -135,7 +135,7 @@ function Programacion() {
           text: '¿Estás seguro de cambiar el estado?',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
+          confirmButtonColor: 'green',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Sí, cambiar estado',
           cancelButtonText: 'Cancelar',
@@ -216,20 +216,33 @@ function Programacion() {
     },
     {
       name: 'Acciones',
-      cell: (row) => (
-        <>
-          {row.estado !== 'terminado' && (
-            <button
-              className="btn p-2 rounded-lg"
-              style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
-              type="button"
-              onClick={() => handleOpenEstadoModal(row)}
-            >
-              <RiPlantFill style={{ color: 'white' }} />Estado
-            </button>
-          )}
-        </>
-      ),
+      cell: (row) => {
+        const [hover, setHover] = useState(false);
+
+        return (
+          <>
+            {row.estado !== 'terminado' && (
+              <button
+                className="btn p-2 rounded-lg"
+                style={{
+                  backgroundColor: hover ? '#3b5bb3' : '#466AD6',
+                  borderColor: '#ffc107',
+                  color: 'white',
+                  width: '70%',
+                  border: 'none',
+                  marginLeft: '-16px',
+                }}
+                type="button"
+                onClick={() => handleOpenEstadoModal(row)}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              >
+                <RiPlantFill style={{ color: 'white' }} /> Estado
+              </button>
+            )}
+          </>
+        );
+      },
     },
   ];
 

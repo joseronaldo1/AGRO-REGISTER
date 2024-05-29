@@ -170,9 +170,8 @@ function Recursos() {
             border: 'none',
             color: 'white',
             height: '40px',
-            marginLeft: '-18px',
-            width: '120px',
-
+            width: '70%',
+            marginLeft: '-16px',
             transition: 'background-color 0.2s',
           }}
           type="button"
