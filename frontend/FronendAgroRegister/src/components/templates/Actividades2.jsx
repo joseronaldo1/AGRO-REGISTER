@@ -109,12 +109,12 @@ function Actividad2() {
                           {actividad.estado}
                         </span>
                       </p>
-                      {actividad.estado !== 'terminado' && (
+                      {/* {actividad.estado !== 'terminado' && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
                           <Button style={{ marginLeft: '180px',backgroundColor: 'green', border: 'none' }} variant="primary" className="me-2" onClick={() => console.log(`Actividad ${actividad.id_actividad} aceptada`)}>Aceptar</Button>
                           <Button style={{ backgroundColor: '#4047EA', border: 'none' }} variant="primary" className="me-2" onClick={() => handleTerminarActividad(actividad.id_actividad)}>Terminar</Button>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </div>

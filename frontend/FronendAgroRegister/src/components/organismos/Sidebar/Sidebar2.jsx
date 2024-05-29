@@ -14,7 +14,7 @@ function Sidebar2() {
           <img className='imagenpersonal' src={v.imageLogo} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '125px' }} />
           <ul className="navbar-nav ">
           <NavItem icon={v.iconoHouse} text="Inicio" href="/dashboard2" />
-            <NavItem icon={v.iconoActividad} text="Actividad" href="/actividad2" />
+            <NavItem icon={v.iconoActividad} text="Actividades" href="/actividad2" />
           </ul>
         </div>
       </div>
