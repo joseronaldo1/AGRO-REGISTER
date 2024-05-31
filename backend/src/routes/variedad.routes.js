@@ -5,7 +5,7 @@ import { validarRegistroVariedad, validarActualizacionVariedad } from "../../val
 //import {validarToken} from "../controllers/autenticacion.js";
 
 const rutaDeVariedad = Router();
-//rutas de variedad de cultivo
+
 rutaDeVariedad.post("/registrarVariedad", validarRegistroVariedad, registrarVariedad);
 rutaDeVariedad.get("/listarVariedades",listarVariedades);
 rutaDeVariedad.put("/actualizarVariedad/:id",validarActualizacionVariedad, actualizarVariedad);

@@ -1,8 +1,6 @@
 import { pool } from "../database/conexion.js";
 import { validationResult } from 'express-validator';
 
-//git crud
-//crud listar
 export const listarTipoRecurso = async (req, res) => {
     try {
         const [result] = await pool.query("SELECT * FROM tipo_recursos")
@@ -107,19 +105,19 @@ export const DesactivarTipoRecurso = async (req, res) => {
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: 'Se desactivo con éxito',
+                message: 'El estado del recurso ha sido cambiado exitosamente',
                 result: result
             });
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No se encontró el registro para desactivar'
+                message: 'No se pudo cambiar el estado del recurso'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: error
+            message: "error en el sistema"
         });
     }
 }

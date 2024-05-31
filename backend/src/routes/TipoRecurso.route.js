@@ -16,4 +16,3 @@ rutaDeTipoRecurso.get("/buscarRecurso/:nombre", BuscarTipoRecurso);
 
 export  default rutaDeTipoRecurso ;
 
-//crud

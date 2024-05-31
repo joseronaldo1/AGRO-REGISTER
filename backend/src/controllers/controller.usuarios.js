@@ -44,7 +44,7 @@ export const buscarUsuario = async (req, res) => {
         } else {
             res.status(404).json({
                 status: 404,
-                message: "No se encontró un usuario con ese ID"
+                message: "No se encontro el usuario"
             });
         }
     } catch (error) {
@@ -86,7 +86,7 @@ export const registrarUsuario = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             status: 500,
-            message: 'Error del servidor: ' + error
+            message: 'Error en el sistema: ' + error
         });
     }
 };
@@ -163,12 +163,12 @@ export const desactivarUsuario = async (req, res) => {
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: "El usuario con el id " + id_usuario + " ha sido desactivado."
+                message: "El estado del usuario ha sido cambiado exitosamente"
             });
         } else {
             res.status(404).json({
                 status: 404,
-                message: "No se pudo desactivar el usuario"
+                message: "No se pudo cambiar el estado del usuario"
             });
         }
     } catch (error) {
