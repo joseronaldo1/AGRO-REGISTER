@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { AiOutlineUser, AiOutlineMail } from 'react-icons/ai'; // Importamos los iconos de usuario y correo
 import Header from "../organismos/Header/Header";
-import Footer from '../organismos/Footer/Footer';
 import { Modal, Button } from 'react-bootstrap';
+import v from '../../styles/variables';
 
 const EditarPerfilUsuarioPage = () => {
     const [ultimoUsuario, setUltimoUsuario] = useState(null);
@@ -63,7 +64,7 @@ const EditarPerfilUsuarioPage = () => {
         }
 
         try {
-            const response = await axios.put(`http://localhost:3000/actualizarUsuario/${id_usuario}`, formData, {
+            const response = await axios.put('http://localhost:3000/actualizarUsuario', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -86,16 +87,12 @@ const EditarPerfilUsuarioPage = () => {
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundImage: "url('/path/to/your/background/image.jpg')", backgroundSize: 'cover', paddingTop: "150px" }}>
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundImage: `url(${v.ImgSlider1})`, backgroundSize: 'cover', paddingTop: "150px" }}>
             <Header />
             <div style={{ flex: 1, maxWidth: "800px", margin: "auto", padding: "50px", borderRadius: "20px", boxShadow: "0 4px 8px rgba(0,0,0,0.2)", background: "rgba(255,255,255,0.9)", paddingBottom:"40px" }}>
-                <h1 style={{ textAlign: "center", marginBottom: "20px", color: "#0578d1", textShadow: "2px 2px 4px rgba(0,0,0,0.2)", fontSize: "2.5em" }}>¡Bienvenido a tu Perfil de Usuario!</h1>
-                <div style={{ border: "3px solid #0578d1", borderRadius: "20px", padding: "30px", marginBottom: "40px", background: "rgba(255,255,255,0.8)", boxShadow: "0 4px 8px rgba(0,0,0,0.2)" }}>
-                    <div style={{ marginBottom: "20px" }}><strong style={{ color: "#333", marginRight: "10px", fontSize: "1.2em" }}>Nombre:</strong> <span style={{ color: "#0578d1", fontSize: "1.2em" }}>{ultimoUsuario.nombre}</span></div>
-                    <div style={{ marginBottom: "20px" }}><strong style={{ color: "#333", marginRight: "10px", fontSize: "1.2em" }}>Apellido:</strong> <span style={{ color: "#0578d1", fontSize: "1.2em" }}>{ultimoUsuario.apellido}</span></div>
-                    <div style={{ marginBottom: "20px" }}><strong style={{ color: "#333", marginRight: "10px", fontSize: "1.2em" }}>Correo:</strong> <span style={{ color: "#0578d1", fontSize: "1.2em" }}>{ultimoUsuario.correo}</span></div>
-                    <div style={{ marginBottom: "20px" }}><strong style={{ color: "#333", marginRight: "10px", fontSize: "1.2em" }}>Rol:</strong> <span style={{ color: "#0578d1", fontSize: "1.2em" }}>{ultimoUsuario.rol}</span></div>
-
+                <h1 style={{ textAlign: "center", marginBottom: "20px", color: "#333", textShadow: "2px 2px 4px rgba(0,0,0,0.2)", fontSize: "2.5em" }}>¡Bienvenido a tu Perfil de Usuario!</h1>
+                <div style={{ border: "3px solid #ddd", borderRadius: "20px", padding: "30px", marginBottom: "40px", background: "rgba(255,255,255,0.8)", boxShadow: "0 4px 8px rgba(0,0,0,0.2)", textAlign: "center" }}>
+                   
                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                         {ultimoUsuario.imagen ? (
                             <img src={`http://localhost:3000/${ultimoUsuario.imagen}`} alt="Imagen de perfil" style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '50%' }} />
@@ -104,12 +101,27 @@ const EditarPerfilUsuarioPage = () => {
                         )}
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
-                        <Button variant="secondary" onClick={() => setShowModal(true)}>Editar Datos</Button>
+                    <div style={{marginTop: '20px'}}>
+                        <strong style={{ color: "#333", fontSize: "1.4em" }}><AiOutlineUser style={{ color: "#ff5722", marginRight: "10px" }} />Nombre/s:</strong>
+                        <div style={{ color: "#555", fontSize: "1.2em", fontWeight: '600'}}>{ultimoUsuario.nombre}</div>
+                    </div>
+
+                    <div style={{marginTop: '20px'}}>
+                        <strong style={{ color: "#333", fontSize: "1.4em" }}><AiOutlineUser style={{ color: "#ff5722", marginRight: "10px" }} />Apellido/s:</strong>
+                        <div style={{ color: "#555", fontSize: "1.2em", fontWeight: '600'}}>{ultimoUsuario.apellido}</div>
+                    </div>
+
+                    <div style={{marginTop: '20px' }}>
+                        <strong style={{ color: "#333", fontSize: "1.4em" }}><AiOutlineMail style={{ color: "#ff5722", marginRight: "10px" }} />Correo:</strong>
+                        <div style={{ color: "#555", fontSize: "1.2em", fontWeight: '600' }}>{ultimoUsuario.correo}</div>
+                    </div>
+                    
+                    <div style={{ marginTop: '40px', marginLeft: '480px', width: '50%'}}>
+                        <Button variant="success" onClick={() => setShowModal(true)} style={{ fontWeight: '600',fontSize: "1.2em", width: '45%',height: '50px'}}>Editar Datos</Button>
                     </div>
                 </div>
             </div>
-            <Footer />
+           {/* <Footer /> */}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
@@ -129,10 +141,10 @@ const EditarPerfilUsuarioPage = () => {
                             <label>Correo</label>
                             <input type="email" className="form-control" name="correo" value={editedUsuario.correo} onChange={handleInputChange} />
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>Rol</label>
                             <input type="text" className="form-control" name="rol" value={editedUsuario.rol} onChange={handleInputChange} />
-                        </div>
+                        </div> */}
                         <div className="form-group">
                             <label>Imagen</label>
                             <input type="file" className="form-control-file" accept="image/*" onChange={handleImageChange} />
@@ -143,7 +155,7 @@ const EditarPerfilUsuarioPage = () => {
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
                         Cancelar
                     </Button>
-                    <Button variant="primary" onClick={handleSaveChanges}>
+                    <Button variant="success" onClick={handleSaveChanges}>
                         Guardar Cambios
                     </Button>
                 </Modal.Footer>
