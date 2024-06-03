@@ -11,7 +11,7 @@ export const validar = async (req, res) => {
         if (rows.length > 0) {
             const user = rows[0];
             
-            // Verificar si el usuario está inactivo
+          
             if (user.estado === 'inactivo') {
                 return res.status(403).json({ message: 'El usuario se encuentra inactivo.' });
             }
