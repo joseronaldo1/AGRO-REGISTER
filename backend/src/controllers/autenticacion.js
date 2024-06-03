@@ -10,10 +10,15 @@ export const validar = async (req, res) => {
 
         if (rows.length > 0) {
             const user = rows[0];
+            
+            // Verificar si el usuario está inactivo
+            if (user.estado === 'inactivo') {
+                return res.status(403).json({ message: 'El usuario se encuentra inactivo.' });
+            }
+
             const match = await bcrypt.compare(password, user.password);
             if (match) {
                 const token = Jwt.sign({ user }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
-                // Aquí también obtenemos el rol del usuario y lo enviamos junto con el token
                 return res.status(200).json({ nombre: user.nombre, rol: user.rol, token: token, message: 'Token generado con éxito' });
             }
         } else {
@@ -21,9 +26,10 @@ export const validar = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: 500, message: 'Error del servidor' + error });
+        res.status(500).json({ status: 500, message: 'Error del servidor: ' + error });
     }
 };
+
 
 export const validarToken = async (req, res, next) => {
     try {

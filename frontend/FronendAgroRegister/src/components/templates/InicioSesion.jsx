@@ -58,12 +58,22 @@ const IniciarSesion = () => {
             }
 
         } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al iniciar sesión',
-                text: error.response?.data?.message || 'Error desconocido',
-                confirmButtonText: 'Aceptar'
-            });
+            const errorMessage = error.response?.data?.message || 'Error desconocido';
+            if (errorMessage === 'El usuario se encuentra inactivo.') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Usuario inactivo',
+                    text: 'Su cuenta está inactiva. Por favor, contacte al administrador.',
+                    confirmButtonText: 'Aceptar'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al iniciar sesión',
+                    text: errorMessage,
+                    confirmButtonText: 'Aceptar'
+                });
+            }
         } finally {
             setLoading(false);
         }
@@ -141,7 +151,7 @@ const IniciarSesion = () => {
                             <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center', margin: '15px', marginTop: '60px' }}>
-                        <Botones children='Iniciar' type="submit" disabled={loading} />
+                            <Botones children='Iniciar' type="submit" disabled={loading} />
                             <div>
                                 <Link to='/registrarse' style={{ textDecoration: 'none' }}>
                                     <Botones children='Registrarse' />
