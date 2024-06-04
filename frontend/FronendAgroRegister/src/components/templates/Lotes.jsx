@@ -163,17 +163,17 @@ function Lotes() {
             border: 'none',
             color: 'white',
             height: '40px',
-            marginLeft: '-18px',
-            width: '100px',
+            width: '70%',
+            marginLeft: '-16px',
             transition: 'background-color 0.2s',
           }}
           type="button"
           onClick={() => handleEstadoBotonClick(row.id_lote, row.estado)}
           onMouseEnter={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#D33B3B' : '#2DBC28' }}
-          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? 'red' : 'green' }}
+          onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }}
         >
           {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '5px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
-          {row.estado === 'activo' ? 'Inactivo' : 'Activo'}
+          {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
         </button>
 
       ),

@@ -34,22 +34,46 @@ const IniciarSesion = () => {
             const responseData = response.data;
 
             localStorage.setItem('token', responseData.token);
-            Swal.fire({
-                icon: 'success',
-                title: 'Inicio exitoso',
-                text: 'Haz ingresado correctamente',
-                confirmButtonText: 'Aceptar'
-            }).then(() => {
-                navigate('/dashboard');
-            });
+
+            if (responseData.rol === "administrador" || responseData.rol === "empleado") {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Inicio exitoso',
+                    text: 'Haz ingresado correctamente',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    if (responseData.rol === "administrador") {
+                        navigate('/dashboard');
+                    } else {
+                        navigate('/dashboard2');
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Rol no válido',
+                    text: 'El rol del usuario no es reconocido.',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
 
         } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al iniciar sesión',
-                text: error.response?.data?.message || 'Error desconocido',
-                confirmButtonText: 'Aceptar'
-            });
+            const errorMessage = error.response?.data?.message || 'Error desconocido';
+            if (errorMessage === 'El usuario se encuentra inactivo.') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Usuario inactivo',
+                    text: 'Su cuenta está inactiva. Por favor, contacte al administrador.',
+                    confirmButtonText: 'Aceptar'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al iniciar sesión',
+                    text: errorMessage,
+                    confirmButtonText: 'Aceptar'
+                });
+            }
         } finally {
             setLoading(false);
         }

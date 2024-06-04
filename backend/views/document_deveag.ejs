@@ -6,18 +6,17 @@
     <title>Documentación Variedad</title>
 </head>
 <body>
-    <h1>VARIEDAD</h1>
-    <hr>
-    <h3>Requerimiento 1. Documentación ENDPOINT REGISTRAR VARIEDAD</h3>
+    <h1>Documentación de la API - Variedad</h1>
+    <h3>Registrar Variedad</h3>
     <table>
         <tr><td>Número</td> <td>1</td></tr>
         <tr><td>Nombre del Servicio</td>  <td>Registrar Variedad</td></tr>
         <tr><td>URL</td>  <td>/registrarVariedad</td></tr>
         <tr><td>Descripción</td>  <td>Permite registrar una nueva variedad de cultivo en la base de datos</td></tr>
         <tr><td>Método HTTP</td>  <td>POST</td></tr>
-        <tr><td>Header</td>  <td>Token:token</td></tr>
+        <tr><td>Header</td>  <td>Token:</td></tr>
         <tr><td>Usuarios</td>  <td>Administrador</td></tr>
-        <tr><td>Request JSON</td>  <td>{"nombre_variedad": "Tomate Cherry", "tipo_cultivo": "alimentarios"}</td></tr>
+        <tr><td>Request JSON</td>  <td>{"nombre_variedad": "Tomate", "tipo_cultivo": "alimentarios"}</td></tr>
         <tr><td>Respuesta JSON</td>  <td>   
             Correcto: 
             Status: 200
@@ -41,19 +40,19 @@
                 "message": "Error en el sistema"
             }
         </td></tr>
-        <tr><td>Nombre Desarrollador:</td> <td>Esteban A Gaviria- devesg</td></tr>
+        <tr><td>Programador</td> <td>Esteban Alejandro Gaviria - deveag</td></tr>
     </table>
 
     <br>
 
-    <h3>Requerimiento 2. Documentación ENDPOINT ACTUALIZAR VARIEDAD</h3>
+    <h3>Actualizar Variedad</h3>
     <table>
         <tr><td>Número</td> <td>2</td></tr>
         <tr><td>Nombre del Servicio</td>  <td>Actualizar Variedad</td></tr>
         <tr><td>URL</td>  <td>/actualizarVariedad/:id</td></tr>
-        <tr><td>Descripción</td>  <td>Permite actualizar los detalles de una variedad de cultivo existente en la base de datos</td></tr>
+        <tr><td>Descripción</td>  <td>Permite actualizar una variedad de cultivo existente en la base de datos</td></tr>
         <tr><td>Método HTTP</td>  <td>PUT</td></tr>
-        <tr><td>Header</td>  <td>Token:token</td></tr>
+        <tr><td>Header</td>  <td>Token:</td></tr>
         <tr><td>Usuarios</td>  <td>Administrador</td></tr>
         <tr><td>Request JSON</td>  <td>{"nombre_variedad": "Tomate RAF", "tipo_cultivo": "textiles"}</td></tr>
         <tr><td>Respuesta JSON</td>  <td>   
@@ -66,9 +65,9 @@
             }
             <br>
             Incorrecto:
-            Status: 404
+            Status: 403
             JSON: {
-                "status": 404,
+                "status": 403,
                 "message": "No se encontró el registro para actualizar"
             }
             <br>
@@ -79,30 +78,26 @@
                 "message": "Error en el sistema"
             }
         </td></tr>
-        <tr><td>Nombre Desarrollador:</td> <td>Esteban A Gaviria- devesg</td></tr>
+        <tr><td>Programador:</td> <td>Esteban Alejandro Gaviria - deveag</td></tr>
     </table>
-
-    
-
     <br>
-
-    <h3>Requerimiento 3. Documentación ENDPOINT BUSCAR VARIEDAD</h3>
+    <h3>Buscar Variedad</h3>
     <table>
-        <tr><td>Número</td> <td>4</td></tr>
+        <tr><td>Número</td> <td>3</td></tr>
         <tr><td>Nombre del Servicio</td>  <td>Buscar Variedad</td></tr>
-        <tr><td>URL</td>  <td>/buscarVariedad/:id</td></tr>
-        <tr><td>Descripción</td>  <td>Permite buscar una variedad de cultivo por su ID en la base de datos</td></tr>
+        <tr><td>URL</td>  <td>/buscarVariedad/:nombre</td></tr>
+        <tr><td>Descripción</td>  <td>Permite buscar una variedad de cultivo en la base de datos</td></tr>
         <tr><td>Método HTTP</td>  <td>GET</td></tr>
-        <tr><td>Header</td>  <td>Token:token</td></tr>
+        <tr><td>Header</td>  <td>Token:</td></tr>
         <tr><td>Usuarios</td>  <td>Administrador</td></tr>
-        <tr><td>Request JSON</td>  <td>Null</td></tr>
+        <tr><td>Request JSON</td>  <td></td></tr>
         <tr><td>Respuesta JSON</td>  <td>   
             Correcto: 
             Status: 200
             JSON:
             {
                 "id_variedad": 1,
-                "nombre_variedad": "Tomate Cherry",
+                "nombre_variedad": "Tomate",
                 "tipo_cultivo": "alimentarios"
             }
             <br>
@@ -120,21 +115,21 @@
                 "message": "Error en el sistema"
             }
         </td></tr>
-        <tr><td>Nombre Desarrollador:</td> <td>Esteban A Gaviria- devesg</td></tr>
+        <tr><td>Programador:</td> <td>Esteban Alejandro Gaviria - deveag</td></tr>
     </table>
 
     <br>
 
-    <h3>Requerimiento 4. Documentación ENDPOINT LISTAR VARIEDADES</h3>
+    <h3>Listar Variedades</h3>
     <table>
-        <tr><td>Número</td> <td>5</td></tr>
+        <tr><td>Número</td> <td>4</td></tr>
         <tr><td>Nombre del Servicio</td>  <td>Listar Variedades</td></tr>
         <tr><td>URL</td>  <td>/listarVariedades</td></tr>
         <tr><td>Descripción</td>  <td>Permite obtener una lista de todas las variedades de cultivo registradas en la base de datos</td></tr>
         <tr><td>Método HTTP</td>  <td>GET</td></tr>
-        <tr><td>Header</td>  <td>Token:token</td></tr>
+        <tr><td>Header</td>  <td>Token:</td></tr>
         <tr><td>Usuarios</td>  <td>Administrador</td></tr>
-        <tr><td>Request JSON</td>  <td>Null</td></tr>
+        <tr><td>Request JSON</td>  <td></td></tr>
         <tr><td>Respuesta JSON</td>  <td>   
             Correcto: 
             Status: 200
@@ -142,12 +137,7 @@
             [
                 {
                     "id_variedad": 1,
-                    "nombre_variedad": "Tomate Cherry",
-                    "tipo_cultivo": "alimentarios"
-                },
-                {
-                    "id_variedad": 2,
-                    "nombre_variedad": "Tomate RAF",
+                    "nombre_variedad": "Tomate",
                     "tipo_cultivo": "alimentarios"
                 }
             ]
@@ -166,8 +156,44 @@
                 "message": "Error en el sistema"
             }
         </td></tr>
-        <tr><td>Nombre Desarrollador:</td> <td>Esteban A Gaviria- devesg</td></tr>
+        <tr><td>Programador:</td> <td>Esteban Alejandro Gaviria - deveag</td></tr>
     </table>
+    <br>
+    <h3>Desactivar o Activar la Variedad</h3>
+<table>
+  <tr><td>Número</td> <td>5</td></tr>
+  <tr><td>Nombre del Servicio</td>  <td>Desactivar o Activar Variedades</td></tr>
+  <tr><td>URL</td>  <td>/desactivar/Variedad/:id</td></tr>
+  <tr><td>Descripcion</td>  <td>Permite desactivar o activar variedades en la base de datos</td></tr>
+  <tr><td>Metodo HTTP</td>  <td>PUT</td></tr>
+  <tr><td>Header</td>  <td>Token:</td></tr>
+  <tr><td>Request json</td>  <td>estado: "inactivo</td></tr>
+  <tr><td>Respuesta json</td>  <td>
+    Correcto:
+    Status: 200 OK
+    {
+      "status": 200,
+      "mensaje": "El estado de la variedad ha sido cambiado exitosamente"
+    }
+  <br>
+Incorrecto:
+
+Status: 404  Not Found
+{
+  "status": 404,
+  "mensaje": "No se pudo cambiar el estado de la variedad"
+}
+<br>
+Error:
+
+Status: 500 Internal Server Error
+{
+  status: 500,
+  "message" : "Error en el sistema"
+}
+</td></tr>
+<tr><td>Programador:</td> <td>Esteban Alejandro Gaviria - deveag</td></tr>
+</table>
 
 </body>
 </html>

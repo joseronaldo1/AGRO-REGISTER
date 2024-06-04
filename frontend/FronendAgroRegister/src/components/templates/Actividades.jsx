@@ -248,7 +248,6 @@ function Actividad() {
       },
     },
   ];
-
   return (
     <div>
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

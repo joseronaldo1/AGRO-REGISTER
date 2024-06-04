@@ -72,17 +72,17 @@ export const registrarEmpleado = async (req, res) => {
 
         const { nombre, apellido, correo, password, rol } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-
+        const imagen = req.file ? req.file.path : null;
 
         const [rows] = await pool.query(
-            `INSERT INTO usuarios (nombre, apellido, correo, password, rol) VALUES (?, ?, ?, ?, ?)`,
-            [nombre, apellido, correo, hashedPassword, rol]
+            `INSERT INTO usuarios (nombre, apellido, correo, password, rol, imagen) VALUES (?, ?, ?, ?, ?, ?)`,
+            [nombre, apellido, correo, hashedPassword, rol, imagen]
         );
 
         if (rows.affectedRows > 0) {
             return res.status(200).json({
                 status: 200,
-                message: 'Empleado registrado exitosamente'
+                message: 'Usuario registrado exitosamente'
             });
         } else {
             return res.status(403).json({
@@ -106,14 +106,14 @@ export const actualizarEmpleado = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { id } = req.params;
+        const { id_usuario } = req.params;
         const { nombre, apellido, correo, password, rol, estado } = req.body;
 
         if (!nombre && !apellido && !correo && !password && !rol && !estado && !req.file) {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, apellido, correo, password, rol, estado, imagen) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
-        const [oldUsuario] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id]);
+        const [oldUsuario] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id_usuario]);
 
         if (oldUsuario.length === 0) {
             return res.status(404).json({
@@ -140,13 +140,14 @@ export const actualizarEmpleado = async (req, res) => {
 
         const [result] = await pool.query(
             `UPDATE usuarios SET nombre=?, apellido=?, correo=?, password=?, rol=?, estado=?, imagen=? WHERE id_usuario = ?`,
-            [updatedUsuario.nombre, updatedUsuario.apellido, updatedUsuario.correo, updatedUsuario.password, updatedUsuario.rol, updatedUsuario.estado, updatedUsuario.imagen, id]
+            [updatedUsuario.nombre, updatedUsuario.apellido, updatedUsuario.correo, updatedUsuario.password, updatedUsuario.rol, updatedUsuario.estado, updatedUsuario.imagen, id_usuario]
         );
 
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: "El usuario ha sido actualizado."
+                message: "El usuario ha sido actualizado.",
+                data: updatedUsuario
             });
         } else {
             res.status(404).json({

@@ -13,10 +13,12 @@ import { UsuarioPage } from './pages';
 import { VariedadPage } from './pages';
 import { CultivosPage } from './pages';
 import { ActividadPage } from './pages';
+import { ActividadPage2 } from './pages';
 import { LotesPage } from './pages';
 import { RecursosPage } from './pages';
 import { SoportePage } from './pages';
 import { DashboardPage } from './pages';
+import { DashboardPage2 } from './pages';
 import { ReportesPage } from './pages';
 import { ProgramacionPage } from './pages';
 import { ProduccionPage } from './pages';
@@ -41,10 +43,12 @@ function App() {
           <Route path="/variedad" element={<VariedadPage />} />
           <Route path="/cultivo" element={<CultivosPage />} />
           <Route path="/actividad" element={<ActividadPage />} />
+          <Route path="/actividad2" element={<ActividadPage2 />} />
           <Route path="/lotes" element={<LotesPage />} />
           <Route path="/recursos" element={<RecursosPage />} />
           <Route path="/Soporte" element={<SoportePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard2" element={<DashboardPage2 />} />
           <Route path="/reportes" element={<ReportesPage />} />
           <Route path="/programacion" element={<ProgramacionPage />} />
           <Route path="/produccion" element={<ProduccionPage />} />

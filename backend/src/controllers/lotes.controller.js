@@ -1,7 +1,6 @@
 import { pool } from "../database/conexion.js"
 import { validationResult } from 'express-validator'
 
-
 export const listarlotes = async (req, res) => {
     try {
         let sql = `SELECT lo.id_lote, lo.nombre, lo.longitud, lo.latitud, 
@@ -39,7 +38,7 @@ export const Registrarlotes = async (req, res) => {
 
         if (resultado.affectedRows > 0) {
             res.status(200).json({
-                "mensaje": "lote registrado con exito"
+                "mensaje": "Lote registrado con exito"
             })
         } else {
             res.status(400).json({
@@ -138,13 +137,13 @@ export const DesactivarLote = async (req, res) => {
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: 'Se actualizo el estado con éxito',
+                message: 'Se cambio el estado del lote exitosamente',
                 result: result
             });
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No se encontró el estado para actualizar'
+                message: 'No se pudo cambiar el estado del lote'
             });
         }
     } catch (error) {

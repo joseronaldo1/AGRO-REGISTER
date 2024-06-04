@@ -3,7 +3,6 @@ import {registrar,  actualizar,  buscar, listar } from '../controllers/CostosCon
 import { validacionCostosA, validacionCostosR } from "../../validate/CostosValidatedevSdva.js";
 import { validarToken } from "../controllers/autenticacion.js"; 
 
-
 const rutaCostos = Router();
 
 rutaCostos.get('/listar_costos', validarToken, listar);

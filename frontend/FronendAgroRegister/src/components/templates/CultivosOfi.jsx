@@ -164,8 +164,8 @@ function Cultivos() {
             border: 'none',
             color: 'white',
             height: '40px',
-            width: '220px',
-            marginLeft: '-50px',
+            width: '70%',
+            marginLeft: '-16px',
             transition: 'background-color 0.2s',
           }}
           type="button"
@@ -174,7 +174,7 @@ function Cultivos() {
           onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }}
         >
           {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '5px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
-          {row.estado === 'activo' ? 'Inactivo' : 'Activar'}
+          {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
         </button>
       ),
     },
