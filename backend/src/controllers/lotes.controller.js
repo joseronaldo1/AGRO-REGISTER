@@ -87,7 +87,7 @@ export const Actualizarlote = async (req, res) => {
             res.status(404).json({ "mensaje": "No se pudo actualizar el lote" });
         }
     } catch (error) {
-        res.status(500).json({ "mensaje": error.message }); // Corrección en el manejo de error
+        res.status(500).json({ "mensaje": error.message });
     }
 }
 

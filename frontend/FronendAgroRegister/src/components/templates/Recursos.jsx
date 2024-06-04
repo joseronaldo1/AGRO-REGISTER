@@ -8,7 +8,7 @@ import { GoIssueClosed } from "react-icons/go";
 import ModalRecuRegeContrasenia from '../organismos/ModalRecur';
 import Header from '../organismos/Header/Header';
 import Swal from 'sweetalert2';
-/* import Footer from '../organismos/Footer/Footer'; */
+import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 import '../../styles/FondoTable.css';
 
@@ -253,7 +253,7 @@ function Recursos() {
         <br />
 
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

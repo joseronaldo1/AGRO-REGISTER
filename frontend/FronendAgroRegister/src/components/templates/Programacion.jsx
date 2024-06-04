@@ -10,7 +10,7 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 import Swal from 'sweetalert2';
-import { format } from 'date-fns'; // Importa la función format de date-fns
+import { format } from 'date-fns';
 
 function Programacion() {
   const baseURL = 'http://localhost:3000/listarProgramacion';
@@ -26,7 +26,7 @@ function Programacion() {
   const [originalData, setOriginalData] = useState([]);
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -46,12 +46,12 @@ function Programacion() {
 
   const handleOpenEstadoModal = (rowData) => {
     console.log('Opening Estado Modal with data:', rowData);
-    setInitialData(rowData); // Establece initialData directamente desde rowData
+    setInitialData(rowData);
     setShowEstadoModal(true);
   };
 
   const handleCloseEstadoModal = () => {
-    setInitialData(null); // Limpia initialData al cerrar el modal
+    setInitialData(null);
     setShowEstadoModal(false);
   };
 
@@ -60,15 +60,15 @@ function Programacion() {
     setMode('update');
     setShowActualizacionModal(true);
   };
-  
+
   const handleCloseActualizacionModal = () => {
     setActualizacionInitialData(null);
     setShowActualizacionModal(false);
   };
-  
+
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      const { id_programacion } = formData; // Utiliza el nombre correcto del campo
+      const { id_programacion } = formData;
       if (!id_programacion) {
         console.error('ID no encontrado en los datos del formulario');
         return;
@@ -80,7 +80,7 @@ function Programacion() {
       console.error('Error al actualizar la programación:', error);
     }
   };
-  
+
   const handleSearch = async (searchTerm) => {
     try {
       if (searchTerm.trim() === '') {
@@ -117,10 +117,9 @@ function Programacion() {
       console.log('initialData:', initialData);
       if (initialData) {
         const { id_programacion } = initialData;
-        
-        // Verificar si se ha seleccionado un estado
+
         if (!formData.estado) {
-          // Mostrar mensaje de error si no se ha seleccionado un estado
+
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -128,19 +127,19 @@ function Programacion() {
           });
           return;
         }
-        
-        // Mostrar mensaje de confirmación antes de cambiar el estado
+
+
         const result = await Swal.fire({
           title: 'Confirmación',
           text: '¿Estás seguro de cambiar el estado?',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
+          confirmButtonColor: 'green',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Sí, cambiar estado',
           cancelButtonText: 'Cancelar',
         });
-  
+
         if (result.isConfirmed) {
           // Realizar la solicitud PUT solo si se confirma la acción
           await axios.put(`http://localhost:3000/desactivar/Programacion/${id_programacion}`, { estado: formData.estado });
@@ -159,8 +158,8 @@ function Programacion() {
       console.error('Error al enviar el formulario de estado:', error);
     }
   };
-  
-  // En la definición de las columnas, modifica la columna "Acciones":
+
+
   const columns = [
     {
       name: 'Editar',
@@ -192,12 +191,12 @@ function Programacion() {
     },
     {
       name: 'Fecha Inicio',
-      selector: (row) => format(new Date(row.fecha_inicio), 'dd/MM/yyyy'), // Formatea la fecha
+      selector: (row) => format(new Date(row.fecha_inicio), 'dd/MM/yyyy'),
       sortable: true,
     },
     {
       name: 'Fecha Fin',
-      selector: (row) => format(new Date(row.fecha_fin), 'dd/MM/yyyy'), // Formatea la fecha
+      selector: (row) => format(new Date(row.fecha_fin), 'dd/MM/yyyy'),
       sortable: true,
     },
     {
@@ -216,20 +215,33 @@ function Programacion() {
     },
     {
       name: 'Acciones',
-      cell: (row) => (
-        <>
-          {row.estado !== 'terminado' && (
-            <button
-              className="btn p-2 rounded-lg"
-              style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
-              type="button"
-              onClick={() => handleOpenEstadoModal(row)}
-            >
-              <RiPlantFill style={{ color: 'white' }} />Estado
-            </button>
-          )}
-        </>
-      ),
+      cell: (row) => {
+        const [hover, setHover] = useState(false);
+
+        return (
+          <>
+            {row.estado !== 'terminado' && (
+              <button
+                className="btn p-2 rounded-lg"
+                style={{
+                  backgroundColor: hover ? '#3b5bb3' : '#466AD6',
+                  borderColor: '#ffc107',
+                  color: 'white',
+                  width: '70%',
+                  border: 'none',
+                  marginLeft: '-16px',
+                }}
+                type="button"
+                onClick={() => handleOpenEstadoModal(row)}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              >
+                <RiPlantFill style={{ color: 'white' }} /> Estado
+              </button>
+            )}
+          </>
+        );
+      },
     },
   ];
 

@@ -25,7 +25,7 @@ function Actividad() {
   const [originalData, setOriginalData] = useState([]);
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -59,7 +59,7 @@ function Actividad() {
     setMode('update');
     setShowActualizacionModal(true);
   };
-  
+
   const handleCloseActualizacionModal = () => {
     setActualizacionInitialData(null);
     setShowActualizacionModal(false);
@@ -122,10 +122,9 @@ function Actividad() {
       console.log('initialData:', initialData);
       if (initialData) {
         const { id_actividad } = initialData;
-        
-        // Verificar si se ha seleccionado un estado
+
         if (!formData.estado) {
-          // Mostrar mensaje de error si no se ha seleccionado un estado
+
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -133,25 +132,24 @@ function Actividad() {
           });
           return;
         }
-        
-        // Mostrar mensaje de confirmación antes de cambiar el estado
+
+
         const result = await Swal.fire({
           title: 'Confirmación',
           text: '¿Estás seguro de cambiar el estado?',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
+          confirmButtonColor: 'green',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Sí, cambiar estado',
           cancelButtonText: 'Cancelar',
         });
-  
+
         if (result.isConfirmed) {
-          // Realizar la solicitud PUT solo si se confirma la acción
           await axios.put(`http://localhost:3000/Desactivara/actividad/${id_actividad}`, { estado: formData.estado });
           fetchData();
           setShowEstadoModal(false);
-          // Mostrar mensaje de éxito
+
           Swal.fire({
             icon: 'success',
             title: 'Éxito',
@@ -165,7 +163,7 @@ function Actividad() {
     }
   };
 
-  // En la definición de las columnas, modifica la columna "Acciones":
+
   const columns = [
     {
       name: 'Editar',
@@ -221,20 +219,33 @@ function Actividad() {
     },
     {
       name: 'Acciones',
-      cell: (row) => (
-        <>
-          {row.estado !== 'terminado' && (
-            <button
-              className="btn p-2 rounded-lg"
-              style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
-              type="button"
-              onClick={() => handleOpenEstadoModal(row)}
-            >
-              <RiPlantFill style={{ color: 'white' }} />Estado
-            </button>
-          )}
-        </>
-      ),
+      cell: (row) => {
+        const [hover, setHover] = useState(false);
+
+        return (
+          <>
+            {row.estado !== 'terminado' && (
+              <button
+                className="btn p-2 rounded-lg"
+                style={{
+                  backgroundColor: hover ? '#3b5bb3' : '#466AD6',
+                  borderColor: '#ffc107',
+                  color: 'white',
+                  width: '70%',
+                  border: 'none',
+                  marginLeft: '-16px',
+                }}
+                type="button"
+                onClick={() => handleOpenEstadoModal(row)}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              >
+                <RiPlantFill style={{ color: 'white' }} /> Estado
+              </button>
+            )}
+          </>
+        );
+      },
     },
   ];
 

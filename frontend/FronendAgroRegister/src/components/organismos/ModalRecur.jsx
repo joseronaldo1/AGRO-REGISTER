@@ -5,7 +5,7 @@ import Formulario from '../organismos/FormRecursos';
 
 function ModalRecuRegeContrasenia({ titulo, mostrar, cerrarModal, handleSubmit, actionLabel, initialData, mode }) {
   useEffect(() => {
-    if (!mostrar) {
+    if (!mostrar) { 
       cerrarModal(); // Cierra el modal cuando mostrar cambia a false
     }
   }, [mostrar, cerrarModal]);
