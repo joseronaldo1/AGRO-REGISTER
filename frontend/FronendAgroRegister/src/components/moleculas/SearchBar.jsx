@@ -17,7 +17,7 @@ const SearchBar = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginLeft: '75%', marginTop: '12px' }}>
+    <form onSubmit={handleSubmit} style={{ marginLeft: '77%', marginTop: '30px' }}>
       <div style={{ position: 'relative' }}>
         <input
           type="text"

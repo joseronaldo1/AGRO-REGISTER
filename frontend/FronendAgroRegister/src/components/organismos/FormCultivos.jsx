@@ -131,45 +131,7 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
         textAlign: 'center'
       }}
     >
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Fecha de inicio:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="date"
-          name="fecha_inicio"
-          placeholder="Fecha de Inicio"
-          value={formData.fecha_inicio}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Cantidad Sembrada:{' '}
-        </label>
-        <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="number"
-          name="cantidad_sembrada"
-          placeholder="Cantidad Sembrada"
-          value={formData.cantidad_sembrada}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="flex flex-col">
+            <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Selecciona tu Lote:
         </label>
@@ -196,7 +158,7 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
           Por favor seleccione un lote
         </p>
       )}
-      <div className="flex flex-col">
+         <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Selecciona tu Variedad:
         </label>
@@ -223,6 +185,47 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
           Por favor seleccione una Variedad
         </p>
       )}
+            <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Cantidad Sembrada:{' '}
+        </label>
+        <br />
+        <input
+          style={{
+            borderColor: '#1bc12e',
+            borderRadius: '6px',
+            width: '50%',
+            height: '40px'
+          }}
+          type="number"
+          name="cantidad_sembrada"
+          placeholder="Cantidad Sembrada"
+          value={formData.cantidad_sembrada}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
+          Fecha de inicio:{' '}
+        </label>
+        <br />
+        <input
+          style={{
+            borderColor: '#1bc12e',
+            borderRadius: '6px',
+            width: '50%',
+            height: '40px'
+          }}
+          type="date"
+          name="fecha_inicio"
+          placeholder="Fecha de Inicio"
+          value={formData.fecha_inicio}
+          onChange={handleChange}
+        />
+      </div>
+
+
+   
       <button
         className="boton"
         type="submit"

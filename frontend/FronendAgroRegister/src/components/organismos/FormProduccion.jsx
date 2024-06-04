@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Importa SweetAlert
+import Swal from 'sweetalert2';
 
-const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
     cantidad_produccion: initialData && initialData.cantidad_produccion ? initialData.cantidad_produccion : '',
     precio: initialData && initialData.precio ? initialData.precio : '',
@@ -10,20 +10,18 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
-  const [nombre_actividad, setNombreFinca] = useState([]);
+  const [showWarning, setShowWarning] = useState(false);
+  const [nombre_actividad, setNombreActividad] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3000/listarActividad')
       .then(response => {
-        setNombreFinca(response.data); // Establecer directamente los datos de la respuesta en el estado nombre_finca
+        setNombreActividad(response.data);
       })
       .catch(error => {
         console.error('Error al obtener los datos:', error);
       });
   }, []);
-
-
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -37,6 +35,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
     const soloNumeros = /^\d+$/;
     return soloNumeros.test(cantidad_produccion);
   };
+
   const validarPrecio = precio => {
     const soloNumeros = /^\d+$/;
     return soloNumeros.test(precio);
@@ -45,8 +44,9 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("Datos del formulario antes de enviar:", formData);
       if (!formData.cantidad_produccion || !formData.precio || !formData.fk_id_actividad) {
-        setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+        setShowWarning(true);
         return;
       }
       if (!validarCantidadProduccion(formData.cantidad_produccion)) {
@@ -67,8 +67,6 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         return;
       }
 
-
-
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistraProduccion',
@@ -79,25 +77,24 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
             }
           }
         );
-        console.log(response.data);
-        // Mostrar alerta de registro exitoso
+
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
           text: 'La Producción se ha registrado exitosamente'
         });
-        console.log(response.data);
+
       } else if (mode === 'update') {
-        const { id } = initialData;
+        const { id_producccion } = initialData;
         await axios.put(
-          `http://localhost:3000/ActualizarProduccion/${id}`,
+          `http://localhost:3000/ActualizarProduccion/${id_producccion}`,
           formData
         );
         // Mostrar alerta de actualización exitosa
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'La Producción se ha actualizado exitosamente'
+          text: 'La produccion se ha actualizado exitosamente'
         });
       }
 
@@ -118,25 +115,31 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         textAlign: 'center'
       }}
     >
-      <div className="flex flex-col">
+         <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Cantidad Producción:{' '}
+          Selecciona tu Actividad:
         </label>
         <br />
-        <input
-          style={{
-            borderColor: '#1bc12e',
-            borderRadius: '6px',
-            width: '50%',
-            height: '40px'
-          }}
-          type="number"
-          name="cantidad_produccion"
-          placeholder="Cantidad Producción"
-          value={formData.cantidad_produccion}
+        <select
+          name='fk_id_actividad'
+          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+          required={true}
+          value={formData.fk_id_actividad}
           onChange={handleChange}
-        />
+        >
+          <option value="" disabled>Seleccione</option>
+          {nombre_actividad.map(actividad => (
+            <option key={actividad.id_actividad} value={actividad.id_actividad}>
+              {actividad.nombre_actividad}
+            </option>
+          ))}
+        </select>
       </div>
+      {showWarning && (
+        <p style={{ color: 'red', marginBottom: '10px' }}>
+          Por favor seleccione una Actividad
+        </p>
+      )}
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Precio:{' '}
@@ -158,32 +161,25 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
       </div>
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
-          Selecciona tu Actividad:
+          Cantidad Producción:{' '}
         </label>
         <br />
-        <select
-          label='Nombre de Finca'
-          name='fk_id_finca'
-          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
-          id=''
-          required={true}
-          value={formData.fk_id_actividad}
+        <input
+          style={{
+            borderColor: '#1bc12e',
+            borderRadius: '6px',
+            width: '50%',
+            height: '40px'
+          }}
+          type="number"
+          name="cantidad_produccion"
+          placeholder="Cantidad Producción"
+          value={formData.cantidad_produccion}
           onChange={handleChange}
-        >
-          <option value="" disabled selected>Seleccione</option>
-          {/* Mapeo para crear las opciones del select */}
-          {nombre_actividad.map(actividad => (
-            <option key={actividad.id_actividad} value={actividad.id_actividad}>
-              {actividad.nombre_actividad}
-            </option>
-          ))}
-        </select>
+        />
       </div>
-      {showWarning && (
-        <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor seleccione una Actividad
-        </p>
-      )}
+      
+   
       <button
         className="boton"
         type="submit"
@@ -205,4 +201,4 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
   );
 };
 
-export default Formulariolote;
+export default FormularioProduccion;

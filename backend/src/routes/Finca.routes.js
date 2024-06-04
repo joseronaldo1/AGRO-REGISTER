@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listarFinca, RegistroFinca, ActualizarFinca, BuscarFinca, DesactivarFinca } from "../controllers/Finca.controller.js";
+import { listarFinca, RegistroFinca, ActualizarFinca, BuscarFinca, DesactivarFinca, DesactivarFincaencadena } from "../controllers/Finca.controller.js";
 import { validarFincaA } from "../../validate/Finca.js";
 import { validarFincaR } from "../../validate/Finca.js";
 //import { validarToken } from "../controllers/autenticacion.js";
@@ -11,6 +11,8 @@ router.post("/RegistroFinca", validarFincaR, RegistroFinca);
 router.put("/actualizarFinca/:id", validarFincaA, ActualizarFinca);
 router.put("/desactivar/Finca/:id", DesactivarFinca);
 router.get("/buscarFinca/:nombre", BuscarFinca);
+router.put("/desactivarEncadena/Finca/:id", DesactivarFincaencadena);
+
 
 
 export default router;

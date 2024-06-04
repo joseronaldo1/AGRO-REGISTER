@@ -1,26 +1,30 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
-import Footer from '../organismos/Footer/Footer.jsx';
 import InputAtom from '../atomos/Inputs.jsx';
 import Botones from '../atomos/Botones.jsx';
-import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; // Import the background image if not already imported
-import Logo from '../../assets/logoOrigi.png';// Import the logo image if not already imported
-
+import v from '../../styles/variables';
+import Logo from '../../assets/logoOrigi.png';
 
 const IniciarSesion = () => {
     const [formData, setFormData] = useState({
         correo: '',
         password: ''
     });
-
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.correo.trim() === '' || formData.password.trim() === '') {
-            alert('Por favor, complete todos los campos.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campos incompletos',
+                text: 'Por favor, complete todos los campos.',
+                confirmButtonText: 'Aceptar'
+            });
             return;
         }
 
@@ -28,14 +32,48 @@ const IniciarSesion = () => {
             setLoading(true);
             const response = await axios.post('http://localhost:3000/validacion', formData);
             const responseData = response.data;
-    
+
             localStorage.setItem('token', responseData.token);
-            alert('Inicio de sesión exitoso');
-          
-            window.location.href = "/dashboard";
+
+            if (responseData.rol === "administrador" || responseData.rol === "empleado") {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Inicio exitoso',
+                    text: 'Haz ingresado correctamente',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    if (responseData.rol === "administrador") {
+                        navigate('/dashboard');
+                    } else {
+                        navigate('/dashboard2');
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Rol no válido',
+                    text: 'El rol del usuario no es reconocido.',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
 
         } catch (error) {
-            alert('Error al iniciar sesión: ' + error.response.data.message);
+            const errorMessage = error.response?.data?.message || 'Error desconocido';
+            if (errorMessage === 'El usuario se encuentra inactivo.') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Usuario inactivo',
+                    text: 'Su cuenta está inactiva. Por favor, contacte al administrador.',
+                    confirmButtonText: 'Aceptar'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al iniciar sesión',
+                    text: errorMessage,
+                    confirmButtonText: 'Aceptar'
+                });
+            }
         } finally {
             setLoading(false);
         }
@@ -51,15 +89,15 @@ const IniciarSesion = () => {
 
     const formularioStyle = {
         border: '1px solid #ccc',
-        borderRadius: '15px',
-        padding: '40px',
-        margin: '20px auto',
-        maxWidth: '400px',
+        borderRadius: '25px',
+        padding: '80px',
+        marginTop: '150px',
+        maxWidth: '480px',
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
     };
 
     const fondoStyle = {
-        backgroundImage: `url(${fondo})`,
+        backgroundImage: `url(${v.ImgSlider1})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: 'calc(100vh - 100px)',
@@ -74,7 +112,6 @@ const IniciarSesion = () => {
 
     const tituloStyle = {
         fontSize: '2.3em',
-        color: 'black',
         fontWeight: 'bold',
         textAlign: 'center',
         padding: '1.30rem',
@@ -82,13 +119,14 @@ const IniciarSesion = () => {
 
     return (
         <div style={fondoStyle}>
-            <div className='flex' style={{ margin: '130px' }}>
+            <div className='flex' style={{ margin: '130px', marginLeft: '700px', marginTop: '-70px' }}>
                 <HeaderInicio />
                 <div className='flex items-center justify-center'>
                     <form style={{ textAlign: 'center', ...formularioStyle }} onSubmit={handleSubmit}>
                         <label style={tituloStyle}>Inicio de Sesión</label>
                         <img src={Logo} alt="Logo" style={{ maxWidth: '160px' }} />
                         <div style={{ marginTop: '20px' }}>
+                            <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>Ingresa tu correo electrónico: </span>
                             <InputAtom
                                 className='mb-3 height-10'
                                 type="email"
@@ -97,6 +135,7 @@ const IniciarSesion = () => {
                                 value={formData.correo}
                                 onChange={handleChange}
                             />
+                            <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>Ingresa tu contraseña: </span>
                             <InputAtom
                                 type="password"
                                 placeholder="Contraseña"
@@ -108,7 +147,7 @@ const IniciarSesion = () => {
                         <div className='flex items-center justify-center'>
                             {loading && <span>Cargando...</span>}
                         </div>
-                        <div style={{ textAlign: 'center' }}>
+                        <div style={{ textAlign: 'center', marginTop: '25px', fontSize: '15px' }}>
                             <Link to='/olvidocontra1'>¿Olvidó su contraseña?</Link>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center', margin: '15px', marginTop: '60px' }}>
@@ -122,10 +161,8 @@ const IniciarSesion = () => {
                     </form>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 };
 
 export default IniciarSesion;
-

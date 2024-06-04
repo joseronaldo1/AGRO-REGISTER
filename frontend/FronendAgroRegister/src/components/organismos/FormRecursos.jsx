@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Importa SweetAlert
+import Swal from 'sweetalert2';
 
 const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
@@ -11,18 +11,10 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
-  const [showNameError, setShowNameError] = useState(false); // Estado para mostrar el error de nombre
+  const [showWarning, setShowWarning] = useState(false);
 
   const handleChange = e => {
     const { name, value } = e.target;
-
-    // Validar que el campo "nombre_recursos" solo contenga letras
-    if (name === 'nombre_recursos' && !/^[A-Za-z\s]+$/.test(value)) {
-      setShowNameError(true); // Activar el estado para mostrar el error de nombre
-    } else {
-      setShowNameError(false); // Desactivar el estado de error de nombre si es válido
-    }
 
     setFormData(prevState => ({
       ...prevState,
@@ -33,28 +25,21 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
   const handleFormSubmit = async e => {
     e.preventDefault();
     try {
-      // Verificar si algún campo está vacío
-      if (
-        !formData.nombre_recursos ||
-        !formData.cantidad_medida ||
-        !formData.unidades_medida ||
-        !formData.extras
-      ) {
-        setShowWarning(true); // Mostrar advertencia si algún campo está vacío
+      if (!formData.nombre_recursos || !formData.cantidad_medida || !formData.unidades_medida || !formData.extras) {
+        setShowWarning(true);
         return;
       }
 
-      // Validar el nombre del recurso antes de enviar el formulario
-      if (showNameError) {
+      // Validar el nombre de los recursos aquí
+      if (!/^[A-Za-z\s,]+$/.test(formData.nombre_recursos)) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'El nombre de recursos solo puede contener letras'
+          text: 'El nombre de los recursos solo puede contener letras, espacios y comas'
         });
         return;
       }
 
-      // Si todos los campos están completos, continuar con el envío del formulario
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistroRecurso',
@@ -66,7 +51,6 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
           }
         );
         console.log(response.data);
-        // Mostrar alerta de éxito
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
@@ -78,7 +62,6 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
           `http://localhost:3000/actualizarRecurso/${id}`,
           formData
         );
-        // Mostrar alerta de éxito para la actualización
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
@@ -95,7 +78,7 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
 
   return (
     <form className={className} onSubmit={handleFormSubmit} style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-      {showWarning && ( // Mostrar advertencia si showWarning es true
+      {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>
           Por favor complete todos los campos
         </p>
@@ -110,11 +93,6 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
           value={formData.nombre_recursos}
           onChange={handleChange}
         />
-        {showNameError && ( // Mostrar el error de nombre si showNameError es true
-          <p style={{ color: 'red', marginBottom: '10px' }}>
-            El nombre de recursos solo puede contener letras
-          </p>
-        )}
       </div>
       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>Cantidad: </label>

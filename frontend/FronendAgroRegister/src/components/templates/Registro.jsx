@@ -4,7 +4,8 @@ import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
 import Footer from '../organismos/Footer/Footer';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logoOrigi.png';
-import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png';
+import v from '../../styles/variables';
+/* import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; */
 import InputAtom from '../atomos/Inputs.jsx';
 import Select from '../atomos/selectRegistro.jsx';
 import axios from 'axios';
@@ -71,7 +72,7 @@ const Registro = () => {
   };
 
   const fondoStyle = {
-    backgroundImage: `url(${fondo})`,
+    backgroundImage: `url(${v.ImgSlider1})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     minHeight: '100vh',
@@ -115,7 +116,6 @@ const Registro = () => {
               <Select label="Rol:" id="rol" name="rol" value={formData.rol} onChange={handleChange}>
                 <option value="">Seleccione...</option>
                 <option value="administrador">Administrador</option>
-                <option value="empleado">Empleado</option>
               </Select>
               {loading && <span>Cargando..</span>}
             </div>

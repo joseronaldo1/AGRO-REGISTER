@@ -3,12 +3,14 @@ import { validationResult } from "express-validator";
 
 export const listarProduccion = async (req, res) => {
     try {
-        let sql = `SELECT produ.id_producccion,produ.cantidad_produccion, 
-        produ.fk_id_programacion  AS id_programacion,  
-        pro.fecha_inicio, 
-        pro.fecha_fin
-FROM produccion AS produ
-JOIN programacion AS pro ON produ.fk_id_programacion  = pro.id_programacion`;
+        let sql = `SELECT 
+            produ.id_producccion,
+            produ.cantidad_produccion,
+            produ.precio,
+            act.nombre_actividad AS nombre_actividad
+        FROM produccion AS produ
+        JOIN actividad AS act ON produ.fk_id_actividad = act.id_actividad`;
+
 
         const [listar] = await pool.query(sql);
 
@@ -17,217 +19,120 @@ JOIN programacion AS pro ON produ.fk_id_programacion  = pro.id_programacion`;
         } else {
             res.status(400).json({
                 status: 400,
-                message: 'no hay ningun produccion'
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: 500,
-            message: 'error en el servidor',
-        });
-        console.log(error);
-    }
-};
-
-export const registrarProduccion = async (req, res) => {
-    try {
-        const error = validationResult(req);
-
-        if (!error.isEmpty()) {
-            return res.status(400).json({
-                errors: error.array()
-            });
-        }
-
-        const { cantidad_produccion, precio, fk_id_programacion } = req.body;
-
-        const [variedadExiste] = await pool.query('SELECT * FROM programacion WHERE id_programacion = ?', [fk_id_programacion]);
-
-        if (variedadExiste.length === 0) {
-            return res.status(404).json({
-                status: 404,
-                message: 'Este ID no existe. Por favor, registre la programacion primero.'
-            });
-        }
-
-        if (!cantidad_produccion || !precio || !fk_id_programacion) {
-            return res.status(400).json({
-                message: 'Se requieren todos los campos para registrar la producción.'
-            });
-        }
-        
-
-        const [Registrar] = await pool.query('INSERT INTO produccion (cantidad_produccion, precio, fk_id_programacion) VALUES (?, ?, ?)',
-            [cantidad_produccion, precio, fk_id_programacion]);
-
-        if (Registrar.affectedRows > 0) {
-            res.status(200).json({
-                status: 200,
-                message: 'Se registró correctamente la producción.'
-            });
-        } else {
-            res.status(400).json({
-                status: 400,
-                message: 'No se ha podido registrar la producción.'
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: 500,
-            message: 'Error en el servidor'
-        });
-        console.log(error);
-    }
-};
-
-export const BuscarProduccion = async (req, res) => {
-    try {
-        let sql = `SELECT produ.id_producccion,produ.cantidad_produccion, 
-        produ.fk_id_programacion AS id_programacion,  
-        pro.fecha_inicio, 
-        pro.fecha_fin
-FROM produccion AS produ
-JOIN programacion AS pro ON produ.fk_id_programacion  = pro.id_programacion`;
-
-        const { id } = req.params;
-        const consultar = 'SELECT * FROM produccion WHERE id_producccion  LIKE ?';
-        const [resultado] = await pool.query(consultar, [id]);
-
-        if (resultado.length > 0) {
-            return res.status(200).json({ resultado });
-        } else {
-            res.status(404).json({
-                status: 404,
-                message: "No se encontraron resultados con el id ",
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: 500,
-            message: "error en el servidor ",
-        });
-        console.log(error)
-    }
-};
-
-
-export const actualizarProduccion = async (req, res) => {
-    try {
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        const { id_producccion } = req.params;
-        const { cantidad_produccion, precio, fk_id_programacion } = req.body;
-
-        if (!cantidad_produccion && !precio && !fk_id_programacion) {
-            return res.status(400).json({
-                message:
-                    "se requiere uno de los campos para actualizar (cantidad_produccion, precio, fk_id_programacion)",
-            });
-        }
-        const [variedadExiste] = await pool.query('SELECT * FROM programacion WHERE id_programacion = ?', [fk_id_programacion]);
-
-        if (variedadExiste.length === 0) {
-            return res.status(404).json({
-                status: 404,
-                message: 'Este ID no existe. Por favor, registre la variedad primero.'
-            });
-        }
-
-        // Verificar si la producción a actualizar existe
-        const [produccionExistente] = await pool.query('SELECT * FROM produccion WHERE id_producccion =?', [id_producccion]);
-
-        if (produccionExistente.length === 0) {
-            return res.status(404).json({
-                status: 404,
-                message: 'Producción no encontrada. El ID proporcionado no existe.'
-            });
-        }
-
-        // Verificar si los valores son diferentes para evitar realizar la misma actualización
-        if (
-            produccionExistente[0].cantidad_produccion === cantidad_produccion &&
-            produccionExistente[0].precio === precio &&
-            produccionExistente[0].fk_id_programacion === fk_id_programacion
-        ) {
-            return res.status(404).json({
-                status: 404,
-                message: 'No se ha realizado ningún cambio. Los datos son iguales a los existentes.'
-            });
-        }
-
-        const updateValues = {
-            cantidad_produccion: cantidad_produccion || produccionExistente[0].cantidad_produccion,
-            precio: precio || produccionExistente[0].precio,
-            fk_id_programacion: fk_id_programacion || produccionExistente[0].fk_id_programacion,
-        };
-
-        const updateQuery = 'UPDATE produccion SET cantidad_produccion=?, precio=?, fk_id_programacion=? WHERE id_producccion=?';
-
-        const [updatedProduccion] = await pool.query(updateQuery, [
-            updateValues.cantidad_produccion,
-            updateValues.precio,
-            updateValues.fk_id_programacion,
-            id_producccion
-        ]);
-
-        if (updatedProduccion.affectedRows > 0) {
-            res.status(200).json({
-                status: 200,
-                message: updatedProduccion.changedRows > 0 ? 'Se actualizó con éxito' : 'Sin cambios realizados',
-            });
-        } else {
-            res.status(400).json({
-                status: 400,
-                message: 'No se encontraron resultados para la actualización',
+                message: 'No hay ninguna producción'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
             message: 'Error en el servidor',
-            error: error.message
         });
-        console.log(error)
+        console.log(error);
     }
 };
 
 
-export const eliminarProduccion = async (req, res) => {
+export const registrarProduccion = async (req, res) => {
     try {
-        // Obtiene el ID de la producción desde el header
-        const id_produccion = req.headers['id_produccion'];
-
-        // Verifica si se proporcionó el ID
-        if (!id_produccion) {
-            return res.status(400).json({
-                status: 400,
-                message: 'Se requiere proporcionar el ID de la producción en el header'
-            });
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors });
         }
 
-        // Realiza la consulta para eliminar la producción con el ID proporcionado
-        const [result] = await pool.query('DELETE FROM produccion WHERE id_produccion = ?', [id_produccion]);
+        const { cantidad_produccion, precio, fk_id_actividad } = req.body
+        const [resultado] = await pool.query("insert into produccion(cantidad_produccion, precio, fk_id_actividad) values (?,?,?)", [cantidad_produccion, precio, fk_id_actividad])
 
-        // Verifica si se eliminó correctamente
-        if (result.affectedRows > 0) {
+        if (resultado.affectedRows > 0) {
             res.status(200).json({
-                status: 200,
-                message: 'Se eliminó la producción con éxito'
-            });
+                "mensaje": "Producción registrada con exito"
+            })
         } else {
-            res.status(404).json({
-                status: 404,
-                message: 'No se encontró ninguna producción con el ID proporcionado'
-            });
+            res.status(400).json({
+                "mensaje": "hay un error no se pudo guardar"
+            })
         }
     } catch (error) {
         res.status(500).json({
+            "mensaje": error
+        })
+    }
+}
+
+
+export const BuscarProduccion = async (req, res) => {
+    try {
+        const { nombre } = req.params; // Obtener el nombre de la variedad desde los parámetros
+        const searchTerm = `%${nombre}%`; // Cambio aquí: preparar el término de búsqueda para buscar coincidencias parciales
+        const consultar = `
+        SELECT cul.id_producccion,
+       cul.cantidad_produccion,
+       cul.precio, 
+       lo.nombre_actividad AS nombre_actividad
+FROM produccion AS cul
+JOIN actividad AS lo ON cul.fk_id_actividad = lo.id_actividad
+WHERE lo.nombre_actividad LIKE ?;
+`; // Cambio aquí: utilizar el operador LIKE para buscar coincidencias parciales
+        const [resultado] = await pool.query(consultar, [searchTerm]); // Pasar el término de búsqueda como parámetro
+
+        if (resultado.length > 0) {
+            res.status(200).json(resultado);
+        } else {
+            res.status(404).json({
+                mensaje: "No se encontró ninguna producción con ese nombre de actividad"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({ status: 500, message: 'Error en el sistema: ' + error });
+    }
+};
+
+
+
+
+
+//actualizar
+export const actualizarProduccion = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json(errors);
+        }
+
+        const { id_producccion } = req.params;
+        const { cantidad_produccion, precio, fk_id_actividad } = req.body;
+
+        // Verifica si al menos uno de los campos está presente en la solicitud
+        if (!cantidad_produccion && !precio && !fk_id_actividad) {
+            return res.status(400).json({ message: 'Al menos uno de los campos ( cantidad_produccion, precio, fk_id_actividad) debe estar presente en la solicitud para realizar la actualización.' });
+        }
+
+        console.log("Consulta SQL:", `SELECT * FROM produccion WHERE id_producccion=${id_producccion}`);
+
+        const [oldFinca] = await pool.query("SELECT * FROM produccion WHERE id_producccion=?", [id_producccion]);
+
+        const [result] = await pool.query(
+            `UPDATE produccion SET cantidad_produccion = ${cantidad_produccion ? `'${cantidad_produccion}'` : `'${oldFinca[0].cantidad_produccion}'`}, precio = ${precio ? `'${precio}'` : `'${oldFinca[0].precio}'`}, fk_id_actividad = ${fk_id_actividad ? `'${fk_id_actividad}'` : `'${oldFinca[0].fk_id_actividad}'`} WHERE id_producccion = ?`,
+            [id_producccion]
+        );
+
+        if (result.affectedRows > 0) {
+            return res.status(200).json({
+                status: 200,
+                message: 'Se actualizó con éxito',
+                result: result
+            });
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: 'No se encontró el registro para actualizar'
+            });
+        }
+    } catch (error) {
+        console.error("Error en la función Actualizar:", error);
+        return res.status(500).json({
             status: 500,
-            message: 'Error en el servidor'
+            message: error.message || "error en el sistema"
         });
     }
 };
+

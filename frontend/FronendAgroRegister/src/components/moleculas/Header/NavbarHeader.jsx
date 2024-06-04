@@ -1,13 +1,35 @@
-// components/organismos/NavbarHeader.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaBars } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
-import NavItem from '../../moleculas/Sidebar/NavItem'; // Importa el componente NavItem del Sidebar
+import NavItem from '../../moleculas/Sidebar/NavItem';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import './Navbar.css';
 import v from '../../../styles/variables';
 
 function NavbarHeader() {
   const [showModal, setShowModal] = useState(false);
+  const [ultimoUsuario, setUltimoUsuario] = useState(null);
+
+  useEffect(() => {
+    // Función para obtener el último usuario registrado
+    const obtenerUltimoUsuario = () => {
+      axios.get('http://localhost:3000/listarUsuario')
+        .then(response => {
+          const ultimo = response.data[response.data.length - 1];
+          setUltimoUsuario(ultimo);
+        })
+        .catch(error => {
+          console.error('Error al obtener el último usuario:', error);
+        });
+    };
+
+    obtenerUltimoUsuario();
+
+    const interval = setInterval(obtenerUltimoUsuario, 300);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleModalOpen = () => {
     setShowModal(true);
@@ -15,6 +37,29 @@ function NavbarHeader() {
 
   const handleModalClose = () => {
     setShowModal(false);
+  };
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: 'Cerrar sesión',
+      text: '¿Estás seguro de que deseas cerrar sesión?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("token"); // Eliminar el token del localStorage
+        Swal.fire({
+          title: 'Sesión cerrada',
+          text: 'Su sesión ha sido cerrada exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        }).then(() => {
+          window.location.href = '/'; // Redirigir a la página de inicio de sesión
+        });
+      }
+    });
   };
 
   return (
@@ -27,12 +72,12 @@ function NavbarHeader() {
           <h1>AGRO-REGISTER</h1>
           <div className="d-flex align-items-center">
             <img className='imagenpersonal' src={v.Imagepersona} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '100%' }} onClick={handleModalOpen} />
-            <strong><span style={{ marginLeft: '10px', fontSize: '20px', marginRight: '50px', cursor: 'pointer' }} onClick={handleModalOpen}>Sergio C</span></strong>
+            {ultimoUsuario && <strong><span style={{ marginLeft: '10px', fontSize: '20px', marginRight: '50px', cursor: 'pointer' }} onClick={handleModalOpen}>{ultimoUsuario.nombre}</span></strong>}
           </div>
         </div>
       </nav>
 
-      <Modal dialogClassName="modal-sm" show={showModal} onHide={handleModalClose} backdrop={false} style={{ marginLeft: '490px', marginTop: '70px' }}>
+      <Modal dialogClassName="modal-sm" show={showModal} onHide={handleModalClose} backdrop={false} style={{ marginLeft: '28%', marginTop: '70px' }}>
         <Modal.Header closeButton>
           <Modal.Title>Información</Modal.Title>
         </Modal.Header>
@@ -40,17 +85,13 @@ function NavbarHeader() {
           <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
             <p>Visita tu perfil:</p>
           </div>
-          {/* Aquí comienza el uso de los elementos del Sidebar */}
           <NavItem icon={v.iconoPerfilUsuario} text="Perfil" href="/Perfilprincipal" className="perfil" />
-          <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
-            <p>Configura tu cuenta:</p>
-          </div>
-          <NavItem icon={v.iconoSoporte} text="Soporte" href="/soport" className="soporte" />
+
           <div style={{ marginBottom: '10px', marginRight: '20px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
             <p>¿Deseas cerrar sesión?</p>
+            <button onClick={handleLogout} className='cerrarSesion' style={{ marginLeft: '15px', borderRadius: '10px', backgroundColor: '#E83636', border: 'none', color: 'white', fontSize: '16px', height: '38px' }}>Cerrar sesión</button>
           </div>
-          <NavItem icon={v.iconoSalir} text="Salir" href="/" className="salir" />
-          {/* Aquí termina el uso de los elementos del Sidebar */}
+
         </Modal.Body>
       </Modal>
     </>
