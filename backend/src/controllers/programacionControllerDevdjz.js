@@ -1,7 +1,7 @@
 import { pool } from "../database/conexion.js";
 import { validationResult } from "express-validator"
 
-// CRUD - Registrar
+
 export const registrarProgramacion = async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -22,7 +22,7 @@ export const registrarProgramacion = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({
-            "mensaje": error
+            message: "Error en el sistema"
         })
     }
 }
@@ -60,12 +60,12 @@ export const listarProgramacion = async (req, res) => {
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No hay ninguna asignación'
+                message: 'No hay ninguna programación'
             });
         }
     } catch (error) {
         res.status(500).json({
-            message: error.message || 'Error interno del servidor'
+            message: error.message || 'Error en el sistema'
         });
     }
 }
@@ -125,19 +125,19 @@ export const desactivar = async (req, res) => {
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: 'Se actualizo el estado con éxito',
+                message: 'Se cambio el estado correctamente',
                 result: result
             });
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No se encontró el estado para actualizar'
+                message: 'No se pudo cambiar el estado'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: error
+            message: "Error en el sistema"
         });
     }
 }

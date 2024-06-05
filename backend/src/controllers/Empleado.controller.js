@@ -14,6 +14,7 @@ const storage = multer.diskStorage(
     }
 );
 
+
 const upload = multer({ storage: storage });
 export const cargarImagen = upload.single('img');
 
@@ -71,6 +72,13 @@ export const registrarEmpleado = async (req, res) => {
         }
 
         const { nombre, apellido, correo, password, rol } = req.body;
+
+        // Verificar si el correo ya existe
+        const [existingUser] = await pool.query(`SELECT * FROM usuarios WHERE correo = ?`, [correo]);
+        if (existingUser.length > 0) {
+            return res.status(400).json({ status: 400, message: 'El correo ya está en uso' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const imagen = req.file ? req.file.path : null;
 
@@ -99,50 +107,68 @@ export const registrarEmpleado = async (req, res) => {
     }
 };
 
+
+
+
 export const actualizarEmpleado = async (req, res) => {
     try {
+        // Validación de los errores en la solicitud
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { id_usuario } = req.params;
+        // Extraer el id del usuario desde los parámetros
+        const { id } = req.params; // Cambiar id_usuario a id
         const { nombre, apellido, correo, password, rol, estado } = req.body;
 
+        // Verificación de que al menos un campo esté presente en la solicitud
         if (!nombre && !apellido && !correo && !password && !rol && !estado && !req.file) {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, apellido, correo, password, rol, estado, imagen) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
-        const [oldUsuario] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id_usuario]);
+        // Debugging: imprimir el id recibido
+        console.log("ID del usuario a actualizar:", id);
 
-        if (oldUsuario.length === 0) {
+        // Consulta para obtener el usuario existente
+        const [oldUsuarioRows] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id]);
+
+        // Debugging: imprimir el resultado de la consulta
+        console.log("Resultado de la consulta:", oldUsuarioRows);
+
+        if (oldUsuarioRows.length === 0) {
             return res.status(404).json({
                 status: 404,
                 message: 'Usuario no encontrado',
             });
         }
 
-        let imagen = oldUsuario[0].imagen;
+        const oldUsuario = oldUsuarioRows[0];
+        let imagen = oldUsuario.imagen;
 
+        // Si se ha subido una nueva imagen, actualizar el campo de imagen
         if (req.file) {
             imagen = req.file.path;
         }
 
+        // Creación del objeto usuario actualizado
         const updatedUsuario = {
-            nombre: nombre || oldUsuario[0].nombre,
-            apellido: apellido || oldUsuario[0].apellido,
-            correo: correo || oldUsuario[0].correo,
-            password: password ? await bcrypt.hash(password, 10) : oldUsuario[0].password,
-            rol: rol || oldUsuario[0].rol,
-            estado: estado || oldUsuario[0].estado,
+            nombre: nombre || oldUsuario.nombre,
+            apellido: apellido || oldUsuario.apellido,
+            correo: correo || oldUsuario.correo,
+            password: password ? await bcrypt.hash(password, 10) : oldUsuario.password,
+            rol: rol || oldUsuario.rol,
+            estado: estado || oldUsuario.estado,
             imagen: imagen
         };
 
+        // Actualización del usuario en la base de datos
         const [result] = await pool.query(
             `UPDATE usuarios SET nombre=?, apellido=?, correo=?, password=?, rol=?, estado=?, imagen=? WHERE id_usuario = ?`,
-            [updatedUsuario.nombre, updatedUsuario.apellido, updatedUsuario.correo, updatedUsuario.password, updatedUsuario.rol, updatedUsuario.estado, updatedUsuario.imagen, id_usuario]
+            [updatedUsuario.nombre, updatedUsuario.apellido, updatedUsuario.correo, updatedUsuario.password, updatedUsuario.rol, updatedUsuario.estado, updatedUsuario.imagen, id]
         );
 
+        // Verificación del resultado de la actualización
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
@@ -162,6 +188,7 @@ export const actualizarEmpleado = async (req, res) => {
         });
     }
 };
+
 
 
 //CRUD - Desactivar

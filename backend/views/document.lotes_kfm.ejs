@@ -22,13 +22,15 @@
             status:200
             json:
             {
-              "id_lote": 2,
-              "nombre": "pollos",
-              "longitud": -74.13,
-              "latitud": 4.5607,
-              "fk_id_finca": 1
-          },
-
+              "id_lote": 1,
+              "nombre": "sa",
+              "longitud": 12,
+              "latitud": 12,
+              "id_finca": 5,
+              "nombre_finca": "florencia",
+              "fk_id_finca": 5,
+              "estado": "activo"
+            }
               incorrecto:
               status:404
               body:
@@ -57,11 +59,12 @@
       <tr><td>Usuario</td><td>Administrador</td></tr>
       <tr><td>Request json</td><td>
         { 
-          "id_lote": 2,
-          "nombre": "pollos",
-          "longitud": -74.13,
-          "latitud": 4.5607,
-          "fk_id_finca": 1
+          "nombre": "caullo",
+          "longitud": 16,
+          "latitud": 13,
+          "id_finca": 7,
+          "nombre_finca": "margarita",
+          "fk_id_finca": 4,
              }</td></tr>
       <tr><td>Respuesta json</td><td>
 
@@ -99,11 +102,12 @@
     <tr><td>Header</td><td>Token:</td></tr>
     <tr><td>Usuario</td><td>Administrador</td></tr>
     <tr><td>Request json</td><td>{
-      "id_lote": 2,
-      "nombre": "timana",
-      "longitud": -74.13,
-      "latitud": 4.5607,
-      "fk_id_finca": 1 }</td></tr>
+      "nombre": "sa",
+      "longitud": 12,
+      "latitud": 12,
+      "id_finca": 5,
+      "nombre_finca": "florencia",
+      "fk_id_finca": 5, }</td></tr>
     <tr><td>Respuesta json</td><td>
         correcto:
         status:200
@@ -144,13 +148,15 @@
       status:200
       json:
       {
-        "id_lote": 2,
-        "nombre": "pollos",
-        "longitud": 23,
-        "latitud": 22,
-        "fk_id_finca": 1
-    }
-
+        "id_lote": 1,
+        "nombre": "sa",
+        "longitud": 12,
+        "latitud": 12,
+        "id_finca": 5,
+        "nombre_finca": "florencia",
+        "fk_id_finca": 5,
+        "estado": "activo"
+      }
         incorrecto:
         status:404
         body:
@@ -176,7 +182,7 @@
   <tr><td>Metodo HTTP</td><td>DELETE</td></tr>
   <tr><td>Header</td><td>Token:</td></tr>
   <tr><td>Usuario</td><td>Administrador</td></tr>
-  <tr><td>Request json</td><td>"estado": "inactivo</td></tr>
+  <tr><td>Request json</td><td>"estado": "inactivo"</td></tr>
   <tr><td>Respuesta json</td><td>
       correcto:
       status:200

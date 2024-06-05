@@ -97,7 +97,7 @@ export const ActualizarA = async (req, res) => {
     }
   };
 
-//CRUD - Desactivar
+
 export const DesactivarA = async (req, res) => {
     try {
         const { id } = req.params;
@@ -112,13 +112,13 @@ export const DesactivarA = async (req, res) => {
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: 'Se actualizo el estado con éxito',
+                message: 'Se cambio el estado con éxito',
                 result: result
             });
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No se encontró el estado para actualizar'
+                message: 'No se pudo cambiar el estado'
             });
         }
     } catch (error) {

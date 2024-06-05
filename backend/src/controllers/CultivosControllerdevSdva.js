@@ -16,7 +16,6 @@ export const listar = async (req, res) => {
  JOIN finca AS fin ON lo.fk_id_finca = fin.id_finca
  JOIN variedad AS var ON cul.fk_id_variedad = var.id_variedad;
  `;
-
         const [result] = await pool.query(sql);
         
         if (result.length > 0) {
@@ -44,12 +43,12 @@ export const registrar = async (req, res) => {
             })
         } else {
             res.status(400).json({
-                "mensaje": "hay un error no se pudo guardar"
+                "mensaje": "Fallo el registro de su cultivo"
             })
         }
     } catch (error) {
         res.status(500).json({
-            "mensaje": error
+            message: 'Error en el sistema: ' + error
         })
     }
 }
@@ -89,7 +88,7 @@ export const actualizar = async (req, res) => {
             res.status(404).json({ "mensaje": "No se pudo actualizar el cultivo" }); 
         }
     } catch (error) {
-        res.status(500).json({ "mensaje": error.message }); // Corrección en el manejo de error
+        res.status(500).json({ message: 'Error en el sistema: ' + error }); // Corrección en el manejo de error
     }
 }
 
@@ -143,19 +142,19 @@ export const desactivar = async (req, res) => {
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: 'Se actualizo el estado con éxito',
+                message: 'El estado del cultivo ha sido cambiado exitosamente',
                 result: result
             });
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No se encontró el estado para actualizar'
+                message: 'No se pudo cambiar el estado del cultivo'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: error
+            message: 'Error en el sistema: ' + error
         });
     }
 }

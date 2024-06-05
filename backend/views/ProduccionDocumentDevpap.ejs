@@ -7,9 +7,8 @@
     <title>Documentación de la API</title>
 </head>
 <body>
-        <h1>PRODUCCIÓN</h1>
+    <h1>Documentación de la API - Producción</h1>
     <h3>Listar Producción</h3>
-
     <table>
         <tr>
             <td>Número</td>
@@ -25,7 +24,7 @@
         </tr>
         <tr>
             <td>Descripción</td>
-            <td>Obtiene una lista de registros de producción</td>
+            <td>Permite listar las producciones registradas en la base de datos</td>
         </tr>
         <tr>
             <td>Método HTTP</td>
@@ -33,7 +32,7 @@
         </tr>
         <tr>
             <td>Header</td>
-            <td>Null</td>
+            <td>Token:</td>
         </tr>
         <tr>
             <td>Respuesta JSON</td>
@@ -43,39 +42,30 @@
                 JSON:
                 {
                     "id_producccion": 1,
-                    "cantidad_produccion": 500000,
-                    "id_programacion": 3,
-                    "fecha_inicio": "2024-03-29T05:00:00.000Z",
-                    "fecha_fin": "2024-03-30T05:00:00.000Z"
-                },
-                {
-                    "id_producccion": 2,
-                    "cantidad_produccion": 5000,
-                    "id_programacion": 3,
-                    "fecha_inicio": "2024-03-29T05:00:00.000Z",
-                    "fecha_fin": "2024-03-30T05:00:00.000Z"
+                    "cantidad_produccion": 34,
+                    "precio": 123,
+                    "nombre_actividad": "regar"
                 }
                 <br>
                 Incorrecto:
                 Status: 400
                 JSON:
-                {"status": 400,"message": "No hay ningún registro de producción."}
+                {"status": 400,"message": "No hay ninguna producción"}
                 <br>
                 Error en el servidor:
                 Status: 500
                 JSON:
-                {"status": 500,"message": "Error en el servidor."}
+                {"status": 500,"message": "Error en el sistema"}
             </td>
         </tr>
-        <tr><td>Nombre Desarrollador:</td> <td>Pablo Andres perdomo- devpap</td></tr>
+        <tr><td>Programador</td> <td>Sergio Canacue España - devsce</td></tr>
     </table>
-
-    <h3>Requerimiento 2. Documentación ENDPOINT Registrar Producción</h3>
-
+<br>
+    <h3>Registrar Producción</h3>
     <table>
         <tr>
             <td>Número</td>
-            <td>3</td>
+            <td>2</td>
         </tr>
         <tr>
             <td>Nombre del Servicio</td>
@@ -83,11 +73,11 @@
         </tr>
         <tr>
             <td>URL</td>
-            <td>/registrarProduccion</td>
+            <td>/RegistraProduccion</td>
         </tr>
         <tr>
             <td>Descripción</td>
-            <td>Registra una nueva producción en la base de datos</td>
+            <td>Permite registrar una nueva producción en la base de datos</td>
         </tr>
         <tr>
             <td>Método HTTP</td>
@@ -95,14 +85,16 @@
         </tr>
         <tr>
             <td>Header</td>
-            <td>Content-Type: application/json</td>
+            <td>Token:</td>
         </tr>
         <tr>
             <td>Request JSON</td>
-            <td>{"id_produccion": 3,
-                "cantidad_produccion": 1600,
-                "precio": 2.5,
-                "fk_variedad_cultivo": 8}</td>
+            <td>
+            {
+                "cantidad_produccion": 4,
+                "precio": 100,
+                "fk_id_actividad": 1
+            }</td>
         </tr>
         <tr>
             <td>Respuesta JSON</td>
@@ -111,29 +103,29 @@
                 Status: 200
                 JSON:
                 {"status": 200,
-                "message": "Se registró la producción correctamente"}
+                "message": "Producción registrada con exito"}
                 <br>
                 Incorrecto:
                 Status: 400
                 JSON:
                 {"status": 400,
-                "message": "Faltan campos requeridos en la solicitud"}
+                "message": "hay un error no se pudo guardar"}
                 <br>
                 Error en el servidor:
                 Status: 500
                 JSON:
-                {"status": 500,"message": "Error en el servidor"}
+                {"status": 500,"message": "Error en el sistema"}
             </td>
         </tr>
-        <tr><td>Nombre Desarrollador:</td> <td>Pablo Andres perdomo- devpap</td></tr>
+        <tr><td>Programador</td> <td>Sergio Canacue España - devsce</td></tr>
     </table>
-
-    <h3>Requerimiento 3: Buscar Producción por Variedad de Cultivo</h3>
+<br>
+    <h3>Buscar Producción</h3>
 
     <table>
         <tr>
             <td>Número</td>
-            <td>2</td>
+            <td>3</td>
         </tr>
         <tr>
             <td>Nombre del Servicio</td>
@@ -141,23 +133,23 @@
         </tr>
         <tr>
             <td>URL</td>
-            <td>/BuscarProduccion</td>
+            <td>/BuscarProduccion/:nombre</td>
         </tr>
         <tr>
             <td>Descripción</td>
-            <td>Permite buscar registros de producción por variedad de cultivo</td>
+            <td>Permite buscar una producción registrada en la base de datos</td>
         </tr>
         <tr>
             <td>Método HTTP</td>
-            <td>POST</td>
+            <td>GET</td>
         </tr>
         <tr>
             <td>Header</td>
-            <td>Content-Type: application/json</td>
+            <td>Token:</td>
         </tr>
         <tr>
             <td>Request JSON</td>
-            <td>{"fk_variedad_cultivo": "Tipo de Variedad"}</td>
+            <td></td>
         </tr>
         <tr>
             <td>Respuesta JSON</td>
@@ -165,33 +157,33 @@
                 Éxito:
                 Status: 200
                 JSON:
-                {"status": 200,"data": [{
-                    "id_producccion": 2,
-                    "cantidad_produccion": 5000,
-                    "precio": 900,
-                    "fk_id_programacion": 3
-                }]}
+                {
+                    "id_producccion": 1,
+                    "cantidad_produccion": 34,
+                    "precio": 123,
+                    "nombre_actividad": "regar"
+                }
                 <br>
                 Sin Resultados:
                 Status: 404
                 JSON:
-                {"status": 404,"message": "No se encontraron resultados para la variedad de cultivo proporcionada"}
+                {"status": 404,"message": "No se encontró ninguna producción con ese nombre de actividad"}
                 <br>
                 Error en el Servidor:
                 Status: 500
                 JSON:
-                {"status": 500,"message": "Error en el servidor"}
+                {"status": 500,"message": "Error en el sistema"}
             </td>
         </tr>
-        <tr><td>Nombre Desarrollador:</td> <td>Pablo Andres perdomo- devpap</td></tr>
+        <tr><td>Programador</td> <td>Sergio Canacue España - devsce</td></tr>
     </table>
-
+<br>
     <h3>Actualizar Producción</h3>
 
     <table>
         <tr>
             <td>Número</td>
-            <td>2</td>
+            <td>4</td>
         </tr>
         <tr>
             <td>Nombre del Servicio</td>
@@ -199,7 +191,7 @@
         </tr>
         <tr>
             <td>URL</td>
-            <td>/actualizarProduccion/:id_produccion</td>
+            <td>/ActualizarProduccion/:id_producccion</td>
         </tr>
         <tr>
             <td>Descripción</td>
@@ -211,15 +203,16 @@
         </tr>
         <tr>
             <td>Header</td>
-            <td>Content-Type: application/json</td>
-        </tr>
-        <tr>
-            <td>Parámetros de Ruta</td>
-            <td>{"id_produccion": "ID de la producción a actualizar"}</td>
+            <td>Token:</td>
         </tr>
         <tr>
             <td>Request JSON</td>
-            <td>{ "cantidad_produccion": 150, "precio": 15.75, "fk_variedad_cultivo": "Nueva Variedad"}</td>
+            <td>                
+            {
+                "cantidad_produccion": 34,
+                "precio": 123,
+                "fk_id_actividad": 1
+            }</td>
         </tr>
         <tr>
             <td>Respuesta JSON</td>
@@ -232,15 +225,15 @@
                 Incorrecto:
                 Status: 400
                 JSON:
-                {"status": 400,"message": "No se pudo actualizar la producción. [Mensaje de error específico]"}
+                {"status": 400,"message": "No se encontró el registro para actualizar"}
                 <br>
                 Error en el servidor:
                 Status: 500
                 JSON:
-                {"status": 500,"message": "Error en el servidor"}
+                {"status": 500,"message": "Error en el sistema"}
             </td>
         </tr>
-        <tr><td>Nombre Desarrollador:</td> <td>Pablo Andres perdomo- devpap</td></tr>
+        <tr><td>Programador</td> <td>Sergio Canacue España - devsce</td></tr>
     </table>
 
 </body>

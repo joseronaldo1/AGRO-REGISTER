@@ -32,7 +32,6 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         setShowWarning(true); // Mostrar advertencia si algún campo está vacío
         return;
       }
-
       if (!validarNombreVariedad(formData.nombre_variedad)) {
         // Mostrar alerta si el nombre contiene números
         Swal.fire({
@@ -42,16 +41,21 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         });
         return;
       }
-
+      const token = localStorage.getItem('token');
+      if (!token) {
+          // Manejar el caso en que el token no esté presente
+          console.error('No se encontró el token en el localStorage');
+          return;
+      }
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/registrarVariedad',
           formData,
           {
             headers: {
-              'Content-Type': 'application/json'
-            }
-          }
+                'token': token
+              }
+        }
         );
         console.log(response.data);
         // Mostrar alerta de registro exitoso
@@ -64,7 +68,12 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/actualizarVariedad/${id}`,
-          formData
+          formData,
+          {
+            headers: {
+                'token': token
+              }
+        }
         );
         // Mostrar alerta de actualización exitosa
         Swal.fire({

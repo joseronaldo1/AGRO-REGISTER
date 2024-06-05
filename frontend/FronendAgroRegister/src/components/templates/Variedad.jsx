@@ -11,7 +11,7 @@ import SearchBar from '../moleculas/SearchBar';
 import Swal from 'sweetalert2';
 
 function Variedad() {
-  const baseURL = 'http://localhost:3000/listarVariedades';
+
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
@@ -29,11 +29,17 @@ function Variedad() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(baseURL);
-      setData(response.data);
-      setOriginalData(response.data); // Guardar los datos originales sin filtrar
+      const token = localStorage.getItem('token');
+      const baseURL = 'http://localhost:3000/listarVariedades';
+      const respuesta = await axios.get(baseURL, {
+        headers: {
+          'token': token
+        }
+      });
+      setData(respuesta.data);
+      setOriginalData(respuesta.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error al obtener datos:', error);
     }
   };
 
@@ -54,69 +60,107 @@ function Variedad() {
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      console.log('Actualización de recurso:', formData);
+      console.log('Actualización de la variedad:', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
       const { id } = formData;
-      await axios.put(`http://localhost:3000/actualizarVariedad/${id}`, formData);
-      setShowActualizacionModal(false);
+      const response = await axios.put(`http://localhost:3000/actualizarVariedad/${id}`, formData, {
+        headers: {
+          'token': token
+        }
+      });
+  
+      if (response.status === 200) {
+        console.log('Variedad actualizada exitosamente.');
+        fetchData();
+        setShowActualizacionModal(false);
+      } else {
+        console.error('Error al actualizar la variedad:', response.data);
+      }
     } catch (error) {
-      console.error('Error al actualizar la variedad:', error);
+      console.error('Error al actualizar las variedades:', error);
     }
   };
+
 
 
   // Función para buscar fincas por nombre_variedad
   const handleSearch = async (searchTerm) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+  
       if (searchTerm.trim() === '') {
-        // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
-
-        setError(null); // Limpiar el error
+        setError(null);
       } else {
-        const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`);
+        const response = await axios.get(`http://localhost:3000/buscarVariedad/${searchTerm}`, {
+          headers: {
+            'token': token
+          }
+        });
         setData(response.data);
         if (response.data.length === 0) {
-          // Si no se encontraron resultados, establecer el mensaje de error
           setError('No se encontraron resultados');
         } else {
-          setError(null); // Limpiar el error si se encontraron resultados
+          setError(null);
         }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Busqueda no encontrada'); // Establecer mensaje de error
+      setError('Busqueda no encontrada');
     }
   };
-
-
   const handleEstadoBotonClick = async (id, estado) => {
     try {
-
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+  
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
-      await axios.put(`http://localhost:3000/desactivar/Variedad/${id}`, { estado: newEstado });
-      fetchData();
-
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: `El estado se cambió con éxito a ${newEstado}.`,
+      const response = await axios.put(`http://localhost:3000/desactivar/Variedad/${id}`, { estado: newEstado }, {
+        headers: {
+          'token': token
+        }
       });
-
+      if (response.status === 200) {
+        console.log('Estado de la variedad cambiado exitosamente.');
+        fetchData(); // Actualizar la interfaz de usuario con los datos más recientes
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: `El estado se cambió con éxito a ${newEstado}.`,
+        });
+      } else {
+        console.error('Error al cambiar el estado de la variedad:', response.data);
+      }
     } catch (error) {
       console.error('Error al cambiar el estado de la variedad:', error);
     }
   };
+  
 
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
     if (event.target.value === '') {
-      setData(originalData);
+      setData(originalData); // Restaurar los datos originales
     } else {
       const filteredData = originalData.filter(item => item.estado === event.target.value);
-      setData(filteredData);
+      setData(filteredData); // Actualizar la tabla con los datos filtrados
     }
   };
+
 
 
   const columns = [

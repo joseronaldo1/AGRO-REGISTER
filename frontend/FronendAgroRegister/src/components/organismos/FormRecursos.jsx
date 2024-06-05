@@ -39,16 +39,21 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
         });
         return;
       }
-
+      const token = localStorage.getItem('token');
+      if (!token) {
+          // Manejar el caso en que el token no esté presente
+          console.error('No se encontró el token en el localStorage');
+          return;
+      }
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistroRecurso',
-          { ...formData },
+          formData,
           {
             headers: {
-              'Content-Type': 'application/json'
-            }
-          }
+                'token': token
+              }
+        }
         );
         console.log(response.data);
         Swal.fire({
@@ -60,7 +65,12 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/actualizarRecurso/${id}`,
-          formData
+          formData,
+          {
+            headers: {
+                'token': token
+              }
+        }
         );
         Swal.fire({
           icon: 'success',

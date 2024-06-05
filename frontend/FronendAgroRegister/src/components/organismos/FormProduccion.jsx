@@ -14,14 +14,28 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
   const [nombre_actividad, setNombreActividad] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/listarActividad')
-      .then(response => {
+    const fetchNombreActividad = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No se encontró el token en el localStorage');
+          return;
+        }
+  
+        const response = await axios.get('http://localhost:3000/listarActividad', {
+          headers: {
+            'token': token
+          }
+        });
         setNombreActividad(response.data);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error al obtener los datos:', error);
-      });
+      }
+    };
+  
+    fetchNombreActividad();
   }, []);
+  
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -66,16 +80,21 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
         });
         return;
       }
-
+      const token = localStorage.getItem('token');
+      if (!token) {
+          // Manejar el caso en que el token no esté presente  
+          console.error('No se encontró el token en el localStorage');
+          return;
+      }
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistraProduccion',
           formData,
           {
             headers: {
-              'Content-Type': 'application/json'
-            }
-          }
+                'token': token
+              }
+        }
         );
 
         Swal.fire({
@@ -88,7 +107,12 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
         const { id_producccion } = initialData;
         await axios.put(
           `http://localhost:3000/ActualizarProduccion/${id_producccion}`,
-          formData
+          formData,
+          {
+            headers: {
+                'token': token
+              }
+        }
         );
         // Mostrar alerta de actualización exitosa
         Swal.fire({
