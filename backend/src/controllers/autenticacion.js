@@ -17,7 +17,10 @@ export const validar = async (req, res) => {
             if (match) {
                 // Si las contraseñas coinciden, generar el token y enviar la respuesta
                 const token = Jwt.sign({ user }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
-                return res.status(200).json({ nombre: user.nombre, token: token, message: 'Token generado con éxito' });
+                return res.status(200).json({ id_usuario: user.id_usuario, nombre: user.nombre, token: token, message: 'Token generado con éxito' });
+            } else {
+                // Si la contraseña no coincide, enviar un mensaje de error
+                return res.status(401).json({ message: 'Contraseña incorrecta' });
             }
         } else {
             // Si no se encuentra el usuario, enviar un mensaje de usuario no encontrado
@@ -29,6 +32,7 @@ export const validar = async (req, res) => {
         res.status(500).json({ status: 500, message: 'Error del servidor' + error });
     }
 };
+
 
 //verificar
 

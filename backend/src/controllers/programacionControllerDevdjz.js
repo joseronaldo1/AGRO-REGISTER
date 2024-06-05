@@ -194,3 +194,47 @@ export const desactivarProgamacionCadena = async (req, res) => {
         });
     }
 };
+
+
+
+// pablo Andres perdomo mancera
+export const listarProgramacionPorUsuario = async (req, res) => {
+    try {
+        const { id_usuario } = req.params;
+
+        const sql = `
+            SELECT 
+                p.id_programacion,
+                p.fecha_inicio,
+                p.fecha_fin,
+                u.nombre AS nombre_usuario, 
+                a.nombre_actividad,
+                v.nombre_variedad AS nombre_variedad,
+                p.estado
+            FROM 
+                programacion AS p
+            JOIN 
+                usuarios AS u ON p.fk_id_usuario = u.id_usuario
+            JOIN 
+                actividad AS a ON p.fk_id_actividad = a.id_actividad
+            JOIN 
+                variedad AS v ON p.fk_id_variedad = v.id_variedad
+            WHERE 
+                p.fk_id_usuario = ?`;
+
+        const [result] = await pool.query(sql, [id_usuario]);
+
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: 'No hay programaciones para este usuario'
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message || 'Error interno del servidor'
+        });
+    }
+};
