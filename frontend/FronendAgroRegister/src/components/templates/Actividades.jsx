@@ -229,7 +229,7 @@ function Actividad() {
       sortable: true,
     },
     {
-      name: 'Observaciones',
+      name: 'A realizar',
       selector: (row) => row.observaciones,
       sortable: true,
     },

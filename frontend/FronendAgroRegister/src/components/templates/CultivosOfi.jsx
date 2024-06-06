@@ -74,7 +74,7 @@ function Cultivos() {
           'token': token
         }
       });
-  
+
       if (response.status === 200) {
         console.log('Cultivo actualizado exitosamente.');
         fetchData();
@@ -95,7 +95,7 @@ function Cultivos() {
         console.error('No se encontró el token en el localStorage');
         return;
       }
-  
+
       if (searchTerm.trim() === '') {
         setData(originalData);
         setError(null);
@@ -126,14 +126,14 @@ function Cultivos() {
         console.error('No se encontró el token en el localStorage');
         return;
       }
-  
+
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
       const response = await axios.put(`http://localhost:3000/desactivar/Cultivo/${id}`, { estado: newEstado }, {
         headers: {
           'token': token
         }
       });
-  
+
       if (response.status === 200) {
         console.log('Estado del cultivo cambiado exitosamente.');
         fetchData(); // Actualizar la interfaz de usuario con los datos más recientes
@@ -149,7 +149,7 @@ function Cultivos() {
       console.error('Error al cambiar el estado del cultivo:', error);
     }
   };
-  
+
 
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
@@ -174,18 +174,19 @@ function Cultivos() {
           <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
-    }, 
+    },
+
+    {
+      name: 'Variedad C',
+      selector: (row) => row.nombre_variedad,
+      sortable: true,
+    },
     {
       name: 'Lote',
       selector: (row) => row.nombre_lote,
       sortable: true,
     },
-    {
-      name: 'Variedad',
-      selector: (row) => row.nombre_variedad,
-      sortable: true,
-    },
-   
+
     {
       name: 'Cantidad Sembrada',
       selector: (row) => row.cantidad_sembrada,

@@ -193,7 +193,7 @@ function Recursos() {
       sortable: true,
     },
     {
-      name: 'Extras',
+      name: 'Descripcion',
       selector: (row) => row.extras,
       sortable: true,
     },

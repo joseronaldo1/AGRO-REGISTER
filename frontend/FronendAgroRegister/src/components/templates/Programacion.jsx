@@ -216,7 +216,7 @@ function Programacion() {
       ),
     },
     {
-      name: 'Usuario',
+      name: 'Empleados',
       selector: (row) => row.nombre_usuario,
       sortable: true,
     },
@@ -226,7 +226,7 @@ function Programacion() {
       sortable: true,
     },
     {
-      name: 'Variedad',
+      name: 'Variedad C',
       selector: (row) => row.nombre_variedad,
       sortable: true,
     },
