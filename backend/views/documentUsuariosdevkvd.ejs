@@ -19,7 +19,7 @@
   <tr><td>Respuesta json</td>  <td>
     Correcto:
     status: 200 OK
-    {
+    {   "id_usuario": 1,
         "nombre": "Ronaldo",
         "apellido":"Ledezma",
         "correo":"ronaldoledezma@gmail.com",
@@ -55,12 +55,12 @@
   <tr><td>Metodo HTTP</td>  <td>POST</td></tr>
   <tr><td>Header</td>  <td>Token:</td></tr>
   <tr><td>Request json</td> <td>{
-    "nombre": "Ronaldo",
-    "apellido": "Ledezma",
-    "correo": "ronaldoledezma@gmail.com",
-    "password": "ronaldo333",
-    "rol": "administrador"           
-    } </td></tr>
+    "nombre": "Pablo",
+    "apellido":"Perdomo",
+    "correo":"pabloperdomo@gmail.com",
+    "password":"pablo999",
+    "rol":"administrador"
+  }</td></tr>
   <tr><td>Respuesta json</td>  <td>
     Correcto:
     Status: 200 OK
@@ -131,13 +131,14 @@ Status: 500 Internal Server Error
   <tr><td>Descripcion</td>  <td>Permite Actualizar un usuario registrado en la base de datos</td></tr>
   <tr><td>Metodo HTTP</td>  <td>PUT</td></tr>
   <tr><td>Header</td>  <td>Token:</td></tr>
-  <tr><td>Request json</td>  <td>{
-        "nombre": "Pablo",
-        "apellido":"Perdomo",
-        "correo":"pabloperdomo@gmail.com",
-        "password":"pablo999",
-        "rol":"administrador"
-      }</td></tr>
+  <tr><td>Request json</td>  <td>    {   
+    "nombre": "Ronaldo",
+    "apellido":"Ledezma",
+    "correo":"ronaldoledezma@gmail.com",
+    "password":"ronaldo333",
+    "rol":"administrador",
+    "estado":"activo"
+  }</td></tr>
   <tr><td>Respuesta json</td>  <td>
     Correcto:
     Status: 200 OK
@@ -174,16 +175,14 @@ Status: 500 Internal Server Error
   <tr><td>Respuesta json</td>  <td>
     Correcto:
     Status: 200 OK
-    [
-    {
-        "nombre": "Pablo",
-        "apellido":"Perdomo ",
-        "correo":"pabloperdomogmail.com",
-        "password":"pablo999",
+    {   "id_usuario": 1,
+        "nombre": "Ronaldo",
+        "apellido":"Ledezma",
+        "correo":"ronaldoledezma@gmail.com",
+        "password":"ronaldo333",
         "rol":"administrador",
         "estado":"activo"
       }
-  ]
   <br>
 Incorrecto:
 

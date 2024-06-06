@@ -62,16 +62,21 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         });
         return;
       }
-
+      const token = localStorage.getItem('token');
+      if (!token) {
+          // Manejar el caso en que el token no esté presente
+          console.error('No se encontró el token en el localStorage');
+          return;
+      }
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistroFinca',
           formData,
           {
             headers: {
-              'Content-Type': 'application/json'
-            }
-          }
+                'token': token
+              }
+        }
         );
         console.log(response.data);
         // Mostrar alerta de registro exitoso
@@ -85,7 +90,12 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/actualizarFinca/${id}`,
-          formData
+          formData,
+          {
+            headers: {
+                'token': token
+              }
+        }
         );
         // Mostrar alerta de actualización exitosa
         Swal.fire({
@@ -94,7 +104,6 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
           text: 'La finca se ha actualizado exitosamente'
         });
       }
-
       onSubmit(formData);
       cerrarModal();
     } catch (error) {

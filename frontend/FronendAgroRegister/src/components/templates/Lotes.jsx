@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import SearchBar from '../moleculas/SearchBar';
 
 function Lotes() {
-  const baseURL = 'http://localhost:3000/listarlote';
+
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
@@ -29,12 +29,17 @@ function Lotes() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(baseURL);
-      setData(response.data);
-      setOriginalData(response.data);
+      const token = localStorage.getItem('token');
+      const baseURL = 'http://localhost:3000/listarlote';
+      const respuesta = await axios.get(baseURL, {
+        headers: {
+          'token': token
+        }
+      });
+      setData(respuesta.data);
+      setOriginalData(respuesta.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setError('Error al obtener datos');
+      console.error('Error al obtener datos:', error);
     }
   };
 
@@ -55,23 +60,50 @@ function Lotes() {
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      console.log('Actualización de recurso:', formData);
+      console.log('Actualización del lote:', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
       const { id } = formData;
-      await axios.put(`http://localhost:3000/Actualizarlote/${id}`, formData);
-      fetchData();
-      setShowActualizacionModal(false);
+      const response = await axios.put(`http://localhost:3000/Actualizarlote/${id}`, formData, {
+        headers: {
+          'token': token
+        }
+      });
+  
+      if (response.status === 200) {
+        console.log('Lote actualizado exitosamente.');
+        fetchData();
+        setShowActualizacionModal(false);
+      } else {
+        console.error('Error al actualizar el Lote:', response.data);
+      }
     } catch (error) {
-      console.error('Error al actualizar el lote:', error);
+      console.error('Error al actualizar los Lotes:', error);
     }
   };
 
   const handleSearch = async (searchTerm) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+  
       if (searchTerm.trim() === '') {
         setData(originalData);
         setError(null);
       } else {
-        const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`);
+        const response = await axios.get(`http://localhost:3000/Buscarlote/${searchTerm}`, {
+          headers: {
+            'token': token
+          }
+        });
         setData(response.data);
         if (response.data.length === 0) {
           setError('No se encontraron resultados');
@@ -81,35 +113,51 @@ function Lotes() {
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Búsqueda no encontrada');
+      setError('Busqueda no encontrada');
     }
   };
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+  
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
-      await axios.put(`http://localhost:3000/desactivar/Lote/${id}`, { estado: newEstado });
-      fetchData();
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: `El estado se cambió con éxito a ${newEstado}.`,
+      const response = await axios.put(`http://localhost:3000/desactivar/Lote/${id}`, { estado: newEstado }, {
+        headers: {
+          'token': token
+        }
       });
+      if (response.status === 200) {
+        console.log('Estado del lote cambiado exitosamente.');
+        fetchData(); // Actualizar la interfaz de usuario con los datos más recientes
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: `El estado se cambió con éxito a ${newEstado}.`,
+        });
+      } else {
+        console.error('Error al cambiar el estado del lote:', response.data);
+      }
     } catch (error) {
       console.error('Error al cambiar el estado del lote:', error);
     }
   };
+  
 
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
     if (event.target.value === '') {
-      setData(originalData);
+      setData(originalData); // Restaurar los datos originales
     } else {
       const filteredData = originalData.filter(item => item.estado === event.target.value);
-      setData(filteredData);
+      setData(filteredData); // Actualizar la tabla con los datos filtrados
     }
   };
-
   const columns = [
     {
       name: 'Editar',

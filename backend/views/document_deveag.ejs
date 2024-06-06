@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentación Variedad</title>
+    <title>Documentación de la API</title>
 </head>
 <body>
     <h1>Documentación de la API - Variedad</h1>
@@ -97,8 +97,8 @@
             JSON:
             {
                 "id_variedad": 1,
-                "nombre_variedad": "Tomate",
-                "tipo_cultivo": "alimentarios"
+                "nombre_variedad": "Tomate RAF", 
+                "tipo_cultivo": "textiles"
             }
             <br>
             Incorrecto:
@@ -134,13 +134,11 @@
             Correcto: 
             Status: 200
             JSON:
-            [
-                {
-                    "id_variedad": 1,
-                    "nombre_variedad": "Tomate",
-                    "tipo_cultivo": "alimentarios"
-                }
-            ]
+            {
+                "id_variedad": 1,
+                "nombre_variedad": "Tomate RAF", 
+                "tipo_cultivo": "textiles"
+            }
             <br>
             Incorrecto:
             Status: 404
@@ -167,7 +165,7 @@
   <tr><td>Descripcion</td>  <td>Permite desactivar o activar variedades en la base de datos</td></tr>
   <tr><td>Metodo HTTP</td>  <td>PUT</td></tr>
   <tr><td>Header</td>  <td>Token:</td></tr>
-  <tr><td>Request json</td>  <td>estado: "inactivo</td></tr>
+  <tr><td>Request json</td>  <td>estado: "inactivo"</td></tr>
   <tr><td>Respuesta json</td>  <td>
     Correcto:
     Status: 200 OK

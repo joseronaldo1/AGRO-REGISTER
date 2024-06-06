@@ -42,14 +42,21 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
                 return;
             }
     
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // Manejar el caso en que el token no esté presente
+                console.error('No se encontró el token en el localStorage');
+                return;
+            }
+    
             if (mode === 'registro') {
                 const response = await axios.post(
                     'http://localhost:3000/registrarUsuario',
                     formData,
                     {
                         headers: {
-                            'Content-Type': 'application/json'
-                        }
+                            'token': token
+                          }
                     }
                 );
                 console.log(response.data);
@@ -64,7 +71,12 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
                 const { id } = initialData; // Asegúrate de que el ID esté correctamente definido aquí
                 await axios.put(
                     `http://localhost:3000/actualizarEmpleado/${id}`,
-                    formData
+                    formData,
+                    {
+                        headers: {
+                            'token': token
+                          }
+                    }
                 );
     
                 Swal.fire({

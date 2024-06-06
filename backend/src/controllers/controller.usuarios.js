@@ -63,6 +63,13 @@ export const registrarUsuario = async (req, res) => {
         }
 
         const { nombre, apellido, correo, password, rol } = req.body;
+
+        // Verificar si el correo ya existe
+        const [existingUser] = await pool.query(`SELECT * FROM usuarios WHERE correo = ?`, [correo]);
+        if (existingUser.length > 0) {
+            return res.status(400).json({ status: 400, message: 'El correo ya está en uso' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const imagen = req.file ? req.file.path : null;
 
@@ -86,10 +93,11 @@ export const registrarUsuario = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             status: 500,
-            message: 'Error en el sistema: ' + error
+            message: 'Error del servidor: ' + error
         });
     }
 };
+
 
 export const actualizarUsuario = async (req, res) => {
     try {
@@ -98,41 +106,46 @@ export const actualizarUsuario = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { id_usuario } = req.params;
+        const { id } = req.params;
         const { nombre, apellido, correo, password, rol, estado } = req.body;
 
-        if (!nombre && !apellido && !correo && !password && !rol && !estado && !req.file) {
+        if (!nombre && !apellido && !correo  && !req.file) {
             return res.status(400).json({ message: 'Al menos uno de los campos (nombre, apellido, correo, password, rol, estado, imagen) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
-        const [oldUsuario] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id_usuario]);
+        console.log("ID del usuario a actualizar:", id);
 
-        if (oldUsuario.length === 0) {
+        const [oldUsuarioRows] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id]);
+
+        console.log("Resultado de la consulta:", oldUsuarioRows);
+
+        if (oldUsuarioRows.length === 0) {
             return res.status(404).json({
                 status: 404,
                 message: 'Usuario no encontrado',
             });
         }
 
-        let imagen = oldUsuario[0].imagen;
+        const oldUsuario = oldUsuarioRows[0];
+        let imagen = oldUsuario.imagen;
 
         if (req.file) {
             imagen = req.file.path;
         }
 
         const updatedUsuario = {
-            nombre: nombre || oldUsuario[0].nombre,
-            apellido: apellido || oldUsuario[0].apellido,
-            correo: correo || oldUsuario[0].correo,
-            password: password ? await bcrypt.hash(password, 10) : oldUsuario[0].password,
-            rol: rol || oldUsuario[0].rol,
-            estado: estado || oldUsuario[0].estado,
+            nombre: nombre || oldUsuario.nombre,
+            apellido: apellido || oldUsuario.apellido,
+            correo: correo || oldUsuario.correo,
+            password: password ? await bcrypt.hash(password, 10) : oldUsuario.password,
+            rol: rol || oldUsuario.rol,
+            estado: estado || oldUsuario.estado,
             imagen: imagen
         };
 
         const [result] = await pool.query(
             `UPDATE usuarios SET nombre=?, apellido=?, correo=?, password=?, rol=?, estado=?, imagen=? WHERE id_usuario = ?`,
-            [updatedUsuario.nombre, updatedUsuario.apellido, updatedUsuario.correo, updatedUsuario.password, updatedUsuario.rol, updatedUsuario.estado, updatedUsuario.imagen, id_usuario]
+            [updatedUsuario.nombre, updatedUsuario.apellido, updatedUsuario.correo, updatedUsuario.password, updatedUsuario.rol, updatedUsuario.estado, updatedUsuario.imagen, id]
         );
 
         if (result.affectedRows > 0) {
@@ -154,6 +167,7 @@ export const actualizarUsuario = async (req, res) => {
         });
     }
 };
+
 
 export const desactivarUsuario = async (req, res) => {
     try {

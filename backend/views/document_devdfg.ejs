@@ -97,7 +97,7 @@
         Status: 200
         json:
         [
-        {"nombre_recursos":"pico","cantidad_medida":1, "unidades_medidas":"unidad","extras":"nada", "estado": "activo"}
+        {"id_tipo_recursos": 1, "nombre_recursos":"pico","cantidad_medida":1, "unidades_medidas":"unidad","extras":"nada", "estado": "activo"}
         ]
     <br>
     Incorrecto:
@@ -127,7 +127,7 @@
   <tr><td>Metodo HTTP</td>  <td>PUT</td></tr>
   <tr><td>Usuarios</td> <td>Administrador</td></tr>
   <tr><td>Header</td>  <td>Token:</td></tr>
-  <tr><td>Request json</td>  <td>estado: "agotado</td></tr>
+  <tr><td>Request json</td>  <td>estado: "agotado"</td></tr>
   <tr><td>Respuesta json</td>  <td>
     Correcto:
     Status: 200 OK
@@ -169,7 +169,7 @@ Status: 500 Internal Server Error
         Status: 200
         json:
         [
-        {"nombre_recursos":"pico","cantidad_medida":1, "unidades_medidas":"unidad","extras":"nada", "estado": "activo"}
+        {"id_tipo_recursos": 1, "nombre_recursos":"pico","cantidad_medida":1, "unidades_medidas":"unidad","extras":"nada", "estado": "activo"}
         ]
     <br>
     Incorrecto:

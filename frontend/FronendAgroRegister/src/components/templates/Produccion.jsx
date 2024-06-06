@@ -10,7 +10,7 @@ import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 
 function Produccion() {
-  const baseURL = 'http://localhost:3000/listarProduccion';
+
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
@@ -28,11 +28,17 @@ function Produccion() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(baseURL);
-      setData(response.data);
-      setOriginalData(response.data); // Guardar los datos originales sin filtrar
+      const token = localStorage.getItem('token');
+      const baseURL = 'http://localhost:3000/listarProduccion';
+      const respuesta = await axios.get(baseURL, {
+        headers: {
+          'token': token
+        }
+      });
+      setData(respuesta.data);
+      setOriginalData(respuesta.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error al obtener datos:', error);
     }
   };
 
@@ -55,12 +61,28 @@ function Produccion() {
   const handleActualizacionFormSubmit = async (formData) => {
     try {
       console.log('Actualización de la producción:', formData);
-      const { id_producccion } = formData; // Corregido aquí: extraer el ID de initialData en lugar de formData
-      await axios.put(`http://localhost:3000/ActualizarProduccion/${id_producccion}`, formData);
-      fetchData();
-      setShowActualizacionModal(false);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+      const { id } = formData;
+      const response = await axios.put(`http://localhost:3000/ActualizarProduccion/${id}`, formData, {
+        headers: {
+          'token': token
+        }
+      });
+  
+      if (response.status === 200) {
+        console.log('Producción actualizado exitosamente.');
+        fetchData();
+        setShowActualizacionModal(false);
+      } else {
+        console.error('Error al actualizar la producción:', response.data);
+      }
     } catch (error) {
-      console.error('Error al actualizar la producción:', error);
+      console.error('Error al actualizar las producciones:', error);
     }
   };
 
@@ -68,23 +90,32 @@ function Produccion() {
   // Función para buscar fincas por nombre_actividad
   const handleSearch = async (searchTerm) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+  
       if (searchTerm.trim() === '') {
-        // Si el término de búsqueda está vacío, restaurar los datos originales
         setData(originalData);
-        setError(null); // Limpiar el error
+        setError(null);
       } else {
-        const response = await axios.get(`http://localhost:3000/BuscarProduccion/${searchTerm}`);
+        const response = await axios.get(`http://localhost:3000/BuscarProduccion/${searchTerm}`, {
+          headers: {
+            'token': token
+          }
+        });
         setData(response.data);
         if (response.data.length === 0) {
-          // Si no se encontraron resultados, establecer el mensaje de error
           setError('No se encontraron resultados');
         } else {
-          setError(null); // Limpiar el error si se encontraron resultados
+          setError(null);
         }
       }
     } catch (error) {
       console.error('Error searching for resources:', error);
-      setError('Busqueda no encontrada'); // Establecer mensaje de error
+      setError('Busqueda no encontrada');
     }
   };
 

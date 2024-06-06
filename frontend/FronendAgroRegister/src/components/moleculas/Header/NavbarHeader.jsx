@@ -2,33 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { FaBars } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import NavItem from '../../moleculas/Sidebar/NavItem';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import './Navbar.css';
 import v from '../../../styles/variables';
 
 function NavbarHeader() {
   const [showModal, setShowModal] = useState(false);
-  const [ultimoUsuario, setUltimoUsuario] = useState(null);
+  const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
-    // Función para obtener el último usuario registrado
-    const obtenerUltimoUsuario = () => {
-      axios.get('http://localhost:3000/listarUsuario')
-        .then(response => {
-          const ultimo = response.data[response.data.length - 1];
-          setUltimoUsuario(ultimo);
-        })
-        .catch(error => {
-          console.error('Error al obtener el último usuario:', error);
-        });
-    };
-
-    obtenerUltimoUsuario();
-
-    const interval = setInterval(obtenerUltimoUsuario, 300);
-
-    return () => clearInterval(interval);
+    // Recuperar datos del usuario desde localStorage
+    const usuarioData = JSON.parse(localStorage.getItem('usuario'));
+    if (usuarioData) {
+      setUsuario(usuarioData);
+    } else {
+      console.error('No se encontraron datos del usuario en localStorage');
+    }
   }, []);
 
   const handleModalOpen = () => {
@@ -50,6 +39,7 @@ function NavbarHeader() {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("token"); // Eliminar el token del localStorage
+        localStorage.removeItem("usuario"); // Eliminar los datos del usuario del localStorage
         Swal.fire({
           title: 'Sesión cerrada',
           text: 'Su sesión ha sido cerrada exitosamente.',
@@ -72,7 +62,12 @@ function NavbarHeader() {
           <h1>AGRO-REGISTER</h1>
           <div className="d-flex align-items-center">
             <img className='imagenpersonal' src={v.Imagepersona} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '100%' }} onClick={handleModalOpen} />
-            {ultimoUsuario && <strong><span style={{ marginLeft: '10px', fontSize: '20px', marginRight: '50px', cursor: 'pointer' }} onClick={handleModalOpen}>{ultimoUsuario.nombre}</span></strong>}
+            {usuario && (
+              <div style={{ marginLeft: '10px', fontSize: '20px', marginRight: '50px', cursor: 'pointer' }} onClick={handleModalOpen}>
+                <strong>{usuario.nombre}</strong>
+                <div>{usuario.rol}</div>
+              </div>
+            )}
           </div>
         </div>
       </nav>
@@ -91,7 +86,6 @@ function NavbarHeader() {
             <p>¿Deseas cerrar sesión?</p>
             <button onClick={handleLogout} className='cerrarSesion' style={{ marginLeft: '15px', borderRadius: '10px', backgroundColor: '#E83636', border: 'none', color: 'white', fontSize: '16px', height: '38px' }}>Cerrar sesión</button>
           </div>
-
         </Modal.Body>
       </Modal>
     </>
