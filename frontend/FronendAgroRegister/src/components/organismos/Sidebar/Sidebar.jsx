@@ -17,8 +17,8 @@ function Sidebar() {
             <NavItem icon={v.iconoUsuario} text="Empleados" href="/Usuarios" />
             <NavItem icon={v.iconoFinca} text="Finca" href="/finca" />
             <NavItem icon={v.iconoTractor} text="Lotes" href="/lotes" />
-            <NavItem icon={v.iconoCultivo} text="Cultivos" href="/cultivo" />
             <NavItem icon={v.iconoCultivo} text="Variedad" href="/variedad" />
+            <NavItem icon={v.iconoCultivo} text="Cultivos" href="/cultivo" />
             <NavItem icon={v.iconoActividad} text="Actividad" href="/actividad" />
             <NavItem icon={v.iconoActividad} text="Programación" href="/programacion" />
             <NavItem icon={v.iconoTractor} text="Recursos" href="/recursos" />
