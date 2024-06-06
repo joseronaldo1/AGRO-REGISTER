@@ -32,7 +32,6 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
         console.error('Error al obtener los datos:', error);
       }
     };
-  
     fetchNombreActividad();
   }, []);
   

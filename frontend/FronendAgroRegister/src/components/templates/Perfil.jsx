@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { AiOutlineUser, AiOutlineMail } from 'react-icons/ai'; // Importamos los iconos de usuario y correo
+import { AiOutlineUser, AiOutlineMail } from 'react-icons/ai';
 import Header from "../organismos/Header/Header";
 import { Modal, Button } from 'react-bootstrap';
 import v from '../../styles/variables';
@@ -21,7 +21,17 @@ const EditarPerfilUsuarioPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/listarusuario');
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('No se encontró el token en el localStorage');
+                    return;
+                }
+                const response = await axios.get('http://localhost:3000/listarUsuario', {
+                    headers: {
+                        'token': token
+                    }
+                });
+
                 const ultimo = response.data[response.data.length - 1];
                 setUltimoUsuario(ultimo);
                 setEditedUsuario(ultimo || {});
@@ -60,13 +70,19 @@ const EditarPerfilUsuarioPage = () => {
         formData.append('correo', editedUsuario.correo);
         formData.append('rol', editedUsuario.rol);
         if (selectedImage) {
-            formData.append('img', selectedImage);
+            formData.append('imagen', selectedImage);
         }
 
         try {
-            const response = await axios.put('http://localhost:3000/actualizarUsuario', formData, {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No se encontró el token en el localStorage');
+                return;
+            }
+            const id = ultimoUsuario.id_usuario; // Asegúrate de tener el ID correcto del usuario
+            const response = await axios.put(`http://localhost:3000/actualizarUsuario/${id}`, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'token': token
                 }
             });
             console.log('Usuario actualizado:', response.data);

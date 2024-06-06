@@ -14,13 +14,23 @@ function NavbarHeader() {
   useEffect(() => {
     // Función para obtener el último usuario registrado
     const obtenerUltimoUsuario = () => {
-      axios.get('http://localhost:3000/listarUsuario')
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No se encontró el token en el localStorage');
+            return;
+        }
+
+        axios.get('http://localhost:3000/listarUsuario', {
+            headers: {
+                'token': token
+            }
+        })
         .then(response => {
-          const ultimo = response.data[response.data.length - 1];
-          setUltimoUsuario(ultimo);
+            const ultimo = response.data[response.data.length - 1];
+            setUltimoUsuario(ultimo);
         })
         .catch(error => {
-          console.error('Error al obtener el último usuario:', error);
+            console.error('Error al obtener el último usuario:', error);
         });
     };
 
@@ -29,7 +39,8 @@ function NavbarHeader() {
     const interval = setInterval(obtenerUltimoUsuario, 300);
 
     return () => clearInterval(interval);
-  }, []);
+}, []);
+
 
   const handleModalOpen = () => {
     setShowModal(true);

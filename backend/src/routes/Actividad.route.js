@@ -2,7 +2,7 @@ import { Router } from "express";
 import { listarA,RegistrarA,ActualizarA,DesactivarA,BuscarA } from "../controllers/Actividad.controller.js";
 import { validarRA, validarRR } from "../../validate/Actividad.js";
 
-import {validarToken} from "../controllers/autenticacion.js";
+import { validarToken } from "../controllers/autenticacion.js";
 
 const rutaDeActividad = Router()
 

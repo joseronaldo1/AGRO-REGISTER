@@ -6,7 +6,7 @@ import Footer from '../organismos/Footer/Footer';
 import Header2 from "../organismos/Header/Header2.jsx";
 
 function Actividad2() {
-  const baseURL = 'http://localhost:3000/listarActividad';
+
 
   const [data, setData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
@@ -16,24 +16,40 @@ function Actividad2() {
   useEffect(() => {
     fetchData();
   }, []);
-
   const fetchData = async () => {
     try {
-      const response = await axios.get(baseURL);
-      setData(response.data);
-      setOriginalData(response.data);
+      const token = localStorage.getItem('token');
+      const baseURL = 'http://localhost:3000/listarActividad';
+      const respuesta = await axios.get(baseURL, {
+        headers: {
+          'token': token
+        }
+      });
+      setData(respuesta.data);
+      setOriginalData(respuesta.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error al obtener datos:', error);
     }
   };
 
   const handleSearch = async (searchTerm) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+  
       if (searchTerm.trim() === '') {
         setData(originalData);
         setError(null);
       } else {
-        const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
+        const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`, {
+          headers: {
+            'token': token
+          }
+        });
         setData(response.data);
         if (response.data.length === 0) {
           setError('No se encontraron resultados');

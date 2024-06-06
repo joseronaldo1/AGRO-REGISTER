@@ -12,7 +12,7 @@ import SearchBar from '../moleculas/SearchBar';
 import Swal from 'sweetalert2';
 
 function Actividad() {
-  const baseURL = 'http://localhost:3000/listarActividad';
+
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
@@ -32,11 +32,17 @@ function Actividad() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(baseURL);
-      setData(response.data);
-      setOriginalData(response.data);
+      const token = localStorage.getItem('token');
+      const baseURL = 'http://localhost:3000/listarActividad';
+      const respuesta = await axios.get(baseURL, {
+        headers: {
+          'token': token
+        }
+      });
+      setData(respuesta.data);
+      setOriginalData(respuesta.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error al obtener datos:', error);
     }
   };
 
@@ -67,32 +73,50 @@ function Actividad() {
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      const { id_actividad } = formData; // Utiliza el nombre correcto del campo
-      if (!id_actividad) {
-        console.error('ID no encontrado en los datos del formulario');
+      console.log('Actualización de la actividad:', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
         return;
       }
-      await axios.put(`http://localhost:3000/actualizarProgramacion/${id_actividad}`, formData);
-      fetchData();
-      setShowActualizacionModal(false);
-      // Mostrar mensaje de éxito
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: 'Actividad actualizada exitosamente',
+      const { id } = formData;
+      const response = await axios.put(`http://localhost:3000/ActualizarActividad/${id}`, formData, {
+        headers: {
+          'token': token
+        }
       });
+  
+      if (response.status === 200) {
+        console.log('Actividad actualizada exitosamente.');
+        fetchData();
+        setShowActualizacionModal(false);
+      } else {
+        console.error('Error al actualizar la actividad:', response.data);
+      }
     } catch (error) {
-      console.error('Error al actualizar la actividad:', error);
+      console.error('Error al actualizar las actividades:', error);
     }
   };
 
   const handleSearch = async (searchTerm) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+  
       if (searchTerm.trim() === '') {
         setData(originalData);
         setError(null);
       } else {
-        const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
+        const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`, {
+          headers: {
+            'token': token
+          }
+        });
         setData(response.data);
         if (response.data.length === 0) {
           setError('No se encontraron resultados');
@@ -147,8 +171,17 @@ function Actividad() {
         });
   
         if (result.isConfirmed) {
+          const token = localStorage.getItem('token');
+          if (!token) {
+              console.error('No se encontró el token en el localStorage');
+              return;
+          }
           // Realizar la solicitud PUT solo si se confirma la acción
-          await axios.put(`http://localhost:3000/Desactivara/actividad/${id_actividad}`, { estado: formData.estado });
+          await axios.put(`http://localhost:3000/Desactivara/actividad/${id_actividad}`, { estado: formData.estado }, {
+            headers: {
+                'token': token
+            }
+        });
           fetchData();
           setShowEstadoModal(false);
           // Mostrar mensaje de éxito
