@@ -19,7 +19,7 @@ export const validar = async (req, res) => {
             const match = await bcrypt.compare(password, user.password);
             if (match) {
                 const token = Jwt.sign({ user }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
-                return res.status(200).json({ nombre: user.nombre, rol: user.rol, token: token, message: 'Token generado con éxito' });
+                return res.status(200).json({ nombre: user.nombre, rol: user.rol, apellido: user.apellido, correo: user.correo, token: token, message: 'Token generado con éxito' });
             }
         } else {
             return res.status(404).json({ message: 'Usuario no encontrado' });
