@@ -40,7 +40,7 @@ function Actividad2() {
         console.error('No se encontró el token en el localStorage');
         return;
       }
-  
+
       if (searchTerm.trim() === '') {
         setData(originalData);
         setError(null);
@@ -92,7 +92,7 @@ function Actividad2() {
             className="form-select mb-3"
             value={estadoSeleccionado}
             onChange={handleEstadoSeleccionado}
-            style={{ fontWeight: '600',width: '180px', backgroundColor: '#E4E4E4', boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)', cursor: 'pointer' }}
+            style={{ fontWeight: '600', width: '180px', backgroundColor: '#E4E4E4', boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)', cursor: 'pointer' }}
           >
             <option value="">Estados</option>
             <option value="activo">Activo</option>
@@ -108,22 +108,23 @@ function Actividad2() {
               {data.map((actividad) => (
                 <div key={actividad.id_actividad} className="col-md-4 mb-4">
                   <div className="card h-100 shadow-sm border-0" style={{ borderRadius: '15px' }}>
-                    <div className="card-body" style={{boxShadow: '0 10px 20px rgba(0, 0, 0, 0.5)', borderRadius: '10px'}}>
+                    <div className="card-body" style={{ boxShadow: '0 10px 20px rgba(0, 0, 0, 0.5)', borderRadius: '10px' }}>
                       <h4 style={{ textAlign: 'center' }}>Actividad a realizar: </h4>
                       <br />
                       <p className="card-text"><strong>Actividad:</strong>{actividad.nombre_actividad}</p>
                       <p className="card-text"><strong>Variedad:</strong> {actividad.nombre_variedad}</p>
                       <p className="card-text"><strong>Tiempo:</strong> {actividad.tiempo}</p>
                       <p className="card-text"><strong>Observaciones:</strong> {actividad.observaciones}</p>
-                      <p className="card-text"><strong>Valor 2:</strong> {actividad.valor_actividad}</p>
+                      <p className="card-text"><strong>Valor:</strong> {actividad.valor_actividad}</p>
                       <p className="card-text">
                         <strong>Estado:</strong>
                         <span className={`badge ${actividad.estado === 'activo' ? 'bg-success' :
                           actividad.estado === 'ejecutandose' ? 'bg-warning text-dark' :
-                            actividad.estado === 'terminado' ? 'bg-primary' :
-                              'bg-danger'}`}>
-                          {actividad.estado}
+                            actividad.estado === 'terminado' ? 'bg-danger' :
+                              actividad.estado === 'inactivo' ? 'bg-secondary' :
+                                'bg-danger'}`}> {actividad.estado}
                         </span>
+
                       </p>
                       {/* {actividad.estado !== 'terminado' && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>

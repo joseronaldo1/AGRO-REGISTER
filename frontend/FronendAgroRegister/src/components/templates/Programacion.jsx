@@ -246,8 +246,8 @@ function Programacion() {
         <span style={{
           color: row.estado === 'activo' ? 'green' :
             row.estado === 'ejecutandose' ? 'orange' :
-              row.estado === 'terminado' ? '#2A5CB5' :
-                'red', fontWeight: '700'
+              row.estado === 'terminado' ? 'red' :
+                'grey', fontWeight: '700'
         }}>
           {row.estado}
         </span>
@@ -324,7 +324,7 @@ function Programacion() {
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-            <Datatable columns={columns} data={data} title="Programacion" />
+            <Datatable columns={columns} data={data} title="Asignaciones" />
           )}
         </div>
 

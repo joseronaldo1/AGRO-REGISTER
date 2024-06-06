@@ -24,7 +24,7 @@ const SliderDash = () => {
         autoplay: true,
         autoplaySpeed: 4000,
         arrows: true,
-        prevArrow: <button className="slick-prev">Previous</button>, 
+        prevArrow: <button className="slick-prev">Previous</button>,
         nextArrow: <button className="slick-next">Next</button>,
         afterChange: index => handleChangeSlide(index)
     };
@@ -32,18 +32,18 @@ const SliderDash = () => {
     return (
         <div className="container-fluid">
             <div>
-                <Slider {...settings} style={{ marginTop: '110px'}}> {/* Añade un espacio arriba del slider */}
+                <Slider {...settings} style={{ marginTop: '110px' }}> {/* Añade un espacio arriba del slider */}
                     <div>
-                        <img src={v.ImgSlider1} alt="Imagen 1" style={{ borderRadius:"30px", width: '95%', objectFit: 'cover', border:'none', height: '530px', marginLeft: '50px'}} />
+                        <img src={v.ImgSlider1} alt="Imagen 1" style={{ borderRadius: "30px", width: '95%', objectFit: 'cover', border: 'none', height: '530px', marginLeft: '50px' }} />
                     </div>
                     <div>
-                        <img src={v.image7} alt="Imagen 2" style={{  borderRadius:"30px", width: '95%', objectFit: 'cover', border:'none', height: '530px', marginLeft: '50px' }} />
+                        <img src={v.image7} alt="Imagen 2" style={{ borderRadius: "30px", width: '95%', objectFit: 'cover', border: 'none', height: '530px', marginLeft: '50px' }} />
                     </div>
                     <div>
-                        <img src={v.ImgSlider3} alt="Imagen 3" style={{  borderRadius:"30px", width: '95%', objectFit: 'cover', border:'none', height: '530px', marginLeft: '50px' }} />
+                        <img src={v.ImgSlider3} alt="Imagen 3" style={{ borderRadius: "30px", width: '95%', objectFit: 'cover', border: 'none', height: '530px', marginLeft: '50px' }} />
                     </div>
                     <div>
-                        <img src={v.ImgSlider2} alt="Imagen 4" style={{   borderRadius:"30px", width: '95%', objectFit: 'cover', border:'none', height: '530px', marginLeft: '50px' }} />
+                        <img src={v.ImgSlider2} alt="Imagen 4" style={{ borderRadius: "30px", width: '95%', objectFit: 'cover', border: 'none', height: '530px', marginLeft: '50px' }} />
                     </div>
                     {/* Agrega las demás imágenes aquí utilizando las variables exportadas */}
                 </Slider>
@@ -58,7 +58,7 @@ const SliderDash = () => {
                     ))}
                 </div>
                 {/* Fin de los puntos */}
-                <Services/>
+                <Services />
             </div>
             <Footer />
         </div>

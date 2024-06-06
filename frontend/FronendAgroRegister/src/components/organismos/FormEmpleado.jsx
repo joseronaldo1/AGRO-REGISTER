@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
     const initialFormData = {
         nombre: initialData && initialData.nombre ? initialData.nombre : '',
         apellido: initialData && initialData.apellido ? initialData.apellido : '',
@@ -41,14 +41,14 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
                 });
                 return;
             }
-    
+
             const token = localStorage.getItem('token');
             if (!token) {
                 // Manejar el caso en que el token no esté presente
                 console.error('No se encontró el token en el localStorage');
                 return;
             }
-    
+
             if (mode === 'registro') {
                 const response = await axios.post(
                     'http://localhost:3000/registrarUsuario',
@@ -56,11 +56,11 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
                     {
                         headers: {
                             'token': token
-                          }
+                        }
                     }
                 );
                 console.log(response.data);
-    
+
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
@@ -75,24 +75,24 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
                     {
                         headers: {
                             'token': token
-                          }
+                        }
                     }
                 );
-    
+
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
                     text: 'El empleado se ha actualizado exitosamente'
                 });
             }
-    
+
             onSubmit(formData);
             cerrarModal();
         } catch (error) {
             console.error('Error al procesar el formulario:', error);
         }
     };
-    
+
 
 
     return (
@@ -227,4 +227,4 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
     );
 };
 
-export default Formulariofinca;
+export default FormularioEmpleado;
