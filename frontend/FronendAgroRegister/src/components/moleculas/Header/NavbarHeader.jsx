@@ -61,11 +61,11 @@ function NavbarHeader() {
           </button>
           <h1>AGRO-REGISTER</h1>
           <div className="d-flex align-items-center">
-            <img className='imagenpersonal' src={v.Imagepersona} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '100%' }} onClick={handleModalOpen} />
+            {/*  <img className='imagenpersonal' src={v.Imagepersona} alt="Imagen 2" style={{ width: '100px', objectFit: 'cover', height: '100%' }} onClick={handleModalOpen} /> */}
             {usuario && (
               <div style={{ marginLeft: '10px', fontSize: '20px', marginRight: '50px', cursor: 'pointer' }} onClick={handleModalOpen}>
-                <strong>{usuario.nombre}</strong>
-                <div>{usuario.rol}</div>
+                <strong style={{ marginLeft:'120px' }}>{usuario.nombre}</strong>
+                <div style={{ marginLeft:'120px' }}>{usuario.rol}</div>
               </div>
             )}
           </div>
