@@ -3,19 +3,21 @@ import { validationResult } from "express-validator";
 import bcrypt from 'bcrypt';
 import multer from "multer";
 
-const storage = multer.diskStorage(
-    {
-        destination: function (req, img, cb) {
-            cb(null, "public/img")
-        },
-        filename: function (req, img, cb) {
-            cb(null, img.originalname)
-        }
+import path from 'path';
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${Date.now()}_${file.originalname}`);
     }
-);
+});
 
 const upload = multer({ storage: storage });
-export const cargarImagen = upload.single('img');
+
+export const cargarImagen = upload.single('imagen');
+
 
 export const listarUsuarios = async (req, res) => {
     try {
@@ -199,6 +201,100 @@ export const desactivarUsuarioEnCadena = async (req, res) => {
             status: 500,
             message: 'Error al desactivar el usuario',
             error: error.message
+        });
+    }
+};
+
+//Pablo
+
+export const buscarUsuari  = async (req, res) => {
+    try {
+        const { id_usuario } = req.params;
+        const [result] = await pool.query("SELECT rol, id_usuario, nombre, apellido, correo ,password FROM usuarios WHERE id_usuario=?", [id_usuario]);
+
+        if (result.length > 0) {
+            res.status(200).json(result[0]); // Devuelve el primer resultado encontrado
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: "No se encontró un usuario con ese ID"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Error en el sistema: ' + error
+        });
+    }
+};
+
+
+// cargar imgen import path from 'path';
+
+// Configurar multer para almacenar archivos en el disco
+
+
+
+export const acutualizarUsuario = async (req, res) => {
+    const { id_usuario } = req.params;
+    const { nombre, apellido, correo, password } = req.body;
+    const imagen = req.file ? req.file.path : null;
+
+    // console.log("ID de usuario recibido:", id_usuario);
+    // console.log("Datos recibidos:", { nombre, apellido, correo, password, imagen });
+
+    try {
+        // Verificar si el usuario existe antes de intentar actualizarlo
+        const [rows] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id_usuario]);
+        if (rows.length === 0) {
+            return res.status(404).json({
+                status: 404,
+                message: "No se encontró el usuario con el ID proporcionado."
+            });
+        }
+
+        // Encriptar la contraseña antes de actualizar, si se proporciona
+        let hashedPassword;
+        if (password) {
+            const saltRounds = 10;
+            hashedPassword = await bcrypt.hash(password, saltRounds);
+        } else {
+            hashedPassword = rows[0].password; // Mantener la contraseña existente si no se proporciona una nueva
+        }
+
+        // Construir la consulta de actualización dinámica
+        let query = "UPDATE usuarios SET nombre=?, apellido=?, correo=?, password=?";
+        let params = [nombre || rows[0].nombre, apellido || rows[0].apellido, correo || rows[0].correo, hashedPassword];
+
+        if (imagen) {
+            query += ", imagen=?";
+            params.push(imagen);
+        }
+
+        query += " WHERE id_usuario=?";
+        params.push(id_usuario);
+
+        // Ejecutar la consulta de actualización
+        const [result] = await pool.query(query, params);
+
+        console.log("Resultado de la actualización:", result);
+
+        if (result.affectedRows > 0) {
+            res.status(200).json({
+                status: 200,
+                message: "El usuario ha sido actualizado."
+            });
+        } else {
+            res.status(500).json({
+                status: 500,
+                message: "No se pudo actualizar el usuario."
+            });
+        }
+    } catch (error) {
+        console.log("Error en el sistema:", error);
+        res.status(500).json({
+            status: 500,
+            message: 'Error en el sistema: ' + error
         });
     }
 };
