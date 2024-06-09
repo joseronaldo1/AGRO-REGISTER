@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { cargarImagen,actualizarEmpleado, listarEmpleado, buscarEmpleado, DesactivarEmpleado, registrarEmpleado, desactivarUsuarioEnCadena } from '../controllers/Empleado.controller.js'
+import { cargarImagen,actualizarEmpleado, listarEmpleado, buscarEmpleado, DesactivarEmpleado, registrarEmpleado, desactivarUsuarioEnCadena, buscarUsuari } from '../controllers/Empleado.controller.js'
 import { validarRegiEmpleado, validarActuEmpleado } from '../../validate/EmpleadoValidar.js'
 import { validarToken } from '../controllers/autenticacion.js'
 
@@ -11,6 +11,8 @@ rutaUsuario.put('/actualizarEmpleado/:id', validarToken, validarActuEmpleado, ac
 rutaUsuario.put("/desactivar/Empleado/:id", validarToken, DesactivarEmpleado);
 rutaUsuario.get('/buscarEmpleado/:nombre', validarToken, buscarEmpleado);
 rutaUsuario.post('/desactivarUsuarioEnCadena/:id', desactivarUsuarioEnCadena);
+
+rutaUsuario.get('/buscarUsuario/:id_usuario', buscarUsuari);
 
 
 
