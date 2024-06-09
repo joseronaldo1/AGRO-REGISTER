@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { actualizarProgramacion, registrarProgramacion, listarProgramacion, buscarProgramacion, desactivar, desactivarProgamacionCadena, listarProgramacionPorUsuario } from "../controllers/programacionControllerDevdjz.js";
+import { actualizarProgramacion, registrarProgramacion, listarProgramacion, buscarProgramacion, desactivar, desactivarProgamacionCadena, listarProgramacionPorUsuario, BuscaActividadId } from "../controllers/programacionControllerDevdjz.js";
 
 import { programacionA } from "../../validate/programacionValidateDevdjz.js"
 import { programacionC } from "../../validate/programacionValidateDevdjz.js"
@@ -18,6 +18,7 @@ rutaProgramacion.put("/desactivarEnCadena/Programacion/:id", desactivarProgamaci
 
 
 rutaProgramacion.get('/listarProgramacionPorUsuario/:id_usuario',listarProgramacionPorUsuario)
+rutaProgramacion.get('/BuscaActividad/:idActividad', BuscaActividadId);
 
 
 export default rutaProgramacion

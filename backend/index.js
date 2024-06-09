@@ -36,7 +36,7 @@ servidor.get('/documents', (req, res) => {
   res.render('document.ejs');
 });
 
-servidor.use(express.static('./public'));
+servidor.use('/public', express.static('./public'));
 
 servidor.use(rutaValidacion);
 servidor.use(rutaUsuario);

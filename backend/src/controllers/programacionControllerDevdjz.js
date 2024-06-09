@@ -198,7 +198,6 @@ export const desactivarProgamacionCadena = async (req, res) => {
 
 // pablo Andres perdomo mancera
 
-
 export const listarProgramacionPorUsuario = async (req, res) => {
     try {
         const { id_usuario } = req.params;
