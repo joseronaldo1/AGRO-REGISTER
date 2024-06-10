@@ -5,11 +5,11 @@ import multer from "multer";
 
 
 const storage = multer.diskStorage({
-    destination: function (req, img, cb) {
+    destination: function (req, file, cb) {
         cb(null, "public/img");
     },
-    filename: function (req, img, cb) {
-        cb(null, img.originalname);
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
     }
 });
 
@@ -251,11 +251,7 @@ export const acutualizarUsuario = async (req, res) => {
     const { nombre, apellido, correo, password } = req.body;
     const imagen = req.file ? req.file.path : null;
 
-    // console.log("ID de usuario recibido:", id_usuario);
-    // console.log("Datos recibidos:", { nombre, apellido, correo, password, imagen });
-
     try {
-        // Verificar si el usuario existe antes de intentar actualizarlo
         const [rows] = await pool.query("SELECT * FROM usuarios WHERE id_usuario = ?", [id_usuario]);
         if (rows.length === 0) {
             return res.status(404).json({
@@ -264,16 +260,12 @@ export const acutualizarUsuario = async (req, res) => {
             });
         }
 
-        // Encriptar la contraseña antes de actualizar, si se proporciona
-        let hashedPassword;
+        let hashedPassword = rows[0].password;
         if (password) {
             const saltRounds = 10;
             hashedPassword = await bcrypt.hash(password, saltRounds);
-        } else {
-            hashedPassword = rows[0].password; // Mantener la contraseña existente si no se proporciona una nueva
         }
 
-        // Construir la consulta de actualización dinámica
         let query = "UPDATE usuarios SET nombre=?, apellido=?, correo=?, password=?";
         let params = [nombre || rows[0].nombre, apellido || rows[0].apellido, correo || rows[0].correo, hashedPassword];
 
@@ -285,15 +277,13 @@ export const acutualizarUsuario = async (req, res) => {
         query += " WHERE id_usuario=?";
         params.push(id_usuario);
 
-        // Ejecutar la consulta de actualización
         const [result] = await pool.query(query, params);
-
-        console.log("Resultado de la actualización:", result);
 
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: "El usuario ha sido actualizado."
+                message: "El usuario ha sido actualizado.",
+                imageUrl: imagen ? `${API_BASE_URL}${imagen.replace(/\\/g, '/')}` : null // Devuelve la nueva URL de la imagen
             });
         } else {
             res.status(500).json({
@@ -302,10 +292,10 @@ export const acutualizarUsuario = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log("Error en el sistema:", error);
         res.status(500).json({
             status: 500,
             message: 'Error en el sistema: ' + error
         });
     }
 };
+
