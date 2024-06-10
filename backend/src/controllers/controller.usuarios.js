@@ -3,23 +3,13 @@ import { validationResult } from "express-validator";
 import bcrypt from 'bcrypt';
 import multer from "multer";
 
-<<<<<<< HEAD
-import path from 'path';
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, `${Date.now()}_${file.originalname}`);
-=======
 const storage = multer.diskStorage({
     destination: function (req, img, cb) {
         cb(null, "public/img");
     },
     filename: function (req, img, cb) {
         cb(null, img.originalname);
->>>>>>> 27ea3bf2d00799f96fb6c06ea091b270913e8c01
     }
 });
 
