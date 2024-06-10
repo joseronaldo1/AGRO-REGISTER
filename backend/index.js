@@ -19,19 +19,13 @@
   const servidor = express();
 
 
-<<<<<<< HEAD
-  servidor.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type'],
-  }));
-=======
+
 servidor.use(cors({
   origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'token'],
 }));
->>>>>>> 27ea3bf2d00799f96fb6c06ea091b270913e8c01
+
 
 
   servidor.use(bodyParser.json());
