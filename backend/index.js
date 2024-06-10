@@ -15,6 +15,7 @@ import rutaProgramacion from './src/routes/programacionRoutesDevdjz.js';
 import rutaDeTipoRecurso from './src/routes/TipoRecurso.route.js';
 import rutaDeActividad  from './src/routes/Actividad.route.js';
 import rutaDeVariedad from './src/routes/variedad.routes.js';
+import OlvideContraseña from './src/routes/olvideContraseña.js';
 
 const servidor = express();
 
@@ -51,6 +52,7 @@ servidor.use(rutaProduccion);
 servidor.use(rutaProgramacion);
 servidor.use(rutaDeTipoRecurso);
 servidor.use(rutaDeVariedad);
+servidor.use(OlvideContraseña)
 
 servidor.listen(3000, () => {
   console.log("Está funcionando");

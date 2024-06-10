@@ -247,7 +247,7 @@ export const desactivarUsuarioEnCadena = async (req, res) => {
 export const buscarUsuari  = async (req, res) => {
     try {
         const { id_usuario } = req.params;
-        const [result] = await pool.query("SELECT rol, id_usuario, nombre, apellido, correo ,password,imagen FROM usuarios WHERE id_usuario=?", [id_usuario]);
+        const [result] = await pool.query("SELECT rol, id_usuario, nombre, apellido, correo ,password,imagen,identificacion FROM usuarios WHERE id_usuario=?", [id_usuario]);
 
         if (result.length > 0) {
             res.status(200).json(result[0]); // Devuelve el primer resultado encontrado
@@ -274,11 +274,8 @@ export const buscarUsuari  = async (req, res) => {
 
 export const acutualizarUsuario = async (req, res) => {
     const { id_usuario } = req.params;
-    const { nombre, apellido, correo, password } = req.body;
+    const { nombre, apellido, correo, password, identificacion } = req.body; // Añade identificacion
     const imagen = req.file ? req.file.path : null;
-
-    // console.log("ID de usuario recibido:", id_usuario);
-    // console.log("Datos recibidos:", { nombre, apellido, correo, password, imagen });
 
     try {
         // Verificar si el usuario existe antes de intentar actualizarlo
@@ -300,8 +297,8 @@ export const acutualizarUsuario = async (req, res) => {
         }
 
         // Construir la consulta de actualización dinámica
-        let query = "UPDATE usuarios SET nombre=?, apellido=?, correo=?, password=?";
-        let params = [nombre || rows[0].nombre, apellido || rows[0].apellido, correo || rows[0].correo, hashedPassword];
+        let query = "UPDATE usuarios SET nombre=?, apellido=?, correo=?, password=?, identificacion=?";
+        let params = [nombre || rows[0].nombre, apellido || rows[0].apellido, correo || rows[0].correo, hashedPassword, identificacion || rows[0].identificacion];
 
         if (imagen) {
             query += ", imagen=?";
@@ -313,8 +310,6 @@ export const acutualizarUsuario = async (req, res) => {
 
         // Ejecutar la consulta de actualización
         const [result] = await pool.query(query, params);
-
-        console.log("Resultado de la actualización:", result);
 
         if (result.affectedRows > 0) {
             res.status(200).json({
@@ -328,7 +323,6 @@ export const acutualizarUsuario = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log("Error en el sistema:", error);
         res.status(500).json({
             status: 500,
             message: 'Error en el sistema: ' + error

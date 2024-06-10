@@ -13,7 +13,7 @@ rutaUsuario.get('/buscarEmpleado/:nombre', validarToken, buscarEmpleado);
 rutaUsuario.post('/desactivarUsuarioEnCadena/:id', desactivarUsuarioEnCadena);
 
 rutaUsuario.get('/buscarUsuario/:id_usuario', buscarUsuari);
-rutaUsuario.put('/actualizarUsuarioPablo/:id_usuario',cargarImagen, acutualizarUsuario);
+rutaUsuario.put('/actualizarUsuarioMovil/:id_usuario',cargarImagen, acutualizarUsuario);
 
 
 
