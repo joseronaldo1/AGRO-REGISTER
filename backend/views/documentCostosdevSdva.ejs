@@ -1,20 +1,22 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documentacion API</title>
+  <title>Documentacion de la API</title>
 </head>
 <body>
-  <hr>
-  <h1>COSTOS</h1>
+  <h1>Documentación de la API - Costos</h1>
+  <h3>Listar Costo</h3>
 <table>
   <tr><td>Número</td> <td>1</td></tr>
   <tr><td>Nombre del Servicio</td>  <td>Listar costos</td></tr>
-  <tr><td>URI</td>  <td>/listar</td></tr>
-  <tr><td>Descripcion</td>  <td>Permite listar los costos registrados en la base de datos</td></tr>
-  <tr><td>Verbo HTTP</td>  <td>Verbo GET</td></tr>
-  <tr><td>Header:</td>  <td>token:token </td></tr>
+  <tr><td>URL</td>  <td>/listar_costos</td></tr>
+  <tr><td>DescripciÓn</td>  <td>Permite listar los costos registrados en la base de datos</td></tr>
+  <tr><td>Metodo HTTP</td>  <td>GET</td></tr>
+  <tr><td>Header:</td>  <td>Token:</td></tr>
+  <tr><td>Usuarios</td> <td>Administrador</td></tr>
   <tr><td>Request json</td>  <td> </td></tr>
   <tr><td>Respuesta json</td>  <td>	
     Correcto: 
@@ -23,27 +25,8 @@
     [
     {
         "id_costos": 1,
-        "precio": 201,
-        "nombre_actividad": "fumigare",
-        "tiempo": "04:12:11",
-        "observaciones": "hol apa",
-        "valor_actividad": 13213,
-        "nombre_recursos": "pala",
-        "cantidad_medida": 0,
-        "unidades_medida": "",
-        "extras": ""
-    },
-    {
-        "id_costos": 2,
-        "precio": 300,
-        "nombre_actividad": "pas",
-        "tiempo": "12:32:12",
-        "observaciones": "no",
-        "valor_actividad": 213134,
-        "nombre_recursos": "fertilizante el machito",
-        "cantidad_medida": 1222,
-        "unidades_medida": "litro",
-        "extras": "no se necesito nada mas"
+        "fk_id_actividad": 1,
+        "fk_id_tipo_recursos": 1
     }
   ]
   <br>
@@ -63,16 +46,18 @@ json: {
   "message" : "Error en el sistema"
 }
 </td></tr>
-<tr><td>Nombre Desarrollador:</td> <td>Sharit Daniela Vargas Almario (devsdv)</td></tr>
+<tr><td>Programador</td> <td>Kevin Andrade Maecha - devkam</td></tr>
 </table>
-<hr> <br>
+<br>
+<h3>Registrar Costos</h3>
 <table>
   <tr><td>Número</td> <td>2</td></tr>
   <tr><td>Nombre del Servicio</td>  <td>Registrar costos</td></tr>
-  <tr><td>URI</td>  <td>/registrar</td></tr>
+  <tr><td>URL</td>  <td>/registrar</td></tr>
   <tr><td>Descripcion</td>  <td>Permite registrar costos en la base de datos</td></tr>
-  <tr><td>Verbo HTTP</td>  <td>Verbo POST</td></tr>
-  <tr><td>Header:</td>  <td>token:token </td></tr>
+  <tr><td>Metodo HTTP</td>  <td>POST</td></tr>
+  <tr><td>Header:</td>  <td>Token:</td></tr>
+  <tr><td>Usuarios</td> <td>Administrador</td></tr>
   <tr><td>Request json</td> <td>   {
     "precio": "100.78",
     "fk_id_actividad": 2,
@@ -83,17 +68,8 @@ json: {
     Status: 200
     json:
     {
-      "id_costos": 2,
-      "precio": 300,
-      "nombre_actividad": "pas",
-      "tiempo": "12:32:12",
-      "observaciones": "no",
-      "valor_actividad": 213134,
-      "nombre_recursos": "fertilizante el machito",
-      "cantidad_medida": 1222,
-      "unidades_medida": "litro",
-      "extras": "no se necesito nada mas"
-  }
+      "mensaje": "Registro exitoso de sus costos"
+    }
   <br>
 Incorrecto:
 
@@ -111,17 +87,20 @@ json: {
   "message" : "Error en el sistema"
 }
 </td></tr>
-<tr><td>Nombre Desarrollador:</td> <td>Sharit Daniela Vargas Almario (devsdv)</td></tr>
+<tr><td>Programador</td> <td>Kevin Andrade Maecha - devkam</td></tr>
 </table>
-<hr><br>
+<br>
+<h3>Actualizar Costo</h3>
 <table>
   <tr><td>Número</td> <td>3</td></tr>
   <tr><td>Nombre del Servicio</td>  <td>Actualizar costos</td></tr>
-  <tr><td>URI</td>  <td>/actualizar/id_costos</td></tr>
-  <tr><td>Descripcion</td>  <td>Permite actualizar costos en la base de datos</td></tr>
-  <tr><td>Verbo HTTP</td>  <td>Verbo PUT</td></tr>
-  <tr><td>Header:</td>  <td>token:token </td></tr>
+  <tr><td>URL</td>  <td>/actualizar/:id_costos</td></tr>
+  <tr><td>Descripción</td>  <td>Permite actualizar costos registrados en la base de datos</td></tr>
+  <tr><td>Metodo HTTP</td>  <td>PUT</td></tr>
+  <tr><td>Header:</td>  <td>Token:</td></tr>
+  <tr><td>Usuarios</td> <td>Administrador</td></tr>
   <tr><td>Request json</td>  <td>    {
+    "id_costos": 1
     "precio": "100.78",
     "fk_id_actividad": 2,
     "fk_id_tipo_recursos": 1
@@ -131,15 +110,7 @@ json: {
     Status: 200
     json:
     {
-      "precio": 2000,
-      "nombre_actividad": "fumigare",
-      "tiempo": "04:12:11",
-      "observaciones": "hol apa",
-      "valor_actividad": 13213,
-      "nombre_recursos": "pala",
-      "cantidad_medida": 0,
-      "unidades_medida": "",
-      "extras": ""
+      "La información ha sido actualizada"
   }
   <br>
 Incorrecto:
@@ -147,7 +118,7 @@ Incorrecto:
 Status: 404
 body:{
   "status": 404
-  "message": "No se pudo actualizar la información!"
+  "message": "No se pudo actualizar la información"
 }
 <br>
 Error: 
@@ -158,32 +129,27 @@ json: {
   "message" : "Error en el sistema"
 }
 </td></tr>
-<tr><td>Nombre Desarrollador:</td> <td>Sharit Daniela Vargas Almario (devsdv)</td></tr>
+<tr><td>Programador</td> <td>Kevin Andrade Maecha - devkam</td></tr>
 </table>
-<hr> <br>
+<br>
+<h3>Buscar Costo</h3>
 <table>
   <tr><td>Número</td> <td>4</td></tr>
   <tr><td>Nombre del Servicio</td>  <td>Buscar costos</td></tr>
-  <tr><td>URI</td>  <td>/buscar/id_cultivo</td></tr>
-  <tr><td>Descripcion</td>  <td>Permite buscar los costos registrados en la base de datos</td></tr>
-  <tr><td>Verbo HTTP</td>  <td>Verbo GET</td></tr>
-  <tr><td>Header:</td>  <td>token:token </td></tr>
+  <tr><td>URL</td>  <td>/buscar/:id_costos</td></tr>
+  <tr><td>Descripción</td>  <td>Permite buscar los costos registrados en la base de datos</td></tr>
+  <tr><td>Metodo HTTP</td>  <td>GET</td></tr>
+  <tr><td>Header:</td>  <td>Token:</td></tr>
   <tr><td>Request json</td>  <td></td></tr>
   <tr><td>Respuesta json</td>  <td>	
     Correcto: 
     Status: 200
     json:
     {
-      "id_costos": 2,
-      "precio": 300,
-      "nombre_actividad": "pas",
-      "tiempo": "12:32:12",
-      "observaciones": "no",
-      "valor_actividad": 213134,
-      "nombre_recursos": "fertilizante el machito",
-      "cantidad_medida": 1222,
-      "unidades_medida": "litro",
-      "extras": "no se necesito nada mas"
+      "id_costos": 1
+      "precio": "100.78",
+      "fk_id_actividad": 2,
+      "fk_id_tipo_recursos": 1
   }
   <br>
 Incorrecto:
@@ -191,7 +157,7 @@ Incorrecto:
 Status: 404
 body:{
   "status": 404
-  "message" : "No se encontraron cultivos con ese ID"
+  "message" : "No se encontró un recurso con ese ID"
 }
 <br>
 Error: 
@@ -202,7 +168,7 @@ json: {
   "message" : "Error en el sistema"
 }
 </td></tr>
-<tr><td>Nombre Desarrollador:</td> <td>Sharit Daniela Vargas Almario (devsdv)</td></tr>
+<tr><td>Programador</td> <td>Kevin Andrade Maecha - devkam</td></tr>
 </table>
 </body>
 </html>

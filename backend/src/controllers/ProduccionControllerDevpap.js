@@ -25,12 +25,11 @@ export const listarProduccion = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: 'Error en el servidor',
+            message: 'Error en el sistema',
         });
         console.log(error);
     }
 };
-
 
 export const registrarProduccion = async (req, res) => {
     try {
@@ -53,7 +52,7 @@ export const registrarProduccion = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({
-            "mensaje": error
+            message: 'Error en el sistema',
         })
     }
 }

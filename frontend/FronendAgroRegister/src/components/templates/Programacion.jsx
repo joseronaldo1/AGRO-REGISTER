@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 import { format } from 'date-fns'; // Importa la función format de date-fns
 
 function Programacion() {
-  const baseURL = 'http://localhost:3000/listarProgramacion';
+
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
@@ -26,18 +26,24 @@ function Programacion() {
   const [originalData, setOriginalData] = useState([]);
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
-  
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(baseURL);
-      setData(response.data);
-      setOriginalData(response.data);
+      const token = localStorage.getItem('token');
+      const baseURL = 'http://localhost:3000/listarProgramacion';
+      const respuesta = await axios.get(baseURL, {
+        headers: {
+          'token': token
+        }
+      });
+      setData(respuesta.data);
+      setOriginalData(respuesta.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error al obtener datos:', error);
     }
   };
 
@@ -60,34 +66,59 @@ function Programacion() {
     setMode('update');
     setShowActualizacionModal(true);
   };
-  
+
   const handleCloseActualizacionModal = () => {
     setActualizacionInitialData(null);
     setShowActualizacionModal(false);
   };
-  
+
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      const { id_programacion } = formData; // Utiliza el nombre correcto del campo
-      if (!id_programacion) {
-        console.error('ID no encontrado en los datos del formulario');
+      console.log('Actualización de la programación:', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
         return;
       }
-      await axios.put(`http://localhost:3000/actualizarProgramacion/${id_programacion}`, formData);
-      fetchData();
-      setShowActualizacionModal(false);
+      const { id } = formData;
+      const response = await axios.put(`http://localhost:3000/actualizarProgramacion/${id}`, formData, {
+        headers: {
+          'token': token
+        }
+      });
+
+      if (response.status === 200) {
+        console.log('Programación actualizado exitosamente.');
+        fetchData();
+        setShowActualizacionModal(false);
+      } else {
+        console.error('Error al actualizar la programación:', response.data);
+      }
     } catch (error) {
-      console.error('Error al actualizar la programación:', error);
+      console.error('Error al actualizar las programaciones:', error);
     }
   };
-  
+
+
   const handleSearch = async (searchTerm) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+
       if (searchTerm.trim() === '') {
         setData(originalData);
         setError(null);
       } else {
-        const response = await axios.get(`http://localhost:3000/buscarProgramacion/${searchTerm}`);
+        const response = await axios.get(`http://localhost:3000/buscarProgramacion/${searchTerm}`, {
+          headers: {
+            'token': token
+          }
+        });
         setData(response.data);
         if (response.data.length === 0) {
           setError('No se encontraron resultados');
@@ -117,7 +148,7 @@ function Programacion() {
       console.log('initialData:', initialData);
       if (initialData) {
         const { id_programacion } = initialData;
-        
+
         // Verificar si se ha seleccionado un estado
         if (!formData.estado) {
           // Mostrar mensaje de error si no se ha seleccionado un estado
@@ -128,22 +159,31 @@ function Programacion() {
           });
           return;
         }
-        
+
         // Mostrar mensaje de confirmación antes de cambiar el estado
         const result = await Swal.fire({
           title: 'Confirmación',
           text: '¿Estás seguro de cambiar el estado?',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
+          confirmButtonColor: 'green',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Sí, cambiar estado',
           cancelButtonText: 'Cancelar',
         });
-  
+
         if (result.isConfirmed) {
           // Realizar la solicitud PUT solo si se confirma la acción
-          await axios.put(`http://localhost:3000/desactivar/Programacion/${id_programacion}`, { estado: formData.estado });
+          const token = localStorage.getItem('token');
+          if (!token) {
+            console.error('No se encontró el token en el localStorage');
+            return;
+          }
+          await axios.put(`http://localhost:3000/desactivar/Programacion/${id_programacion}`, { estado: formData.estado }, {
+            headers: {
+              'token': token
+            }
+          });
           fetchData();
           setShowEstadoModal(false);
           // Mostrar mensaje de éxito
@@ -159,7 +199,7 @@ function Programacion() {
       console.error('Error al enviar el formulario de estado:', error);
     }
   };
-  
+
   // En la definición de las columnas, modifica la columna "Acciones":
   const columns = [
     {
@@ -176,7 +216,7 @@ function Programacion() {
       ),
     },
     {
-      name: 'Usuario',
+      name: 'Empleados',
       selector: (row) => row.nombre_usuario,
       sortable: true,
     },
@@ -186,7 +226,7 @@ function Programacion() {
       sortable: true,
     },
     {
-      name: 'Variedad',
+      name: 'Variedad C',
       selector: (row) => row.nombre_variedad,
       sortable: true,
     },
@@ -206,8 +246,8 @@ function Programacion() {
         <span style={{
           color: row.estado === 'activo' ? 'green' :
             row.estado === 'ejecutandose' ? 'orange' :
-              row.estado === 'terminado' ? '#2A5CB5' :
-                'red', fontWeight: '700'
+              row.estado === 'terminado' ? 'red' :
+                'grey', fontWeight: '700'
         }}>
           {row.estado}
         </span>
@@ -216,20 +256,33 @@ function Programacion() {
     },
     {
       name: 'Acciones',
-      cell: (row) => (
-        <>
-          {row.estado !== 'terminado' && (
-            <button
-              className="btn p-2 rounded-lg"
-              style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
-              type="button"
-              onClick={() => handleOpenEstadoModal(row)}
-            >
-              <RiPlantFill style={{ color: 'white' }} />Estado
-            </button>
-          )}
-        </>
-      ),
+      cell: (row) => {
+        const [hover, setHover] = useState(false);
+
+        return (
+          <>
+            {row.estado !== 'terminado' && (
+              <button
+                className="btn p-2 rounded-lg"
+                style={{
+                  backgroundColor: hover ? '#3b5bb3' : '#466AD6',
+                  borderColor: '#ffc107',
+                  color: 'white',
+                  width: '70%',
+                  border: 'none',
+                  marginLeft: '-16px',
+                }}
+                type="button"
+                onClick={() => handleOpenEstadoModal(row)}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              >
+                <RiPlantFill style={{ color: 'white' }} /> Estado
+              </button>
+            )}
+          </>
+        );
+      },
     },
   ];
 
@@ -271,7 +324,7 @@ function Programacion() {
           {error ? (
             <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
           ) : (
-            <Datatable columns={columns} data={data} title="Programacion" />
+            <Datatable columns={columns} data={data} title="Asignaciones" />
           )}
         </div>
 

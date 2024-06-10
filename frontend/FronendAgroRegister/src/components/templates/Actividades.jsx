@@ -12,7 +12,7 @@ import SearchBar from '../moleculas/SearchBar';
 import Swal from 'sweetalert2';
 
 function Actividad() {
-  const baseURL = 'http://localhost:3000/listarActividad';
+
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
@@ -25,18 +25,24 @@ function Actividad() {
   const [originalData, setOriginalData] = useState([]);
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
-  
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(baseURL);
-      setData(response.data);
-      setOriginalData(response.data);
+      const token = localStorage.getItem('token');
+      const baseURL = 'http://localhost:3000/listarActividad';
+      const respuesta = await axios.get(baseURL, {
+        headers: {
+          'token': token
+        }
+      });
+      setData(respuesta.data);
+      setOriginalData(respuesta.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error al obtener datos:', error);
     }
   };
 
@@ -59,7 +65,7 @@ function Actividad() {
     setMode('update');
     setShowActualizacionModal(true);
   };
-  
+
   const handleCloseActualizacionModal = () => {
     setActualizacionInitialData(null);
     setShowActualizacionModal(false);
@@ -67,32 +73,50 @@ function Actividad() {
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      const { id_actividad } = formData; // Utiliza el nombre correcto del campo
-      if (!id_actividad) {
-        console.error('ID no encontrado en los datos del formulario');
+      console.log('Actualización de la actividad:', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
         return;
       }
-      await axios.put(`http://localhost:3000/actualizarProgramacion/${id_actividad}`, formData);
-      fetchData();
-      setShowActualizacionModal(false);
-      // Mostrar mensaje de éxito
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: 'Actividad actualizada exitosamente',
+      const { id } = formData;
+      const response = await axios.put(`http://localhost:3000/ActualizarActividad/${id}`, formData, {
+        headers: {
+          'token': token
+        }
       });
+
+      if (response.status === 200) {
+        console.log('Actividad actualizada exitosamente.');
+        fetchData();
+        setShowActualizacionModal(false);
+      } else {
+        console.error('Error al actualizar la actividad:', response.data);
+      }
     } catch (error) {
-      console.error('Error al actualizar la actividad:', error);
+      console.error('Error al actualizar las actividades:', error);
     }
   };
 
   const handleSearch = async (searchTerm) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+
       if (searchTerm.trim() === '') {
         setData(originalData);
         setError(null);
       } else {
-        const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`);
+        const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`, {
+          headers: {
+            'token': token
+          }
+        });
         setData(response.data);
         if (response.data.length === 0) {
           setError('No se encontraron resultados');
@@ -122,7 +146,7 @@ function Actividad() {
       console.log('initialData:', initialData);
       if (initialData) {
         const { id_actividad } = initialData;
-        
+
         // Verificar si se ha seleccionado un estado
         if (!formData.estado) {
           // Mostrar mensaje de error si no se ha seleccionado un estado
@@ -133,22 +157,31 @@ function Actividad() {
           });
           return;
         }
-        
+
         // Mostrar mensaje de confirmación antes de cambiar el estado
         const result = await Swal.fire({
           title: 'Confirmación',
           text: '¿Estás seguro de cambiar el estado?',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
+          confirmButtonColor: 'green',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Sí, cambiar estado',
           cancelButtonText: 'Cancelar',
         });
-  
+
         if (result.isConfirmed) {
+          const token = localStorage.getItem('token');
+          if (!token) {
+            console.error('No se encontró el token en el localStorage');
+            return;
+          }
           // Realizar la solicitud PUT solo si se confirma la acción
-          await axios.put(`http://localhost:3000/Desactivara/actividad/${id_actividad}`, { estado: formData.estado });
+          await axios.put(`http://localhost:3000/Desactivara/actividad/${id_actividad}`, { estado: formData.estado }, {
+            headers: {
+              'token': token
+            }
+          });
           fetchData();
           setShowEstadoModal(false);
           // Mostrar mensaje de éxito
@@ -196,7 +229,7 @@ function Actividad() {
       sortable: true,
     },
     {
-      name: 'Observaciones',
+      name: 'A realizar',
       selector: (row) => row.observaciones,
       sortable: true,
     },
@@ -211,8 +244,8 @@ function Actividad() {
         <span style={{
           color: row.estado === 'activo' ? 'green' :
             row.estado === 'ejecutandose' ? 'orange' :
-              row.estado === 'terminado' ? '#2A5CB5' :
-                'red', fontWeight: '700'
+              row.estado === 'terminado' ? 'red' :
+                'grey', fontWeight: '700'
         }}>
           {row.estado}
         </span>
@@ -221,23 +254,35 @@ function Actividad() {
     },
     {
       name: 'Acciones',
-      cell: (row) => (
-        <>
-          {row.estado !== 'terminado' && (
-            <button
-              className="btn p-2 rounded-lg"
-              style={{ backgroundColor: '#466AD6', borderColor: '#ffc107', color: 'white', border: 'none', marginLeft: '-55px', width: '400px' }}
-              type="button"
-              onClick={() => handleOpenEstadoModal(row)}
-            >
-              <RiPlantFill style={{ color: 'white' }} />Estado
-            </button>
-          )}
-        </>
-      ),
+      cell: (row) => {
+        const [hover, setHover] = useState(false);
+
+        return (
+          <>
+            {row.estado !== 'terminado' && (
+              <button
+                className="btn p-2 rounded-lg"
+                style={{
+                  backgroundColor: hover ? '#3b5bb3' : '#466AD6',
+                  borderColor: '#ffc107',
+                  color: 'white',
+                  width: '70%',
+                  border: 'none',
+                  marginLeft: '-16px',
+                }}
+                type="button"
+                onClick={() => handleOpenEstadoModal(row)}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              >
+                <RiPlantFill style={{ color: 'white' }} /> Estado
+              </button>
+            )}
+          </>
+        );
+      },
     },
   ];
-
   return (
     <div>
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

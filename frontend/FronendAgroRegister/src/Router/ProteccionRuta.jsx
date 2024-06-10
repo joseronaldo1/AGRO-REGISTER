@@ -7,7 +7,7 @@ function ProtectedRoute() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Auth token:", auth); // Log the authentication token
+    console.log("Auth token:", auth);
     if (!auth) {
       Swal.fire({
         title: 'No está autenticado',
@@ -16,18 +16,16 @@ function ProtectedRoute() {
         confirmButtonText: 'Aceptar'
       }).then(() => {
         console.log("El usuario no está autenticado. Redirigiendo a la página de inicio de sesión..");
-        navigate('/'); // Redirect to the login page if not logged in
+        navigate('/');
       });
     }
   }, [auth, navigate]);
 
   if (!auth) {
-    // Return null if not logged in to prevent rendering the protected content
     console.log("El usuario no está autenticado. Renderizando null.");
     return null;
   }
 
-  // Render the protected content using Outlet if logged in
   console.log("El usuario está autenticado. Renderizando contenido protegido.");
   return <Outlet />;
 }

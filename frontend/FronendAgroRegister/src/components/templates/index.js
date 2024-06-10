@@ -10,10 +10,12 @@ export { UsuarioPage } from './Usuarios';
 export { VariedadPage } from './Variedad';
 export { CultivosPage } from './cultivos';
 export {ActividadPage}from './Actividades'
+export {ActividadPage2}from './Actividades2';
 export { LotesPage } from './Lotes';
 export { RecursosPage } from './Recursos';
 export { SoportePage } from './Soporte';
 export { DashboardPage } from './dashboar';
+export { DashboardPage2 } from './dashboar2';
 export { ReportesPage } from './Reportes';
 export { ProgramacionPage } from './Programacion';
 export { ProduccionPage } from './Produccion';

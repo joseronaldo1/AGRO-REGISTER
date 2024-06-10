@@ -32,6 +32,11 @@
   margin-right: 100px;
 }
 
+.cerrarSesion:hover {
+  background-color: #F95D5D !important;
+  color: black;
+}
+
 /* Hover del contenido del header */
 .active:hover {
   color: white !important;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
     const initialFormData = {
         nombre: initialData && initialData.nombre ? initialData.nombre : '',
         apellido: initialData && initialData.apellido ? initialData.apellido : '',
@@ -10,7 +10,6 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
         password: initialData && initialData.password ? initialData.password : '',
         rol: initialData && initialData.rol ? initialData.rol : ''
     };
-
 
     const [formData, setFormData] = useState(initialFormData);
     const [showWarning, setShowWarning] = useState(false);
@@ -22,10 +21,12 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
             [name]: value
         }));
     };
+
     const validarNombres = nombre => {
         const soloLetras = /^[a-zA-Z\s]*$/;
         return soloLetras.test(nombre);
     };
+
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -41,47 +42,67 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
                 });
                 return;
             }
-    
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No se encontró el token en el localStorage');
+                return;
+            }
+
             if (mode === 'registro') {
                 const response = await axios.post(
                     'http://localhost:3000/registrarUsuario',
                     formData,
                     {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'token': token
                         }
                     }
                 );
-                console.log(response.data);
-    
+
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
                     text: 'El empleado se ha registrado exitosamente'
                 });
-                console.log(response.data);
             } else if (mode === 'update') {
                 const { id } = initialData; // Asegúrate de que el ID esté correctamente definido aquí
                 await axios.put(
                     `http://localhost:3000/actualizarEmpleado/${id}`,
-                    formData
+                    formData,
+                    {
+                        headers: {
+                            'token': token
+                        }
+                    }
                 );
-    
+
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
                     text: 'El empleado se ha actualizado exitosamente'
                 });
             }
-    
+
             onSubmit(formData);
             cerrarModal();
         } catch (error) {
-            console.error('Error al procesar el formulario:', error);
+            if (error.response && error.response.status === 400 && error.response.data.message === 'El correo ya está en uso') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'El correo ya está en uso. Por favor, use un correo diferente.'
+                });
+            } else {
+                console.error('Error al procesar el formulario:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Ocurrió un error inesperado. Por favor, inténtelo de nuevo más tarde.'
+                });
+            }
         }
     };
-    
-
 
     return (
         <form
@@ -191,7 +212,7 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
                     onChange={handleChange}
                 >
                     <option value="">Seleccione...</option>
-                    <option value="empleado">empleado</option>
+                    <option value="empleado">Empleado</option>
                 </select>
             </div>
             <button
@@ -215,4 +236,4 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
     );
 };
 
-export default Formulariofinca;
+export default FormularioEmpleado;

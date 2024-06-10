@@ -12,7 +12,7 @@ import SearchBar from '../moleculas/SearchBar';
 import { format } from 'date-fns'; // Importa la función format de date-fns
 
 function Cultivos() {
-  const baseURL = 'http://localhost:3000/listarCultivos';
+
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
@@ -30,11 +30,17 @@ function Cultivos() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(baseURL);
-      setData(response.data);
-      setOriginalData(response.data);
+      const token = localStorage.getItem('token');
+      const baseURL = 'http://localhost:3000/listarCultivos';
+      const respuesta = await axios.get(baseURL, {
+        headers: {
+          'token': token
+        }
+      });
+      setData(respuesta.data);
+      setOriginalData(respuesta.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error al obtener datos:', error);
     }
   };
 
@@ -55,11 +61,27 @@ function Cultivos() {
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      console.log('Actualización del cultivo:', formData);
+      console.log('Actualización de empleado:', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
       const { id } = formData;
-      await axios.put(`http://localhost:3000/actualizarCultivo/${id}`, formData);
-      fetchData();
-      setShowActualizacionModal(false);
+      const response = await axios.put(`http://localhost:3000/actualizarCultivo/${id}`, formData, {
+        headers: {
+          'token': token
+        }
+      });
+
+      if (response.status === 200) {
+        console.log('Cultivo actualizado exitosamente.');
+        fetchData();
+        setShowActualizacionModal(false);
+      } else {
+        console.error('Error al actualizar el cultivo:', response.data);
+      }
     } catch (error) {
       console.error('Error al actualizar el cultivo:', error);
     }
@@ -67,11 +89,22 @@ function Cultivos() {
 
   const handleSearch = async (searchTerm) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+
       if (searchTerm.trim() === '') {
         setData(originalData);
         setError(null);
       } else {
-        const response = await axios.get(`http://localhost:3000/buscarCultivo/${searchTerm}`);
+        const response = await axios.get(`http://localhost:3000/buscarCultivo/${searchTerm}`, {
+          headers: {
+            'token': token
+          }
+        });
         setData(response.data);
         if (response.data.length === 0) {
           setError('No se encontraron resultados');
@@ -87,26 +120,44 @@ function Cultivos() {
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+
       const newEstado = estado === 'activo' ? 'inactivo' : 'activo';
-      await axios.put(`http://localhost:3000/desactivar/Cultivo/${id}`, { estado: newEstado });
-      fetchData();
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: `El estado se cambió con éxito a ${newEstado}.`,
+      const response = await axios.put(`http://localhost:3000/desactivar/Cultivo/${id}`, { estado: newEstado }, {
+        headers: {
+          'token': token
+        }
       });
+
+      if (response.status === 200) {
+        console.log('Estado del cultivo cambiado exitosamente.');
+        fetchData(); // Actualizar la interfaz de usuario con los datos más recientes
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: `El estado se cambió con éxito a ${newEstado}.`,
+        });
+      } else {
+        console.error('Error al cambiar el estado del cultivo:', response.data);
+      }
     } catch (error) {
-      console.error('Error al cambiar el estado de la finca:', error);
+      console.error('Error al cambiar el estado del cultivo:', error);
     }
   };
+
 
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
     if (event.target.value === '') {
-      setData(originalData);
+      setData(originalData); // Restaurar los datos originales
     } else {
       const filteredData = originalData.filter(item => item.estado === event.target.value);
-      setData(filteredData);
+      setData(filteredData); // Actualizar la tabla con los datos filtrados
     }
   };
 
@@ -123,18 +174,19 @@ function Cultivos() {
           <FaRegEdit style={{ color: 'black' }} />
         </button>
       ),
-    }, 
+    },
+
+    {
+      name: 'Variedad C',
+      selector: (row) => row.nombre_variedad,
+      sortable: true,
+    },
     {
       name: 'Lote',
       selector: (row) => row.nombre_lote,
       sortable: true,
     },
-    {
-      name: 'Variedad',
-      selector: (row) => row.nombre_variedad,
-      sortable: true,
-    },
-   
+
     {
       name: 'Cantidad Sembrada',
       selector: (row) => row.cantidad_sembrada,
@@ -164,8 +216,8 @@ function Cultivos() {
             border: 'none',
             color: 'white',
             height: '40px',
-            width: '220px',
-            marginLeft: '-50px',
+            width: '70%',
+            marginLeft: '-16px',
             transition: 'background-color 0.2s',
           }}
           type="button"
@@ -174,7 +226,7 @@ function Cultivos() {
           onMouseLeave={(e) => { e.target.style.backgroundColor = row.estado === 'activo' ? '#E83636' : 'green' }}
         >
           {row.estado === 'activo' ? <FaPowerOff style={{ marginRight: '5px' }} /> : <FaLightbulb style={{ marginRight: '3px' }} />}
-          {row.estado === 'activo' ? 'Inactivo' : 'Activar'}
+          {row.estado === 'activo' ? 'Desactivar' : 'Activar'}
         </button>
       ),
     },

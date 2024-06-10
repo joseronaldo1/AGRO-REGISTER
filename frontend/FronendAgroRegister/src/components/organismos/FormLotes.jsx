@@ -15,17 +15,28 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
   const [nombre_finca, setNombreFinca] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/listarFinca')
-      .then(response => {
+    const fetchNombreFinca = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No se encontró el token en el localStorage');
+          return;
+        }
+  
+        const response = await axios.get('http://localhost:3000/listarFinca', {
+          headers: {
+            'token': token
+          }
+        });
         setNombreFinca(response.data); // Establecer directamente los datos de la respuesta en el estado nombre_finca
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error al obtener los datos:', error);
-      });
+      }
+    };
+  
+    fetchNombreFinca();
   }, []);
-
-
-
+  
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -77,16 +88,21 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         });
         return;
       }
-
+      const token = localStorage.getItem('token');
+      if (!token) {
+          // Manejar el caso en que el token no esté presente  
+          console.error('No se encontró el token en el localStorage');
+          return;
+      }
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/Registrarlote',
           formData,
           {
             headers: {
-              'Content-Type': 'application/json'
-            }
-          }
+                'token': token
+              }
+        }
         );
         console.log(response.data);
         // Mostrar alerta de registro exitoso
@@ -100,7 +116,12 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         const { id } = initialData;
         await axios.put(
           `http://localhost:3000/Actualizarlote/${id}`,
-          formData
+          formData,
+          {
+            headers: {
+                'token': token
+              }
+        }
         );
         // Mostrar alerta de actualización exitosa
         Swal.fire({

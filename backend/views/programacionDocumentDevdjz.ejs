@@ -5,26 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Documentacion API</title>
 <body>
-  <hr>
-  
-  <h1>PROGRAMACIONES</h1>
+  <h1>Documentación de la API - programación</h1>
+  <h3>Registrar Programación</h3>
   <table>
       <tr><td>Número</td> <td>1</td></tr>
       <tr><td>Nombre del Servicio</td>  <td>registrar programaciones</td></tr>
       <tr><td>URL</td>  <td>/registrarProgramacion</td></tr>
-      <tr><td>Descripción</td>  <td>Permite registrar una nueva programacion utilizado en la base de datos</td></tr>
+      <tr><td>Descripción</td>  <td>Permite registrar una nueva programacion en la base de datos</td></tr>
       <tr><td>Metodo HTTP</td>  <td>POST</td></tr>
       <tr><td>Header</td>  <td>Token:</td></tr>
       <tr><td>Usuarios</td>  <td>Administrador</td></tr>
-      <tr><td>Request json</td>  <td>{
-        
-          "fecha_inicio": "2022-02-11", 
-          "fecha_fin": "2022-02-12", 
-           "estado": "activo",
-          "fk_id_usuario":22, 
-          "fk_id_actividad": 2,
-          "fk_id_cultivo": 2
-        
+      <tr><td>Request json</td>  <td>  {
+        "fecha_inicio": "2024-08-04T05:00:00.000Z",
+        "fecha_fin": "2024-09-09T05:00:00.000Z",
+        "fk_id_usuario": 1,
+        "fk_id__actividad": 2,
+        "fk_id_variedad": 3
       }</td></tr>
       <tr><td>Respuesta json</td>  <td>   
       Correcto: 
@@ -32,7 +28,7 @@
       json:
       {
         "status": 200,
-        "message": "Se registró con éxito"
+        "message": "Programación registrada con exito"
       }
   <br>
   Incorrecto:
@@ -40,7 +36,7 @@
   Status: 404
   json:{
       "status": 404,
-      "message" : "No se registró"
+      "message" : "hay un error no se pudo guardar"
   }
   <br>
   Error: 
@@ -48,35 +44,27 @@
   Status: 500 
   json: {
       "status": 500,
-      "message" : "Error interno del servidor"
+      "message" : "Error en el sistema"
   }
   </td></tr>
-  <tr><td>Programador</td>  <td>Dario Jose Zamora V - devdjzv</td></tr>
+  <tr><td>Programador</td> <td>Sergio Canacue España - devsce</td></tr>
   </table>
-  
-  
-  
   <br>
-  
-  
-  
-  
-  <h3>Requerimiento 2. Documentacion ENDPOINT ACTUALIZAR PROGRAMACIONES</h3>
+  <h3>Actualizar Programación</h3>
   <table>
       <tr><td>Número</td> <td>2</td></tr>
       <tr><td>Nombre del Servicio</td>  <td>Actualizar programaciones</td></tr>
-      <tr><td>URL</td>  <td>actualizarProgramacion/:id</td></tr>
-      <tr><td>Descripción</td>  <td>Permite actualizar una asiganción existente en la base de datos</td></tr>
+      <tr><td>URL</td>  <td>actualizarProgramacion/:id_programacion</td></tr>
+      <tr><td>Descripción</td>  <td>Permite actualizar una programación existente en la base de datos</td></tr>
       <tr><td>Metodo HTTP</td>  <td>PUT</td></tr>
       <tr><td>Header</td>  <td>Token:</td></tr>
       <tr><td>Usuarios</td>  <td>Administrador</td></tr>
-      <tr><td>Request json</td>  <td>{
-        "fecha_inicio": "2022-02-11", 
-        "fecha_fin": "2022-02-12", 
-         "estado": "activo",
-        "fk_id_usuario":22, 
-        "fk_id_actividad": 2,
-        "fk_id_cultivo": 2
+      <tr><td>Request json</td>  <td>  {
+        "fecha_inicio": "2024-05-04T05:00:00.000Z",
+        "fecha_fin": "2024-05-09T05:00:00.000Z",
+        "fk_id_usuario": 1,
+        "fk_id__actividad": 1,
+        "fk_id_variedad": 3
       }</td></tr>
       <tr><td>Respuesta json</td>  <td>   
       Correcto: 
@@ -84,7 +72,7 @@
       json:
       {
         "status": 200,
-        "message": "Se actualizó con éxito"
+        "message": "La programación ha sido actualizada"
       }
   <br>
   Incorrecto:
@@ -92,7 +80,7 @@
   Status: 404
   json:{
       "status": 404,
-      "message" : "No se encontró el registro para actualizar"
+      "message" : "No se pudo actualizar la programación"
   }
   <br>
   Error: 
@@ -100,29 +88,29 @@
   Status: 500 
   json: {
       "status": 500,
-      "message" : "Error interno del servidor"
+      "message" : "Error en el sistema"
   }
   </td></tr>
-  <tr><td>Programador</td>  <td>Dario Jose Zamora V - devdjzv</td></tr>
+  <tr><td>Programador</td> <td>Sergio Canacue España - devsce</td></tr>
   </table>
   
-  <h3>Requerimiento 3. Documentacion ENDPOINT ESTADO PROGRAMACION</h3>
+  <h3>Cambiar Estado de una Programación</h3>
   <table>
   <tr><td>Número</td> <td>3</td></tr>
-  <tr><td>Nombre del Servicio</td>  <td>estado programaciones</td></tr>
-  <tr><td>URL</td>  <td>/estadoProgramacion/:id</td></tr>
-  <tr><td>Descripción</td>  <td>Permite cambiar el estado utilizado existente en la base de datos</td></tr>
+  <tr><td>Nombre del Servicio</td>  <td>Cambiar el estado de una programación</td></tr>
+  <tr><td>URL</td>  <td>/desactivar/Programacion/:id</td></tr>
+  <tr><td>Descripción</td>  <td>Permite cambiar el estado de una programación registrada en la base de datos</td></tr>
   <tr><td>Metodo HTTP</td>  <td>PUT</td></tr>
   <tr><td>Header</td>  <td>Token:</td></tr>
   <tr><td>Usuarios</td>  <td>Administrador</td></tr>
-  <tr><td>Request json</td>  <td>{"estado": 'activo','inactivo'}</td></tr>
+  <tr><td>Request json</td>  <td>{"estado": "inactivo"}</td></tr>
   <tr><td>Respuesta json</td>  <td>   
   Correcto: 
   Status: 200
   json:
   {
     "status": 200,
-    "message": "El estado se realizó correctamente"
+    "message": "Se cambio el estado correctamente"
   }
   <br>
   Incorrecto:
@@ -130,7 +118,7 @@
   Status: 404
   json:{
   "status": 404,
-  "message" : "El estado no se realizo correctamente"
+  "message" : "No se pudo cambiar el estado"
   }
   <br>
   Error: 
@@ -138,39 +126,35 @@
   Status: 500 
   json: {
   "status": 500,
-  "message" : "Error interno del servidor"
+  "message" : "Error en el sistema"
   }
   </td></tr>
-  <tr><td>Programador</td>  <td>Dario Jose Zamora V - devdjzv</td></tr>
+  <tr><td>Programador</td> <td>Sergio Canacue España - devsce</td></tr>
   </table>
-  <br>
-  <br>
     <br>
-  <h3>Requerimiento 4. Documentacion ENDPOINT BUSCAR PROGRAMACIONES</h3>
+  <h3>Buscar Programación</h3>
   <table>
   <tr><td>Número</td> <td>4</td></tr>
   <tr><td>Nombre del Servicio</td>  <td>Buscar programaciones</td></tr>
-  <tr><td>URL</td>  <td>/buscarProgramacion/:id</td></tr>
-  <tr><td>Descripción</td>  <td>Permite buscar una Programacion utilizado por su id en la base de datos</td></tr>
+  <tr><td>URL</td>  <td>/buscarProgramacion/:nombre</td></tr>
+  <tr><td>Descripción</td>  <td>Permite buscar una Programacion registrada en la base de datos</td></tr>
   <tr><td>Metodo HTTP</td>  <td>GET</td></tr>
   <tr><td>Header</td>  <td>Token:</td></tr>
   <tr><td>Usuarios</td>  <td>Administrador</td></tr>
-  <tr><td>Request json</td>  <td>{Null}</td></tr>
+  <tr><td>Request json</td>  <td></td></tr>
   <tr><td>Respuesta json</td>  <td>   
   Correcto: 
   Status: 200
   json:
-[  {
-  "id_programacion": 3,
-  "fecha_inicio": "2024-03-29T05:00:00.000Z",
-  "fecha_fin": "2024-03-30T05:00:00.000Z",
-  "usuario": "daniel",
-  "nombre_actividad": "fumigare",
-  "nombre_variedad": "cilantro",
-  "lote": "alejo",
-  "estado": "activo"
-}
-]
+  {
+    "id_programacion": 1,
+    "fecha_inicio": "2024-05-04T05:00:00.000Z",
+    "fecha_fin": "2024-05-09T05:00:00.000Z",
+    "nombre_usuario": "pablo",
+    "nombre_actividad": "fumigare",
+    "nombre_variedad": "zanahoria",
+    "estado": "activo"
+  }
   <br>
   Incorrecto:
   
@@ -185,17 +169,13 @@
   Status: 500 
   json: {
   "status": 500,
-  "message" : "Error interno del servidor"
+  "message" : "Error en el sistema"
   }
   </td></tr>
-  <tr><td>Programador</td>  <td>Dario Jose Zamora V - devdjzv</td></tr>
-  </table>
-  
-    
+  <tr><td>Programador</td> <td>Sergio Canacue España - devsce</td></tr>
+  </table> 
   <br>
-  
-  
-  <h3>Requerimiento 5. Documentacion ENDPOINT LISTAR PROGRAMACIONES</h3>
+  <h3>Listar Programación</h3>
   <table>
   <tr><td>Número</td> <td>5</td></tr>
   <tr><td>Nombre del Servicio</td>  <td>Listar programaciones</td></tr>
@@ -204,39 +184,26 @@
   <tr><td>Metodo HTTP</td>  <td>GET</td></tr>
   <tr><td>Header</td>  <td>Token:</td></tr>
   <tr><td>Usuarios</td>  <td>Administrador</td></tr>
-  <tr><td>Request json</td>  <td>Null</td></tr>
+  <tr><td>Request json</td>  <td></td></tr>
   <tr><td>Respuesta json</td>  <td>   
   Correcto: 
   Status: 200
-  json:[
-  {
-      "id_programacion": 3,
-      "fecha_inicio": "2024-03-29T05:00:00.000Z",
-      "fecha_fin": "2024-03-30T05:00:00.000Z",
-      "usuario": "daniel",
-      "nombre_actividad": "fumigare",
-      "nombre_variedad": "cilantro",
-      "lote": "alejo",
-      "estado": "activo"
-  },
-  {
-      "id_programacion": 6,
-      "fecha_inicio": "2022-01-12T05:00:00.000Z",
-      "fecha_fin": "2023-02-12T05:00:00.000Z",
-      "usuario": "cesar ",
-      "nombre_actividad": "pas",
-      "nombre_variedad": "cilantro",
-      "lote": "alejo",
-      "estado": "activo"
+  json:  {
+    "id_programacion": 1,
+    "fecha_inicio": "2024-05-04T05:00:00.000Z",
+    "fecha_fin": "2024-05-09T05:00:00.000Z",
+    "nombre_usuario": "pablo",
+    "nombre_actividad": "fumigare",
+    "nombre_variedad": "zanahoria",
+    "estado": "activo"
   }
-]
   <br>
   Incorrecto:
   
   Status: 404
   json:{
     "status": 404,
-    "message": "No hay ninguna programacion"
+    "message": "No hay ninguna programación"
   }
   <br>
   Error: 
@@ -244,10 +211,10 @@
   Status: 500 
   json: {
   "status": 500,
-  "message" : "Error interno del servidor"
+  "message" : "Error en el sistema"
   }
   </td></tr>
-  <tr><td>Programador</td>  <td>Dario Jose Zamora V - devdjzv</td></tr>
+  <tr><td>Programador</td> <td>Sergio Canacue España - devsce</td></tr>
   </table>
 </body>
 </html>

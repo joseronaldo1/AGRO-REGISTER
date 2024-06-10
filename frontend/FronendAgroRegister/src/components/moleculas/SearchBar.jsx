@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaSearch } from 'react-icons/fa'; // Importa el ícono de búsqueda de FontAwesome
+import { FaSearch } from 'react-icons/fa';
 
 const SearchBar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -7,7 +7,6 @@ const SearchBar = ({ onSearch }) => {
   const handleChange = (e) => {
     const { value } = e.target;
     setSearchTerm(value);
-    // Llamar a la función de búsqueda con el término actualizado
     onSearch(value);
   };
 
@@ -26,11 +25,11 @@ const SearchBar = ({ onSearch }) => {
           placeholder="Buscar por Nombre"
           style={{
             borderRadius: '20px',
-            paddingLeft: '40px', // Agregar espacio para el ícono de búsqueda
-            paddingRight: '10px', // Agregar espacio para el botón de búsqueda
+            paddingLeft: '40px',
+            paddingRight: '10px',
             height: '35px',
             border: 'none',
-            boxShadow: '0px 0px 5px rgba(0, 0, 0, 2.0)', // Agregar una sombra suave
+            boxShadow: '0px 0px 5px rgba(0, 0, 0, 2.0)',
           }}
           value={searchTerm}
           onChange={handleChange}
@@ -39,10 +38,10 @@ const SearchBar = ({ onSearch }) => {
           style={{
             position: 'absolute',
             top: '50%',
-            left: '10px', // Posiciona el ícono a la izquierda del input
-            transform: 'translateY(-50%)', // Centra verticalmente el ícono
-            color: '#ccc', // Color del ícono de búsqueda
-            zIndex: '1', // Asegura que el ícono esté sobre el input
+            left: '10px',
+            transform: 'translateY(-50%)',
+            color: '#ccc',
+            zIndex: '1',
           }}
         />
       </div>

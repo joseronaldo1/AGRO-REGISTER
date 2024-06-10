@@ -29,14 +29,27 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
   const [nombreVariedad, setNombreVariedad] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/listarVariedades')
-      .then(response => {
-        setNombreVariedad(response.data);
-      })
-      .catch(error => {
-        console.error('Error al obtener los datos de variedad:', error);
-      });
-  }, []);
+    const fetchData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No se encontró el token en el localStorage');
+                return;
+            }
+
+            const response = await axios.get('http://localhost:3000/listarVariedades', {
+                headers: {
+                    'token': token
+                }
+            });
+            setNombreVariedad(response.data);
+        } catch (error) {
+            console.error('Error al obtener los datos de variedad:', error);
+        }
+    };
+
+    fetchData();
+}, []);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -91,13 +104,19 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
 
         return;
       }
+      const token = localStorage.getItem('token');
+      if (!token) {
+          // Manejar el caso en que el token no esté presente  
+          console.error('No se encontró el token en el localStorage');
+          return;
+      }
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/RegistrarActividad',
           formData,
           {
             headers: {
-              'Content-Type': 'application/json'
+              'token': token
             }
           }
         );
@@ -111,7 +130,12 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         const { id_actividad } = initialData; // Utiliza el campo correcto del ID
         await axios.put(
           `http://localhost:3000/ActualizarActividad/${id_actividad}`,
-          formData
+          formData,
+          {
+            headers: {
+              'token': token
+            }
+          }
         );
         Swal.fire({
           icon: 'success',
