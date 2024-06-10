@@ -84,7 +84,7 @@ export const registrarEmpleado = async (req, res) => {
         const imagen = req.file ? req.file.path : null;
 
         const [rows] = await pool.query(
-            `INSERT INTO usuarios (nombre, apellido, correo, password, rol, imagen) VALUES (?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO usuarios (nombre, apellido, correo, password, rol) VALUES ( ?, ?, ?, ?, ?)`,
             [nombre, apellido, correo, hashedPassword, rol, imagen]
         );
 

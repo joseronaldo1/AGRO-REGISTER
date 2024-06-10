@@ -51,7 +51,7 @@ const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModa
     
             if (mode === 'registro') {
                 const response = await axios.post(
-                    'http://localhost:3000/registrarUsuario',
+                    'http://localhost:3000/registrarEmpleado',
                     formData,
                     {
                         headers: {

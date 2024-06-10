@@ -6,25 +6,30 @@ import Footer from '../organismos/Footer/Footer';
 import Header2 from "../organismos/Header/Header2.jsx";
 
 function Actividad2() {
-
-
   const [data, setData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
+  const [observaciones, setObservaciones] = useState({});
 
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
       const baseURL = 'http://localhost:3000/listarActividad';
       const respuesta = await axios.get(baseURL, {
-        headers: {
-          'token': token
-        }
+        headers: { 'token': token }
       });
+      // Inicializar el estado de observaciones
+      const observacionesInicial = respuesta.data.reduce((acc, curr) => {
+        acc[curr.id_actividad] = '';
+        return acc;
+      }, {});
+      setObservaciones(observacionesInicial);
+
       setData(respuesta.data);
       setOriginalData(respuesta.data);
     } catch (error) {
@@ -36,7 +41,6 @@ function Actividad2() {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        // Manejar el caso en que el token no esté presente
         console.error('No se encontró el token en el localStorage');
         return;
       }
@@ -46,9 +50,7 @@ function Actividad2() {
         setError(null);
       } else {
         const response = await axios.get(`http://localhost:3000/Buscaractividad/${searchTerm}`, {
-          headers: {
-            'token': token
-          }
+          headers: { 'token': token }
         });
         setData(response.data);
         if (response.data.length === 0) {
@@ -73,12 +75,33 @@ function Actividad2() {
     }
   };
 
-  const handleTerminarActividad = async (id) => {
-    try {
-      await axios.put(`http://localhost:3000/ActualizarEstadoActividad/${id}`, { estado: 'terminado' });
-      fetchData();
-    } catch (error) {
-      console.error('Error al terminar la actividad:', error);
+  const handleObservacionesChange = (event, actividadId, estado) => {
+    const { value } = event.target;
+    // Si la actividad está terminada, inactiva o activa, no permitir cambios en las observaciones
+    if (estado === 'terminado' || estado === 'inactivo' || estado === 'activo') {
+      return; // No hacer nada
+    }
+    // Actualizar el estado de las observaciones para la actividad correspondiente
+    setObservaciones(prevObservaciones => ({
+      ...prevObservaciones,
+      [actividadId]: value
+    }));
+  };
+
+  const handleEnviarObservaciones = (actividadId, estado) => {
+    console.log('Estado de la actividad:', estado); // Agregamos esta línea para depurar
+    if (estado === 'inactivo') {
+      // Mostrar mensaje de error o alerta
+      alert('No puedes enviar observaciones porque la actividad está inactiva.');
+    } else if (estado === 'terminado') {
+      // Mostrar mensaje de actividad terminada
+      alert('Esta actividad ya ha sido terminada.');
+    } else if (estado === 'activo') {
+      // Mostrar mensaje de actividad activa
+      alert('Esta actividad debe estar ejecutándose para enviar observaciones.');
+    } else {
+      // Aquí puedes enviar las observaciones al servidor o realizar cualquier acción necesaria
+      console.log('Observaciones de actividad', actividadId, ':', observaciones[actividadId]);
     }
   };
 
@@ -111,39 +134,68 @@ function Actividad2() {
                     <div className="card-body" style={{ boxShadow: '0 10px 20px rgba(0, 0, 0, 0.5)', borderRadius: '10px' }}>
                       <h4 style={{ textAlign: 'center' }}>Actividad a realizar: </h4>
                       <br />
-                      <p className="card-text"><strong>Actividad:</strong>{actividad.nombre_actividad}</p>
+                      <p className="card-text"><strong>Actividad:</strong> {actividad.nombre_actividad}</p>
+                      <p className="card-text"><strong>Finca:</strong> {actividad.nombre_finca}</p>
+                      <p className="card-text"><strong>Lote:</strong> {actividad.nombre}</p> 
+                      <p className="card-text"><strong>Tipo recurso:</strong> {actividad.nombre_recursos}</p>
                       <p className="card-text"><strong>Variedad:</strong> {actividad.nombre_variedad}</p>
                       <p className="card-text"><strong>Tiempo:</strong> {actividad.tiempo}</p>
-                      <p className="card-text"><strong>Observaciones:</strong> {actividad.observaciones}</p>
+                      <p className="card-text"><strong>A realizar:</strong> {actividad.observaciones}</p>
                       <p className="card-text"><strong>Valor:</strong> {actividad.valor_actividad}</p>
                       <p className="card-text">
                         <strong>Estado:</strong>
                         <span className={`badge ${actividad.estado === 'activo' ? 'bg-success' :
                           actividad.estado === 'ejecutandose' ? 'bg-warning text-dark' :
-                            actividad.estado === 'terminado' ? 'bg-danger' :
-                              actividad.estado === 'inactivo' ? 'bg-secondary' :
-                                'bg-danger'}`}> {actividad.estado}
-                        </span>
+                          actividad.estado === 'terminado' ? 'bg-danger' :
+                          actividad.estado === 'inactivo' ? 'bg-secondary' :
+                            'bg-danger'}`}> {actividad.estado}
+                      </span>
+                    </p>
+                    <div>
+                      <br />
 
-                      </p>
-                      {/* {actividad.estado !== 'terminado' && (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-                          <Button style={{ marginLeft: '180px',backgroundColor: 'green', border: 'none' }} variant="primary" className="me-2" onClick={() => console.log(`Actividad ${actividad.id_actividad} aceptada`)}>Aceptar</Button>
-                          <Button style={{ backgroundColor: '#4047EA', border: 'none' }} variant="primary" className="me-2" onClick={() => handleTerminarActividad(actividad.id_actividad)}>Terminar</Button>
-                        </div>
-                      )} */}
+                       <p style={{fontWeight: 'bold'}}>Observaciones:</p>
+                      <textarea
+                        rows="4"
+                        className="form-control bold"
+                        value={observaciones[actividad.id_actividad]}
+                        onChange={(event) => handleObservacionesChange(event, actividad.id_actividad, actividad.estado)}
+                        placeholder="Escribe tus observaciones aquí"
+                        disabled={actividad.estado === 'inactivo' || actividad.estado === 'terminado' || actividad.estado === 'activo'} // Deshabilitar si la actividad está inactiva, terminada o activa
+                      />
+                      {actividad.estado !== 'inactivo' ? (
+                        actividad.estado !== 'terminado' && actividad.estado !== 'activo' ? (
+                          <Button
+                            variant="success"
+                            onClick={() => handleEnviarObservaciones(actividad.id_actividad, actividad.estado)}
+                            style={{ marginLeft: '150px',marginTop: '10px' }}
+                          >
+                            Enviar
+                          </Button>
+                        ) : (
+                          actividad.estado === 'terminado' ? (
+                            <p>Esta actividad ya ha sido terminada.</p>
+                          ) : (
+                            <p>Esta actividad debe estar ejecutándose para enviar observaciones.</p>
+                          )
+                        )
+                      ) : (
+                        <p>No puedes enviar observaciones porque la actividad está inactiva.</p>
+                      )}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <br />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-      {/* <Footer /> */}
+      <br />
     </div>
-  );
+    {/* <Footer /> */}
+  </div>
+);
 }
 
 export default Actividad2;
+

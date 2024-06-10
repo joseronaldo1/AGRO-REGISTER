@@ -1,41 +1,83 @@
 import React from 'react';
 import Modal from 'react-modal';
-import { AiOutlineClose } from 'react-icons/ai'; // Importamos el icono de cierre
+import { AiOutlineClose } from 'react-icons/ai';
 
 const ModalOjo = ({ mostrar, cerrarModal, titulo, initialData }) => {
   const customStyles = {
     overlay: {
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo oscuro semi-transparente
-      position: 'fixed', // Posición fija
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      zIndex: 9999 // Z-index alto para asegurarse de que esté por encima de todo
+      zIndex: 9999,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     content: {
-      width: '50%', // Ancho del modal
-      margin: 'auto', // Centrar horizontalmente
-      maxHeight: '70%', // Altura máxima del modal
-      overflowY: 'auto', // Habilitar desplazamiento vertical si el contenido es demasiado largo
-      borderRadius: '10px', // Bordes redondeados
-      boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)', // Sombra
-      padding: '20px', // Espaciado interno
-      backgroundColor: '#fff', // Fondo blanco
-      outline: 'none', // Eliminar el contorno del modal
-      position: 'relative' // Establecemos la posición relativa para el icono de cierre
+      width: '50%',
+      maxHeight: '70%',
+      overflowY: 'auto',
+      borderRadius: '10px',
+      boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+      padding: '20px',
+      backgroundColor: '#fff',
+      outline: 'none',
+      position: 'relative',
     },
     closeButton: {
-      position: 'absolute', // Posición absoluta para el botón de cierre
-      top: '10px', // Distancia superior
-      right: '10px', // Distancia derecha
-      cursor: 'pointer', // Cambiar el cursor al pasar sobre el botón
-      fontSize: '30px', // Tamaño del icono
-      color: '#888', // Color del icono
-      padding: '5px', // Espaciado interno
-      borderRadius: '50%', // Bordes redondeados
-      zIndex: 999 // Z-index alto para asegurarse de que esté por encima del contenido del modal
-    }
+      position: 'absolute',
+      top: '10px',
+      right: '10px',
+      cursor: 'pointer',
+      fontSize: '40px',
+      color: '#888',
+      padding: '5px',
+      borderRadius: '50%',
+      zIndex: 999,
+    },
+    header: {
+      justifyContent: 'center', // Centrar horizontalmente
+      display: 'flex',
+      alignItems: 'center',
+      borderBottom: '1px solid #ddd',
+      paddingBottom: '10px',
+      marginBottom: '20px',
+    },
+    title: {
+      margin: 0,
+      fontSize: '24px',
+      fontWeight: 'bold',
+      color: '#333',
+    },
+    contentContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      lineHeight: '1.6',
+      fontSize: '16px',
+      color: '#555',
+    },
+    fieldRow: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginBottom: '10px',
+    },
+    field: {
+      flex: '0 0 48%',
+      backgroundColor: '#E8E8E8',
+      padding: '10px',
+      borderRadius: '10px',
+      fontSize: '19px', // Fuente más grande
+      color: '#333',
+    },
+    label: {
+      fontWeight: 'bold',
+      color: '#333',
+      display: 'block',
+      marginBottom: '5px',
+    },
   };
 
   return (
@@ -46,29 +88,49 @@ const ModalOjo = ({ mostrar, cerrarModal, titulo, initialData }) => {
       ariaHideApp={false}
       style={customStyles}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <h2>{titulo}</h2>
+      <div style={customStyles.header}>
+        <h2 style={customStyles.title}>{titulo}</h2>
         <AiOutlineClose
           style={customStyles.closeButton}
           onClick={cerrarModal}
+          onMouseEnter={(e) => e.target.style.color = '#000'}
+          onMouseLeave={(e) => e.target.style.color = '#888'}
         />
-        <AiOutlineClose
-  style={{ ...customStyles.closeButton, fontSize: '30px' }}
-  onClick={cerrarModal}
-  onMouseEnter={(e) => e.target.style.color = '#000'}
-  onMouseLeave={(e) => e.target.style.color = '#888'}
-/>
-
       </div>
   
-      <div>
-        <p><strong>Nombre de la Actividad:</strong> {initialData && initialData.nombre_actividad}</p>
-        <p><strong>Tiempo:</strong> {initialData && initialData.tiempo}</p>
-        <p><strong>Observaciones:</strong> {initialData && initialData.observaciones}</p>
-        <p><strong>Valor de la Actividad:</strong> {initialData && initialData.valor_actividad}</p>
-        <p><strong>Finca:</strong> {initialData && initialData.nombre_finca}</p>
-        <p><strong>Lote:</strong> {initialData && initialData.nombre}</p>
-        <p><strong>Tipo de Recurso:</strong> {initialData && initialData.nombre_recursos}</p>
+      <div style={customStyles.contentContainer}>
+        <div style={customStyles.fieldRow}>
+          <div style={customStyles.field}>
+            <span style={customStyles.label}>Finca:</span> {initialData?.nombre_finca}
+          </div>
+          <div style={customStyles.field}>
+            <span style={customStyles.label}>Lote:</span> {initialData?.nombre}
+          </div>
+        </div>
+        <div style={customStyles.fieldRow}>
+          <div style={customStyles.field}>
+            <span style={customStyles.label}>Tipo de Recurso:</span> {initialData?.nombre_recursos}
+          </div>
+          <div style={customStyles.field}>
+            <span style={customStyles.label}>Variedad de cultivo:</span> {initialData?.nombre_variedad}
+          </div>
+        </div>
+        <div style={customStyles.fieldRow}>
+          <div style={customStyles.field}>
+            <span style={customStyles.label}>Actividad:</span> {initialData?.nombre_actividad}
+          </div>
+          <div style={customStyles.field}>
+            <span style={customStyles.label}>Tiempo:</span> {initialData?.tiempo}
+          </div>
+        </div>
+        <div style={customStyles.fieldRow}>
+          <div style={customStyles.field}>
+            <span style={customStyles.label}>A realizar:</span> {initialData?.observaciones}
+          </div>
+          <div style={customStyles.field}>
+            <span style={customStyles.label}>Valor de la Actividad:</span> {initialData?.valor_actividad}
+          </div>
+        </div>
       </div>
     </Modal>
   );

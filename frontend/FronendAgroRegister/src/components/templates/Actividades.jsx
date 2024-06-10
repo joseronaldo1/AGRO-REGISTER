@@ -287,7 +287,7 @@ const handleCloseOjoModal = () => {
       sortable: true,
     },
     {
-      name: 'Ver',
+      name: 'Ver Info',
       cell: (row) => {
         const [hover, setHover] = useState(false);
     
