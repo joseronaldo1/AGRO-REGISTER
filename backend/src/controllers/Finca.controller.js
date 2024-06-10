@@ -1,8 +1,6 @@
 import { pool } from "../database/conexion.js";
 import { validationResult } from 'express-validator';
 
-//crud listar
-//crid
 export const listarFinca = async (req, res) => {
     try {
         
@@ -12,7 +10,7 @@ export const listarFinca = async (req, res) => {
             res.status(200).json(result)
         } else {
             res.status(400).json({
-                "Mensaje":"No hay fincas"
+                "Mensaje":"No se encontraron fincas"
             })
         }
     } catch (error) {
@@ -139,19 +137,19 @@ export const DesactivarFinca = async (req, res) => {
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: 'Se actualizo el estado con éxito',
+                message: 'El estado de la finca ha sido cambiado exitosamente',
                 result: result
             });
         } else {
             res.status(404).json({
                 status: 404,
-                message: 'No se encontró el estado para actualizar'
+                message: 'No se pudo cambiar el estado del cultivo'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: error
+            message: "error en el sistema"
         });
     }
 }

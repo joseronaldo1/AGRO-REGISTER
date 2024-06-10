@@ -1,7 +1,6 @@
 import { pool } from "../database/conexion.js";
 import { validationResult } from 'express-validator';
 
-//listar
 export const listarInversiones = async (req, res) => {
     try {
         let sql = `SELECT inver.id_inversiones AS id_inversiones,
@@ -26,7 +25,7 @@ export const listarInversiones = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: 'Error en el servidor: ' + error,
+            message: 'Error en el sistema: ' + error,
         });
     }
 };
@@ -77,13 +76,13 @@ export const registrarInversiones = async (req, res) => {
         } else {
             res.status(400).json({
                 status: 400,
-                message: 'Campo obligatorio'
+                message: 'Error al registrar la inversión'
             });
         }
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: 'Error en el servidor',
+            message: 'Error en el sistema',
             error: error.message
         });
     }
@@ -117,7 +116,7 @@ export const BuscarInversiones = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: "Error en el servidor",
+            message: "Error en el sistema",
             error: error.message,
         });
     }
@@ -183,7 +182,7 @@ export const actualizarInversiones = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'Error en el servidor.',
+            message: 'Error en el sistema',
             error: error.message
         });
     }

@@ -1,8 +1,6 @@
 import { pool } from "../database/conexion.js";
-import  Jwt  from "jsonwebtoken";
-
+import Jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt';
-
 
 export const validar = async (req, res) => {
     try {
@@ -12,50 +10,47 @@ export const validar = async (req, res) => {
 
         if (rows.length > 0) {
             const user = rows[0];
-            // Aquí compararemos la contraseña proporcionada con la contraseña almacenada encriptada en la base de datos
+            
+          
+            if (user.estado === 'inactivo') {
+                return res.status(403).json({ message: 'El usuario se encuentra inactivo.' });
+            }
+
             const match = await bcrypt.compare(password, user.password);
             if (match) {
-                // Si las contraseñas coinciden, generar el token y enviar la respuesta
                 const token = Jwt.sign({ user }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
-                return res.status(200).json({ id_usuario: user.id_usuario, nombre: user.nombre, token: token, message: 'Token generado con éxito' });
-            } else {
-                // Si la contraseña no coincide, enviar un mensaje de error
-                return res.status(401).json({ message: 'Contraseña incorrecta' });
+                return res.status(200).json({ nombre: user.nombre, rol: user.rol, apellido: user.apellido, correo: user.correo, token: token, message: 'Token generado con éxito' , id_usuario: user.id_usuario});
             }
         } else {
-            // Si no se encuentra el usuario, enviar un mensaje de usuario no encontrado
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
     } catch (error) {
         console.log(error);
-        // En caso de error, enviar un mensaje de error del servidor
-        res.status(500).json({ status: 500, message: 'Error del servidor' + error });
+        res.status(500).json({ status: 500, message: 'Error del servidor: ' + error });
     }
 };
 
 
-//verificar
-
 export const validarToken = async (req, res, next) => {
-
     try {
-        
         let tokenClient = req.headers['token']
-
-        if(!tokenClient){
-            return res.status(403).json({'message': 'Token es requerido'})
-        }else{
+        if (!tokenClient) {
+            return res.status(403).json({ 'message': 'Token es requerido' })
+        } else {
             const token = Jwt.verify(tokenClient, process.env.AUT_SECRET, (error, decoded) => {
-                if(error){
-                    return res.status(403).json({message: 'Token es obligatorio'})
-                }else{
-                    next()
+                if (error) {
+                    return res.status(403).json({ message: 'Token es obligatorio' })
+                } else {
+                    // Aquí verificamos el rol del usuario antes de permitir el acceso
+                    if (decoded.user.rol === 'administrador' || decoded.user.rol === 'empleado') {
+                        next();
+                    } else {
+                        return res.status(403).json({ message: 'Acceso no autorizado' });
+                    }
                 }
             })
         }
-
     } catch (error) {
-        return res.status(500).json({status: 500, message: 'Error del servidor' + error})
+        return res.status(500).json({ status: 500, message: 'Error del servidor' + error })
     }
-    
 }

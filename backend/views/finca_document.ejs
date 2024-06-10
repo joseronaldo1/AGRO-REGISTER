@@ -6,10 +6,8 @@
     <title>Documentación de la API</title>
 </head>
 <body>
-    
-    <br>
-    <hr>
-    <h1> FINCAS</h1>
+    <h1>Documentación de la API - Finca</h1>
+    <h3>Registrar Finca</h3>
     <table>
         <tr><td>Número</td> <td>1</td></tr>
         <tr><td>Nombre del Servicio</td>  <td>Registrar Finca</td></tr>
@@ -17,8 +15,8 @@
         <tr><td>Descripción</td>  <td>Permite registrar una nueva finca en la base de datos</td></tr>
         <tr><td>Método HTTP</td>  <td>POST</td></tr>
         <tr><td>Header</td>  <td>Token:</td></tr>
-        <tr><td>Usuarios</td>  <td>Administrador, Líder</td></tr>
-        <tr><td>Request json</td>  <td>{"nombre_finca": "Nombre de la Finca", "longitud": -74.123456, "latitud": 4.56789}</td></tr>
+        <tr><td>Usuarios</td>  <td>Administrador</td></tr>
+        <tr><td>Request json</td>  <td>{"nombre_finca": "villa", "longitud": -74.123456, "latitud": 4.56789}</td></tr>
         <tr><td>Respuesta json</td>  <td>	
         Correcto: 
         Status: 200
@@ -45,10 +43,10 @@
         "message": "Error en el sistema"
     }
     </td></tr>
-    <tr><td>Nombre Desarrollador:</td> <td>Sergio canacue españa- devsce</td></tr>
+    <tr><td>Programador</td> <td>Jose Ronaldo Ledezma - devjrl</td></tr>
     </table>
-    
-    <h3>Requerimiento 2. Documentación ENDPOINT ACTUALIZAR FINCAS</h3>
+    <br>
+    <h3>Actualizar Finca</h3>
     <table>
         <tr><td>Número</td> <td>2</td></tr>
         <tr><td>Nombre del Servicio</td>  <td>Actualizar Finca</td></tr>
@@ -56,8 +54,8 @@
         <tr><td>Descripción</td>  <td>Permite actualizar la información de una finca existente en la base de datos por medio de su id</td></tr>
         <tr><td>Método HTTP</td>  <td>PUT</td></tr>
         <tr><td>Header</td>  <td>Token:</td></tr>
-        <tr><td>Usuarios</td>  <td>Administrador, Líder</td></tr>
-        <tr><td>Request json</td>  <td>{"nombre_finca": "Nuevo Nombre", "longitud": -75.123456, "latitud": 3.56789}</td></tr>
+        <tr><td>Usuarios</td>  <td>Administrador</td></tr>
+        <tr><td>Request json</td>  <td>{"nombre_finca": "prado", "longitud": -75.123456, "latitud": 3.56789}</td></tr>
         <tr><td>Respuesta json</td>  <td>	
         Correcto: 
         Status: 200
@@ -84,32 +82,24 @@
         "message": "Error en el sistema"
     }
     </td></tr>
-    <tr><td>Nombre Desarrollador:</td> <td>Sergio canacue españa- devsce</td></tr>
+    <tr><td>Programador</td> <td>Jose Ronaldo Ledezma - devjrl</td></tr>
     </table>
-    
-
-    <h3>Requerimiento 3. Documentación ENDPOINT BUSCAR FINCAS</h3>
+    <br>
+    <h3>Buscar Finca</h3>
     <table>
         <tr><td>Número</td> <td>3</td></tr>
         <tr><td>Nombre del Servicio</td>  <td>Buscar Finca</td></tr>
-        <tr><td>URL</td>  <td>/buscarFinca/:id</td></tr>
-        <tr><td>Descripción</td>  <td>Permite buscar una finca por su id en la base de datos</td></tr>
+        <tr><td>URL</td>  <td>/buscarFinca/:nombre</td></tr>
+        <tr><td>Descripción</td>  <td>Permite buscar una finca registrada en la base de datos</td></tr>
         <tr><td>Método HTTP</td>  <td>GET</td></tr>
         <tr><td>Header</td>  <td>Token:</td></tr>
-        <tr><td>Usuarios</td>  <td>Administrador, Líder, Aprendiz</td></tr>
-        <tr><td>Request json</td>  <td>Null</td></tr>
+        <tr><td>Usuarios</td>  <td>Administrador</td></tr>
+        <tr><td>Request json</td>  <td></td></tr>
         <tr><td>Respuesta json</td>  <td>	
         Correcto: 
         Status: 200
         json:
-        [
-        {
-          "id_finca": 1,
-          "nombre_finca": "Nombre de la Finca",
-          "longitud": -74.123456,
-          "latitud": 4.56789
-        }
-      ]
+        {"id_finca":1, "nombre_finca": "prado", "longitud": -75.123456, "latitud": 3.56789, "estado":"activo"}
     <br>
     Incorrecto:
     
@@ -128,10 +118,10 @@
         "message": "Error en el sistema"
     }
     </td></tr>
-    <tr><td>Nombre Desarrollador:</td> <td>Sergio canacue españa- devsce</td></tr>
+    <tr><td>Programador</td> <td>Jose Ronaldo Ledezma - devjrl</td></tr>
     </table>
-
-    <h3>Requerimiento 4. Documentación ENDPOINT LISTAR FINCAS</h3>
+<br>
+    <h3>Listar Finca</h3>
     <table>
         <tr><td>Número</td> <td>4</td></tr>
         <tr><td>Nombre del Servicio</td>  <td>Listar Fincas</td></tr>
@@ -139,26 +129,13 @@
         <tr><td>Descripción</td>  <td>Permite listar todas las fincas registradas en la base de datos</td></tr>
         <tr><td>Método HTTP</td>  <td>GET</td></tr>
         <tr><td>Header</td>  <td>Token:</td></tr>
-        <tr><td>Usuarios</td>  <td>Administrador, Líder, Aprendiz</td></tr>
-        <tr><td>Request json</td>  <td>Null</td></tr>
+        <tr><td>Usuarios</td>  <td>Administrador</td></tr>
+        <tr><td>Request json</td>  <td></td></tr>
         <tr><td>Respuesta json</td>  <td>	
         Correcto: 
         Status: 200
         json: 
-        [
-  {
-    "id_finca": 1,
-    "nombre_finca": "Nombre de la Finca",
-    "longitud": -74.123456,
-    "latitud": 4.56789,
-  },
-  {
-    "id_finca": 2,
-    "nombre_finca": "Nuevo Nombre",
-    "longitud": -75.1235,
-    "latitud": 3.56789
-  }
-  ]
+        {"id_finca":1, "nombre_finca": "prado", "longitud": -75.123456, "latitud": 3.56789, "estado":"activo"}
     <br>
     Incorrecto:
     
@@ -177,9 +154,44 @@
         "message": "Error en el sistema"
     }
     </td></tr>
-    <tr><td>Nombre Desarrollador:</td> <td>Sergio canacue españa- devsce</td></tr>
+    <tr><td>Programador</td> <td>Jose Ronaldo Ledezma - devjrl</td></tr>
     </table>
-    
+    <br>
+    <h3>Desactivar o Activar la finca</h3>
+<table>
+  <tr><td>Número</td> <td>5</td></tr>
+  <tr><td>Nombre del Servicio</td>  <td>Desactivar o Activar finca</td></tr>
+  <tr><td>URL</td>  <td>/desactivar/Finca/:id</td></tr>
+  <tr><td>Descripción</td>  <td>Permite desactivar o activar las fincas registradas en la base de datos</td></tr>
+  <tr><td>Metodo HTTP</td>  <td>PUT</td></tr>
+  <tr><td>Header:</td>  <td>Token:</td></tr>
+  <tr><td>Usuarios</td> <td>Administrador</td></tr>
+  <tr><td>Request json</td><td>{"estado": "inactivo"}</td></tr>
+  <tr><td>Respuesta json</td>  <td>	
+    Correcto: 
+    Status: 200
+    body:{
+      "status": 200
+      "message" : "El estado de la finca ha sido cambiado exitosamente"
+    }
+  <br>
+Incorrecto:
 
+Status: 404
+body:{
+  "status": 404
+  "message" : "No se pudo cambiar el estado del cultivo"
+}
+<br>
+Error: 
+
+Status: 500 
+json: {
+  status: 500
+  "message" : "Error en el sistema"
+}
+</td></tr>
+<tr><td>Programador</td> <td>Jose Ronaldo Ledezma - devjrl</td></tr>
+</table>
 </body>
 </html>
