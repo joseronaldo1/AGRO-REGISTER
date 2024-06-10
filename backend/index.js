@@ -19,13 +19,11 @@ import rutaDeVariedad from './src/routes/variedad.routes.js';
 const servidor = express();
 
 
-
 servidor.use(cors({
   origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'token'],
 }));
-
 
 
 servidor.use(bodyParser.json());
@@ -38,7 +36,7 @@ servidor.get('/documents', (req, res) => {
   res.render('document.ejs');
 });
 
-  servidor.use(express.static('./public'));
+servidor.use('/public', express.static('./public'));
 
 servidor.use(rutaValidacion);
 servidor.use(rutaUsuario);
