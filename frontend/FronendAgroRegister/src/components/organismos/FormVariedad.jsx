@@ -64,6 +64,7 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
           title: '¡Éxito!',
           text: 'La variedad se ha registrado exitosamente'
         });
+        onSubmit(formData);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(

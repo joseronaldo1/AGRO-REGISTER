@@ -126,6 +126,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
           text: 'La programación se ha registrado exitosamente'
         });
         console.log(response.data);
+        onSubmit(formData);
       } else if (mode === 'update') {
         const { id_programacion } = initialData; // Utiliza el campo correcto del ID
         await axios.put(

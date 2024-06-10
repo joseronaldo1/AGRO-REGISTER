@@ -112,6 +112,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
           text: 'El lote se ha registrado exitosamente'
         });
         console.log(response.data);
+        onSubmit(formData);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(

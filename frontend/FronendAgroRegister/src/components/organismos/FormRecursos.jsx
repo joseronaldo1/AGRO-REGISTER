@@ -61,6 +61,7 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
           title: '¡Éxito!',
           text: 'El recurso se registró correctamente.'
         });
+        onSubmit(formData);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(

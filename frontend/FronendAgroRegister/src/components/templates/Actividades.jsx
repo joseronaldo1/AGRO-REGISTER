@@ -10,6 +10,9 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 import Swal from 'sweetalert2';
+import { FaEye } from 'react-icons/fa';  // Asegúrate de tener instalado react-icons
+import ModalOjo from "../organismos/ModalOjo.jsx";
+
 
 function Actividad() {
 
@@ -46,8 +49,28 @@ function Actividad() {
     }
   };
 
+  //modal ojo:
+  const [showOjoModal, setShowOjoModal] = useState(false);
+  const [ojoModalData, setOjoModalData] = useState(null);
+  //
+
   const handleOpenRegistroModal = () => setShowRegistroModal(true);
-  const handleCloseRegistroModal = () => setShowRegistroModal(false);
+  const handleCloseRegistroModal = async (newData) => {
+    try {
+      setShowRegistroModal(false);
+      if (newData) {
+        // Actualizar tanto data como originalData
+        const updatedData = [...data, newData];
+        setData(updatedData);
+        setOriginalData(updatedData);
+        // Recargar la lista de empleados después de registrar uno nuevo
+        await fetchData();
+      }
+    } catch (error) {
+      console.error('Error al cerrar el modal de registro:', error);
+    }
+  };
+
 
   const handleOpenEstadoModal = (rowData) => {
     console.log('Opening Estado Modal with data:', rowData);
@@ -198,6 +221,17 @@ function Actividad() {
     }
   };
 
+  //Modal ojo
+  const handleOpenOjoModal = (rowData) => {
+    setOjoModalData(rowData);
+    setShowOjoModal(true);
+};
+
+const handleCloseOjoModal = () => {
+    setOjoModalData(null);
+    setShowOjoModal(false);
+};
+//
   // En la definición de las columnas, modifica la columna "Acciones":
   const columns = [
     {
@@ -253,12 +287,43 @@ function Actividad() {
       sortable: true,
     },
     {
+      name: 'Ver',
+      cell: (row) => {
+        const [hover, setHover] = useState(false);
+    
+        return (
+          <div style={{ display: 'flex', gap: '5px' }}>
+           
+              <button
+                className="btn p-2 rounded-lg"
+            
+                type="button"
+                onClick={() => handleOpenEstadoModal(row)}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              >
+               
+              </button>
+            
+            <button
+              className="btn p-2 rounded-lg"
+              style={{ borderColor: '#ffc107', border: 'none' }}
+              type="button"
+              onClick={() => handleOpenOjoModal(row)}
+            >
+              <FaEye style={{ color: 'black' }} />
+            </button>
+            </div>
+        );
+      },
+    },
+    {
       name: 'Acciones',
       cell: (row) => {
         const [hover, setHover] = useState(false);
-
+    
         return (
-          <>
+          <div style={{ display: 'flex', gap: '10px' }}>
             {row.estado !== 'terminado' && (
               <button
                 className="btn p-2 rounded-lg"
@@ -278,10 +343,11 @@ function Actividad() {
                 <RiPlantFill style={{ color: 'white' }} /> Estado
               </button>
             )}
-          </>
+          </div>
         );
       },
     },
+    
   ];
   return (
     <div>
@@ -332,7 +398,7 @@ function Actividad() {
           actionLabel="Registrar"
           initialData={registroFormData}
           mode="registro"
-          handleSubmit={() => setShowRegistroModal(false)}
+          handleSubmit={handleCloseRegistroModal}
         />
 
         <ModalRecuRegeContrasenia
@@ -352,6 +418,14 @@ function Actividad() {
           handleSubmit={handleEstadoSubmit}
           initialData={initialData}
         />
+
+<ModalOjo
+  mostrar={showOjoModal}
+  cerrarModal={handleCloseOjoModal}
+  titulo="Detalles de la Actividad"
+  initialData={ojoModalData}
+/>
+
       </div>
       <Footer />
     </div>

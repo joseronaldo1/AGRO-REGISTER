@@ -101,7 +101,7 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
           title: '¡Éxito!',
           text: 'La Producción se ha registrado exitosamente'
         });
-
+        onSubmit(formData);
       } else if (mode === 'update') {
         const { id_producccion } = initialData;
         await axios.put(

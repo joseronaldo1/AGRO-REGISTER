@@ -12,9 +12,22 @@ export const listarA = async (req, res) => {
                             ac.valor_actividad, 
                             ac.fk_id_variedad AS id_variedad, 
                             v.nombre_variedad,
+                            ac.fk_id_finca AS id_finca,
+                            f.nombre_finca,
+                            ac.fk_id_lote AS id_lote,
+                            l.nombre,
+                            ac.fk_id_recursos AS id_tipo_recursos,
+                            r.nombre_recursos,
                             ac.estado
                     FROM actividad AS ac 
-                    JOIN variedad AS v ON ac.fk_id_variedad = v.id_variedad`;
+
+                    JOIN variedad AS v ON ac.fk_id_variedad = v.id_variedad
+                    
+                    JOIN finca AS f ON ac.fk_id_finca = f.id_finca
+                    
+                    JOIN lotes AS l ON ac.fk_id_lote = l.id_lote
+                    
+                    JOIN tipo_recursos AS r ON ac.fk_id_recursos = r.id_tipo_recursos`;
          
         const [result] = await pool.query(sql);
 
@@ -39,8 +52,8 @@ export const RegistrarA = async (req, res) => {
         if (!errors.isEmpty()) {
             res.status(400).json({ errors })
         }
-        const { nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad } = req.body
-        const [resultado] = await pool.query("insert into actividad(nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad) values (?,?,?,?,?)", [nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad ])
+        const { nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad, fk_id_finca, fk_id_lote, fk_id_recursos } = req.body
+        const [resultado] = await pool.query("insert into actividad(nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad, fk_id_finca, fk_id_lote, fk_id_recursos) values (?,?,?,?,?,?,?,?)", [nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad, fk_id_finca, fk_id_lote, fk_id_recursos ])
 
         if (resultado.affectedRows > 0) {
             res.status(200).json({
@@ -67,10 +80,10 @@ export const ActualizarA = async (req, res) => {
       }
   
       const { id_actividad } = req.params; // Asegúrate de usar id_programacion aquí
-      const { nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad } = req.body;
+      const { nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad, fk_id_finca, fk_id_lote, fk_id_recursos } = req.body;
   
       if (!nombre_actividad && !tiempo && !observaciones && !valor_actividad && !fk_id_variedad) {
-        return res.status(400).json({ message: 'Al menos uno de los campos (nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad) debe estar presente en la solicitud para realizar la actualización.' });
+        return res.status(400).json({ message: 'Al menos uno de los campos (nombre_actividad, tiempo, observaciones, valor_actividad, fk_id_variedad, fk_id_finca, fk_id_lote, fk_id_recursos) debe estar presente en la solicitud para realizar la actualización.' });
       }
   
       const [oldUser] = await pool.query("SELECT * FROM actividad WHERE id_actividad=?", [id_actividad]);
@@ -80,12 +93,15 @@ export const ActualizarA = async (req, res) => {
         tiempo: tiempo ? tiempo : oldUser[0].tiempo,
         observaciones: observaciones ? observaciones : oldUser[0].observaciones,
         valor_actividad: valor_actividad ? valor_actividad : oldUser[0].valor_actividad,
-        fk_id_variedad: fk_id_variedad ? fk_id_variedad : oldUser[0].fk_id_variedad
+        fk_id_variedad: fk_id_variedad ? fk_id_variedad : oldUser[0].fk_id_variedad,
+        fk_id_finca: fk_id_finca ? fk_id_finca : oldUser[0].fk_id_finca,
+        fk_id_lote: fk_id_lote ? fk_id_lote : oldUser[0].fk_id_lote,
+        fk_id_recursos: fk_id_recursos ? fk_id_recursos : oldUser[0].fk_id_recursos
       };
   
-      const updateQuery = `UPDATE actividad SET nombre_actividad=?, tiempo=?, observaciones=?, valor_actividad=?, fk_id_variedad=? WHERE id_actividad=?`;
+      const updateQuery = `UPDATE actividad SET nombre_actividad=?, tiempo=?, observaciones=?, valor_actividad=?, fk_id_variedad=?, fk_id_finca=?, fk_id_lote=?, fk_id_recursos=? WHERE id_actividad=?`;
   
-      const [resultado] = await pool.query(updateQuery, [updateValues.nombre_actividad, updateValues.tiempo, updateValues.observaciones, updateValues.valor_actividad, updateValues.fk_id_variedad, parseInt(id_actividad)]);
+      const [resultado] = await pool.query(updateQuery, [updateValues.nombre_actividad, updateValues.tiempo, updateValues.observaciones, updateValues.valor_actividad, updateValues.fk_id_variedad, updateValues.fk_id_finca, updateValues.fk_id_lote, updateValues.fk_id_recursos, parseInt(id_actividad)]);
   
       if (resultado.affectedRows > 0) {
         res.status(200).json({ "mensaje": "La actividad ha sido actualizada" });

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
+const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModal}) => {
     const initialFormData = {
         nombre: initialData && initialData.nombre ? initialData.nombre : '',
         apellido: initialData && initialData.apellido ? initialData.apellido : '',
@@ -42,13 +42,13 @@ const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModa
                 });
                 return;
             }
-
+    
             const token = localStorage.getItem('token');
             if (!token) {
                 console.error('No se encontró el token en el localStorage');
                 return;
             }
-
+    
             if (mode === 'registro') {
                 const response = await axios.post(
                     'http://localhost:3000/registrarUsuario',
@@ -59,14 +59,15 @@ const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModa
                         }
                     }
                 );
-
+    
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
                     text: 'El empleado se ha registrado exitosamente'
                 });
+                onSubmit(formData);
             } else if (mode === 'update') {
-                const { id } = initialData; // Asegúrate de que el ID esté correctamente definido aquí
+                const { id } = initialData;
                 await axios.put(
                     `http://localhost:3000/actualizarEmpleado/${id}`,
                     formData,
@@ -76,15 +77,16 @@ const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModa
                         }
                     }
                 );
-
+    
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
                     text: 'El empleado se ha actualizado exitosamente'
                 });
+    
+                const updatedData = { ...formData, id_usuario: id };
+                onSubmit(formData);
             }
-
-            onSubmit(formData);
             cerrarModal();
         } catch (error) {
             if (error.response && error.response.status === 400 && error.response.data.message === 'El correo ya está en uso') {
@@ -103,6 +105,8 @@ const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModa
             }
         }
     };
+    
+      
 
     return (
         <form

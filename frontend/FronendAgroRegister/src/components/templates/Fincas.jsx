@@ -44,7 +44,21 @@ function Fincas() {
   };
 
   const handleOpenRegistroModal = () => setShowRegistroModal(true);
-  const handleCloseRegistroModal = () => setShowRegistroModal(false);
+  const handleCloseRegistroModal = async (newData) => {
+    try {
+      setShowRegistroModal(false);
+      if (newData) {
+        // Actualizar tanto data como originalData
+        const updatedData = [...data, newData];
+        setData(updatedData);
+        setOriginalData(updatedData);
+        // Recargar la lista de empleados después de registrar uno nuevo
+        await fetchData();
+      }
+    } catch (error) {
+      console.error('Error al cerrar el modal de registro:', error);
+    }
+  };
 
   const handleOpenActualizacionModal = (rowData) => {
     const updatedInitialData = { ...rowData, id: rowData.id_finca };
@@ -59,6 +73,7 @@ function Fincas() {
   };
 
   const handleActualizacionFormSubmit = async (formData) => {
+    
     try {
       console.log('Actualización de la finca:', formData);
       const token = localStorage.getItem('token');
@@ -285,7 +300,7 @@ function Fincas() {
           actionLabel="Registrar"
           initialData={registroFormData}
           mode="registro"
-          handleSubmit={() => setShowRegistroModal(false)}
+          handleSubmit={handleCloseRegistroModal}
         />
         <ModalRecuRegeContrasenia
           mostrar={showActualizacionModal}
@@ -295,6 +310,7 @@ function Fincas() {
           actionLabel="Actualizar"
           initialData={initialData}
           mode={mode}
+       
         />
         <br />
       </div>

@@ -86,6 +86,7 @@ const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }
           text: 'La finca se ha registrado exitosamente'
         });
         console.log(response.data);
+        onSubmit(formData);
       } else if (mode === 'update') {
         const { id } = initialData;
         await axios.put(

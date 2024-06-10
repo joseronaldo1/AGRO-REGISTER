@@ -45,7 +45,21 @@ function Cultivos() {
   };
 
   const handleOpenRegistroModal = () => setShowRegistroModal(true);
-  const handleCloseRegistroModal = () => setShowRegistroModal(false);
+  const handleCloseRegistroModal = async (newData) => {
+    try {
+      setShowRegistroModal(false);
+      if (newData) {
+        // Actualizar tanto data como originalData
+        const updatedData = [...data, newData];
+        setData(updatedData);
+        setOriginalData(updatedData);
+        // Recargar la lista de empleados después de registrar uno nuevo
+        await fetchData();
+      }
+    } catch (error) {
+      console.error('Error al cerrar el modal de registro:', error);
+    }
+  };
 
   const handleOpenActualizacionModal = (rowData) => {
     const updatedInitialData = { ...rowData, id: rowData.id_cultivo };
@@ -277,7 +291,7 @@ function Cultivos() {
           actionLabel="Registrar"
           initialData={registroFormData}
           mode="registro"
-          handleSubmit={() => setShowRegistroModal(false)}
+          handleSubmit={handleCloseRegistroModal}
         />
         <ModalRecuRegeContrasenia
           mostrar={showActualizacionModal}

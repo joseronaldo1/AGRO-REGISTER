@@ -45,7 +45,23 @@ function Empleados() {
   
 
   const handleOpenRegistroModal = () => setShowRegistroModal(true);
-  const handleCloseRegistroModal = () => setShowRegistroModal(false);
+  const handleCloseRegistroModal = async (newData) => {
+    try {
+      setShowRegistroModal(false);
+      if (newData) {
+        // Actualizar tanto data como originalData
+        const updatedData = [...data, newData];
+        setData(updatedData);
+        setOriginalData(updatedData);
+        // Recargar la lista de empleados después de registrar uno nuevo
+        await fetchData();
+      }
+    } catch (error) {
+      console.error('Error al cerrar el modal de registro:', error);
+    }
+  };
+  
+  
 
   const handleOpenActualizacionModal = (rowData) => {
     const updatedInitialData = { ...rowData, id: rowData.id_usuario };
@@ -54,38 +70,65 @@ function Empleados() {
     setShowActualizacionModal(true);
   };
 
-  const handleCloseActualizacionModal = () => {
+  const handleCloseActualizacionModal = (updatedData) => {
+    if (updatedData) {
+        setData((prevData) =>
+            prevData.map((item) =>
+                item.id_usuario === updatedData.id_usuario ? { ...item, ...updatedData } : item
+            )
+        );
+        setOriginalData((prevData) =>
+            prevData.map((item) =>
+                item.id_usuario === updatedData.id_usuario ? { ...item, ...updatedData } : item
+            )
+        );
+    }
     setInitialData(null);
     setShowActualizacionModal(false);
-  };
+};
 
-  const handleActualizacionFormSubmit = async (formData) => {
-    try {
-      console.log('Actualización de empleado:', formData);
-      const token = localStorage.getItem('token');
-      if (!token) {
-        // Manejar el caso en que el token no esté presente
-        console.error('No se encontró el token en el localStorage');
-        return;
-      }
-      const { id } = formData;
-      const response = await axios.put(`http://localhost:3000/actualizarEmpleado/${id}`, formData, {
-        headers: {
-          'token': token
-        }
-      });
-  
-      if (response.status === 200) {
-        console.log('Empleado actualizado exitosamente.');
-        fetchData();
-        setShowActualizacionModal(false);
-      } else {
-        console.error('Error al actualizar el empleado:', response.data);
-      }
-    } catch (error) {
-      console.error('Error al actualizar los empleados:', error);
+const handleActualizacionFormSubmit = async (formData) => {
+  try {
+    console.log('Actualización de empleado:', formData);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No se encontró el token en el localStorage');
+      return;
     }
-  };
+    const { id } = formData;
+    const response = await axios.put(`http://localhost:3000/actualizarEmpleado/${id}`, formData, {
+      headers: {
+        'token': token
+      }
+    });
+    
+    if (response.status === 200) {
+      console.log('Empleado actualizado exitosamente.');
+
+      // Datos actualizados desde el servidor
+      const updatedData = response.data;
+
+      // Actualizar el estado local data con los datos actualizados
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id_usuario === updatedData.id_usuario ? { ...item, ...updatedData } : item
+        )
+      );
+
+      // Si se obtiene un nuevo dato, añadirlo al estado local
+      if (updatedData) {
+        setData((prevData) => [...prevData, updatedData]);
+      }
+
+      handleCloseActualizacionModal(updatedData);
+    } else {
+      console.error('Error al actualizar el empleado:', response.data);
+    }
+  } catch (error) {
+    console.error('Error al actualizar los empleados:', error);
+  }
+};
+
   
 
   const handleSearch = async (searchTerm) => {
@@ -162,6 +205,9 @@ function Empleados() {
       setData(filteredData); // Actualizar la tabla con los datos filtrados
     }
   };
+  const handleDataUpdate = (newData) => {
+    setData([...data, newData]); // Agregar el nuevo dato a la lista existente
+};
 
   const columns = [
     {
@@ -299,7 +345,7 @@ function Empleados() {
           actionLabel="Registrar"
           initialData={registroFormData}
           mode="registro"
-          handleSubmit={() => setShowRegistroModal(false)}
+          handleSubmit={handleCloseRegistroModal}
         />
         <ModalRecuRegeContrasenia
           mostrar={showActualizacionModal}
@@ -309,6 +355,7 @@ function Empleados() {
           actionLabel="Actualizar"
           initialData={initialData}
           mode={mode}
+       
         />
         <br />
       </div>
