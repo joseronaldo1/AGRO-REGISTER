@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 import Botones from '../atomos/Botones.jsx';
 import HeaderInicio from '../organismos/Header/HeaderInicio.jsx';
 import Footer from '../organismos/Footer/Footer';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logoOrigi.png';
 import v from '../../styles/variables';
-/* import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; */
+/* import fondo from '../../assets/SENA_Tecnoparque_ Agroecológico_Yamboro.png'; */
 import InputAtom from '../atomos/Inputs.jsx';
 import Select from '../atomos/selectRegistro.jsx';
 import axios from 'axios';
-
-
 
 const Registro = () => {
   const [formData, setFormData] = useState({
@@ -29,7 +28,18 @@ const Registro = () => {
 
     try {
       const response = await axios.post('http://localhost:3000/registrarUsuario', formData);
-      alert('Registro exitoso:', response.data);
+
+      Swal.fire({
+        title: 'Registro exitoso',
+        text: response.data.message,
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirigir a la página de inicio de sesión después de que el usuario haga clic en "OK"
+          window.location.href = "/";
+        }
+      });
 
       // Limpiar el formulario después de enviar los datos
       setFormData({
@@ -39,14 +49,13 @@ const Registro = () => {
         password: '',
         rol: ''
       });
-      window.location.href = "/";
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.length > 0) {
-        const errorMessage = error.response.data.errors[0].msg;
-        alert(errorMessage);
+      if (error.response && error.response.data && error.response.data.message) {
+        const errorMessage = error.response.data.message;
+        Swal.fire('Error al registrar', errorMessage, 'error');
       } else {
         console.log(error);
-        alert('Error al registrar:', error);
+        Swal.fire('Error al registrar', 'Ocurrió un error inesperado', 'error');
       }
     }
 
@@ -116,7 +125,6 @@ const Registro = () => {
               <Select label="Rol:" id="rol" name="rol" value={formData.rol} onChange={handleChange}>
                 <option value="">Seleccione...</option>
                 <option value="administrador">Administrador</option>
-                <option value="empleado">Empleado</option>
               </Select>
               {loading && <span>Cargando..</span>}
             </div>
@@ -132,6 +140,5 @@ const Registro = () => {
     </div>
   );
 };
-
 
 export default Registro;

@@ -13,7 +13,7 @@ import SearchBar from '../moleculas/SearchBar';
 import '../../styles/FondoTable.css';
 
 function Recursos() {
-  const baseURL = 'http://localhost:3000/listarRecurso';
+
 
   const [data, setData] = useState([]);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
@@ -32,15 +32,19 @@ function Recursos() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(baseURL);
-      setData(response.data);
-
-      setOriginalData(response.data);
+      const token = localStorage.getItem('token');
+      const baseURL = 'http://localhost:3000/listarRecurso';
+      const respuesta = await axios.get(baseURL, {
+        headers: {
+          'token': token
+        }
+      });
+      setData(respuesta.data);
+      setOriginalData(respuesta.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error al obtener datos:', error);
     }
   };
-
   const handleOpenRegistroModal = () => setShowRegistroModal(true);
   const handleCloseRegistroModal = () => setShowRegistroModal(false);
 
@@ -58,11 +62,27 @@ function Recursos() {
 
   const handleActualizacionFormSubmit = async (formData) => {
     try {
-      console.log('Actualización de recurso:', formData);
+      console.log('Actualización del recurso:', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
       const { id } = formData;
-      await axios.put(`http://localhost:3000/actualizarRecurso/${id}`, formData);
-      fetchData();
-      setShowActualizacionModal(false);
+      const response = await axios.put(`http://localhost:3000/actualizarRecurso/${id}`, formData, {
+        headers: {
+          'token': token
+        }
+      });
+
+      if (response.status === 200) {
+        console.log('Recurso actualizado exitosamente.');
+        fetchData();
+        setShowActualizacionModal(false);
+      } else {
+        console.error('Error al actualizar el recurso:', response.data);
+      }
     } catch (error) {
       console.error('Error al actualizar el recurso:', error);
     }
@@ -70,12 +90,22 @@ function Recursos() {
 
   const handleSearch = async (searchTerm) => {
     try {
-      if (searchTerm.trim() === '') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
 
+      if (searchTerm.trim() === '') {
         setData(originalData);
         setError(null);
       } else {
-        const response = await axios.get(`http://localhost:3000/buscarRecurso/${searchTerm}`);
+        const response = await axios.get(`http://localhost:3000/buscarRecurso/${searchTerm}`, {
+          headers: {
+            'token': token
+          }
+        });
         setData(response.data);
         if (response.data.length === 0) {
           setError('No se encontraron resultados');
@@ -92,26 +122,43 @@ function Recursos() {
 
   const handleEstadoBotonClick = async (id, estado) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Manejar el caso en que el token no esté presente
+        console.error('No se encontró el token en el localStorage');
+        return;
+      }
+
       const newEstado = estado === 'existe' ? 'agotado' : 'existe';
-      await axios.put(`http://localhost:3000/desactivar/Recurso/${id}`, { estado: newEstado });
-      fetchData();
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: `El estado se cambió con éxito a ${newEstado}.`,
+      const response = await axios.put(`http://localhost:3000/desactivar/Recurso/${id}`, { estado: newEstado }, {
+        headers: {
+          'token': token
+        }
       });
+      if (response.status === 200) {
+        console.log('Estado del recurso cambiado exitosamente.');
+        fetchData(); // Actualizar la interfaz de usuario con los datos más recientes
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: `El estado se cambió con éxito a ${newEstado}.`,
+        });
+      } else {
+        console.error('Error al cambiar el estado del recurso:', response.data);
+      }
     } catch (error) {
-      console.error('Error al cambiar el estado del recurso:', error);
+      console.error('Error al cambiar el estado de los recursos:', error);
     }
   };
+
 
   const handleEstadoSeleccionado = (event) => {
     setEstadoSeleccionado(event.target.value);
     if (event.target.value === '') {
-      setData(originalData);
+      setData(originalData); // Restaurar los datos originales
     } else {
       const filteredData = originalData.filter(item => item.estado === event.target.value);
-      setData(filteredData);
+      setData(filteredData); // Actualizar la tabla con los datos filtrados
     }
   };
 
@@ -146,7 +193,7 @@ function Recursos() {
       sortable: true,
     },
     {
-      name: 'Extras',
+      name: 'Descripcion',
       selector: (row) => row.extras,
       sortable: true,
     },
@@ -170,9 +217,8 @@ function Recursos() {
             border: 'none',
             color: 'white',
             height: '40px',
-            marginLeft: '-18px',
-            width: '120px',
-
+            width: '70%',
+            marginLeft: '-16px',
             transition: 'background-color 0.2s',
           }}
           type="button"

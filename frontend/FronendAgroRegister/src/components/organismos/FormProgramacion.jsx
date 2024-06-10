@@ -31,30 +31,43 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
   const [nombreVariedad, setNombreVariedad] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/listarEmpleado')
-      .then(response => {
-        setNombreUsuario(response.data);
-      })
-      .catch(error => {
-        console.error('Error al obtener los datos de usuario:', error);
-      });
+    const fetchData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No se encontró el token en el localStorage');
+                return;
+            }
 
-    axios.get('http://localhost:3000/listarActividad')
-      .then(response => {
-        setNombreActividad(response.data);
-      })
-      .catch(error => {
-        console.error('Error al obtener los datos de actividad:', error);
-      });
+            const usuarioResponse = await axios.get('http://localhost:3000/listarEmpleado', {
+                headers: {
+                    'token': token
+                }
+            });
+            setNombreUsuario(usuarioResponse.data);
 
-    axios.get('http://localhost:3000/listarVariedades')
-      .then(response => {
-        setNombreVariedad(response.data);
-      })
-      .catch(error => {
-        console.error('Error al obtener los datos de variedad:', error);
-      });
-  }, []);
+            const actividadResponse = await axios.get('http://localhost:3000/listarActividad', {
+                headers: {
+                    'token': token
+                }
+            });
+            setNombreActividad(actividadResponse.data);
+
+            const variedadResponse = await axios.get('http://localhost:3000/listarVariedades', {
+                headers: {
+                    'token': token
+                }
+            });
+            setNombreVariedad(variedadResponse.data);
+
+        } catch (error) {
+            console.error('Error al obtener los datos:', error);
+        }
+    };
+
+    fetchData();
+}, []);
+
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -91,14 +104,19 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         });
         return;
       }
-  
+      const token = localStorage.getItem('token');
+      if (!token) {
+          // Manejar el caso en que el token no esté presente  
+          console.error('No se encontró el token en el localStorage');
+          return;
+      }
       if (mode === 'registro') {
         const response = await axios.post(
           'http://localhost:3000/registrarProgramacion',
           formData,
           {
             headers: {
-              'Content-Type': 'application/json'
+              'token': token
             }
           }
         );
@@ -112,7 +130,12 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
         const { id_programacion } = initialData; // Utiliza el campo correcto del ID
         await axios.put(
           `http://localhost:3000/actualizarProgramacion/${id_programacion}`,
-          formData
+          formData,
+          {
+            headers: {
+                'token': token
+              }
+        }
         );
         Swal.fire({
           icon: 'success',
