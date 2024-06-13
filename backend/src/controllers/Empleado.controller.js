@@ -46,7 +46,12 @@ export const listarEmpleado = async (req, res) => {
 export const buscarEmpleado = async (req, res) => {
     try {
         const { nombre } = req.params;
-        const [result] = await pool.query("SELECT * FROM usuarios WHERE nombre LIKE ? AND rol = 'empleado'", [`%${nombre}%`]);
+
+        // Consulta SQL para buscar por nombre, apellido o correo
+        const [result] = await pool.query(
+            `SELECT * FROM usuarios WHERE (nombre LIKE ? OR apellido LIKE ? OR correo LIKE ?) AND rol = 'empleado'`,
+            [`%${nombre}%`, `%${nombre}%`, `%${nombre}%`]
+        );
 
         if (result.length > 0) {
             res.status(200).json(result);
@@ -59,7 +64,7 @@ export const buscarEmpleado = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: "error en el sistema"
+            message: "Error en el sistema: " + error.message
         });
     }
 };

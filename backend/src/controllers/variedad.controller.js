@@ -106,10 +106,12 @@ export const actualizarVariedad = async (req, res) => {
 // CRUD - Buscar
 export const buscarVariedad = async (req, res) => {
     try {
-
         const { nombre } = req.params;
-        const [result] = await pool.query("SELECT * FROM variedad WHERE nombre_variedad LIKE ?", [`%${nombre}%`]);
-                    
+        const query = `
+            SELECT * FROM variedad 
+            WHERE nombre_variedad LIKE ? OR tipo_cultivo LIKE ?
+        `;
+        const [result] = await pool.query(query, [`%${nombre}%`, `%${nombre}%`]);
 
         if (result.length > 0) {
             res.status(200).json(result);

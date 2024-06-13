@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
-import Formulariolote from '../organismos/FormProgramacion';
+import Formulariolote from '../organismos/FormProduccion';
+
 
 function ModalRecuRegeContrasenia({ titulo, mostrar, cerrarModal, handleSubmit, actionLabel, initialData, mode }) {
   useEffect(() => {
@@ -19,11 +20,12 @@ function ModalRecuRegeContrasenia({ titulo, mostrar, cerrarModal, handleSubmit, 
           <Formulariolote
             onSubmit={(data, e) => {
               handleSubmit(data, e);
-              cerrarModal(); // Cierra el modal después de enviar el formulario
+              cerrarModal(); // Llama a cerrarModal después de enviar el formulario
             }}
-            initialData={initialData} // Aseguramos que el initialData se pase correctamente
-            mode={mode} // Pasamos el modo (registro o update)
-            cerrarModal={cerrarModal} // Pasamos la función cerrarModal
+            className="form-registro"
+            initialData={initialData}
+            mode={mode}
+            cerrarModal={cerrarModal} // Pasar la función cerrarModal al componente Formulario
           />
         )}
       </Modal.Body>

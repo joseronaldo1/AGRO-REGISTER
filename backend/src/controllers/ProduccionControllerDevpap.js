@@ -60,30 +60,35 @@ export const registrarProduccion = async (req, res) => {
 
 export const BuscarProduccion = async (req, res) => {
     try {
-        const { nombre } = req.params; // Obtener el nombre de la variedad desde los parámetros
-        const searchTerm = `%${nombre}%`; // Cambio aquí: preparar el término de búsqueda para buscar coincidencias parciales
-        const consultar = `
-        SELECT cul.id_producccion,
-       cul.cantidad_produccion,
-       cul.precio, 
-       lo.nombre_actividad AS nombre_actividad
-FROM produccion AS cul
-JOIN actividad AS lo ON cul.fk_id_actividad = lo.id_actividad
-WHERE lo.nombre_actividad LIKE ?;
-`; // Cambio aquí: utilizar el operador LIKE para buscar coincidencias parciales
-        const [resultado] = await pool.query(consultar, [searchTerm]); // Pasar el término de búsqueda como parámetro
+        const { nombre } = req.params; // Obtener el término de búsqueda desde los parámetros
+        const searchTerm = `%${nombre}%`; // Preparar el término de búsqueda para buscar coincidencias parciales
+
+        const query = `
+            SELECT 
+                cul.id_producccion,
+                cul.cantidad_produccion,
+                cul.precio, 
+                lo.nombre_actividad AS nombre_actividad
+            FROM produccion AS cul
+            JOIN actividad AS lo ON cul.fk_id_actividad = lo.id_actividad
+            WHERE lo.nombre_actividad LIKE ? 
+            OR cul.cantidad_produccion LIKE ? 
+            OR cul.precio LIKE ?`;
+
+        const [resultado] = await pool.query(query, [searchTerm, searchTerm, searchTerm]);
 
         if (resultado.length > 0) {
             res.status(200).json(resultado);
         } else {
             res.status(404).json({
-                mensaje: "No se encontró ninguna producción con ese nombre de actividad"
+                mensaje: "No se encontró ninguna producción con los criterios de búsqueda"
             });
         }
     } catch (error) {
         res.status(500).json({ status: 500, message: 'Error en el sistema: ' + error });
     }
 };
+
 
 
 

@@ -143,17 +143,25 @@ export const desactivar = async (req, res) => {
 }
 
 // CRUD -buscar
+// CRUD - Buscar
 export const buscarProgramacion = async (req, res) => {
     try {
         const { nombre } = req.params;
+        const searchTerm = `%${nombre}%`; // Preparar el término de búsqueda para buscar coincidencias parciales
+
         const query = `
             SELECT p.*, u.nombre AS nombre_usuario, a.nombre_actividad, v.nombre_variedad
             FROM programacion p
             INNER JOIN usuarios u ON p.fk_id_usuario = u.id_usuario
             INNER JOIN actividad a ON p.fk_id_actividad = a.id_actividad
             INNER JOIN variedad v ON p.fk_id_variedad = v.id_variedad
-            WHERE a.nombre_actividad LIKE ?`;
-        const [result] = await pool.query(query, [`%${nombre}%`]);
+            WHERE p.fecha_inicio LIKE ?
+            OR p.fecha_fin LIKE ?
+            OR u.nombre LIKE ?
+            OR a.nombre_actividad LIKE ?
+            OR v.nombre_variedad LIKE ?`;
+
+        const [result] = await pool.query(query, [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm]);
                     
         if (result.length > 0) {
             res.status(200).json(result);
@@ -163,7 +171,6 @@ export const buscarProgramacion = async (req, res) => {
                 message: 'No se encontraron resultados para la búsqueda'
             });
         }
-
     } catch (error) {
         console.error('Error en buscarProgramacion:', error);
         res.status(500).json({
@@ -172,7 +179,6 @@ export const buscarProgramacion = async (req, res) => {
         });
     }
 };
-
 
 
 export const desactivarProgamacionCadena = async (req, res) => {

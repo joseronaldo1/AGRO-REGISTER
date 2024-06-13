@@ -10,5 +10,5 @@ const produccion = Router()
 produccion.get('/listarProduccion', validarToken, listarProduccion);
 produccion.post('/RegistraProduccion', validarToken, ValidateProduccion, registrarProduccion);
 produccion.get('/BuscarProduccion/:nombre', validarToken, BuscarProduccion);
-produccion.put('/ActualizarProduccion/:id_producccion', validarToken, actualizar, actualizarProduccion);
+produccion.put('/ActualizarProduccion/:id_produccion', validarToken, actualizar, actualizarProduccion);
 export default produccion

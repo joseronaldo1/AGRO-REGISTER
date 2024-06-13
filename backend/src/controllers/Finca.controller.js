@@ -103,8 +103,16 @@ export const ActualizarFinca = async (req, res) => {
 export const BuscarFinca = async (req, res) => {
     try {
         const { nombre } = req.params;
-        const [result] = await pool.query("SELECT * FROM finca WHERE nombre_finca LIKE ?", [`%${nombre}%`]);
-                    
+
+        // Convertir el término de búsqueda a un número si es posible
+        const terminoNumerico = !isNaN(nombre) ? parseFloat(nombre) : null;
+
+        // Consulta SQL para buscar por nombre_finca, longitud o latitud
+        const [result] = await pool.query(
+            `SELECT * FROM finca WHERE nombre_finca LIKE ? OR longitud = ? OR latitud = ?`,
+            [`%${nombre}%`, terminoNumerico, terminoNumerico]
+        );
+
         if (result.length > 0) {
             res.status(200).json(result);
         } else {
@@ -116,10 +124,11 @@ export const BuscarFinca = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: "error en el sistema"
+            message: "Error en el sistema: " + error.message
         });
     }
 };
+
 
 
 //CRUD - Desactivar

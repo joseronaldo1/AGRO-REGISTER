@@ -123,27 +123,34 @@ export const DesactivarTipoRecurso = async (req, res) => {
 }
 
 // CRUD - Buscar
+// CRUD - Buscar
 export const BuscarTipoRecurso = async (req, res) => {
-    try {
+  try {
+      const { nombre } = req.params;
+      const searchTerm = `%${nombre}%`; // Preparar el término de búsqueda para buscar coincidencias parciales
 
-        const { nombre } = req.params;
-        const [result] = await pool.query("SELECT * FROM tipo_recursos WHERE nombre_recursos LIKE ?", [`%${nombre}%`]);
-                    
-        if (result.length > 0) {
-            res.status(200).json(result);
+      const query = `
+          SELECT *
+          FROM tipo_recursos
+          WHERE nombre_recursos LIKE ?
+          OR cantidad_medida LIKE ?
+          OR unidades_medida LIKE ?
+          OR extras LIKE ?`;
 
-        } else {
-            res.status(404).json({
-                status: 404,
-                message: 'No se encontraron resultados para la búsqueda'
-            });
-        }
+      const [result] = await pool.query(query, [searchTerm, searchTerm, searchTerm, searchTerm]);
 
-    } catch (error) {
-        res.status(500).json({
-            status: 500,
-            message: "error en el sistema"
-        });
-
-    }
+      if (result.length > 0) {
+          res.status(200).json(result);
+      } else {
+          res.status(404).json({
+              status: 404,
+              message: 'No se encontraron resultados para la búsqueda'
+          });
+      }
+  } catch (error) {
+      res.status(500).json({
+          status: 500,
+          message: "Error en el sistema"
+      });
+  }
 };

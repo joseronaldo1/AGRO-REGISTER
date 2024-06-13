@@ -96,8 +96,10 @@ export const actualizar = async (req, res) => {
   
 export const buscar = async (req, res) => {
     try {
-        const { nombre } = req.params; // Obtener el nombre de la variedad desde los parámetros
-        const searchTerm = `%${nombre}%`; // Cambio aquí: preparar el término de búsqueda para buscar coincidencias parciales
+        const { nombre } = req.params; // Obtener el nombre de búsqueda desde los parámetros
+        const searchTerm = `%${nombre}%`; // Preparar el término de búsqueda para buscar coincidencias parciales
+        
+        // Consulta SQL para buscar por fecha_inicio, cantidad_sembrada y nombre de variedad (por nombre de lote o nombre de variedad)
         const consultar = `
             SELECT cul.id_cultivo,
                    cul.fecha_inicio,
@@ -110,14 +112,19 @@ export const buscar = async (req, res) => {
             JOIN lotes AS lo ON cul.fk_id_lote = lo.id_lote
             JOIN finca AS fin ON lo.fk_id_finca = fin.id_finca
             JOIN variedad AS var ON cul.fk_id_variedad = var.id_variedad
-            WHERE var.nombre_variedad LIKE ?`; // Cambio aquí: utilizar el operador LIKE para buscar coincidencias parciales
-        const [resultado] = await pool.query(consultar, [searchTerm]); // Pasar el término de búsqueda como parámetro
+            WHERE cul.fecha_inicio LIKE ?
+            OR cul.cantidad_sembrada LIKE ?
+            OR lo.nombre LIKE ?
+            OR var.nombre_variedad LIKE ?`; // Utilizar el operador LIKE para buscar coincidencias parciales
+
+        // Ejecutar la consulta con los términos de búsqueda proporcionados
+        const [resultado] = await pool.query(consultar, [searchTerm, searchTerm, searchTerm, searchTerm]);
 
         if (resultado.length > 0) {
             res.status(200).json(resultado);
         } else {
             res.status(404).json({
-                mensaje: "No se encontró ningún cultivo con ese nombre de variedad"
+                mensaje: "No se encontró ningún cultivo con esos criterios de búsqueda"
             });
         }
     } catch (error) {

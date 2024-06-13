@@ -148,15 +148,28 @@ export const DesactivarA = async (req, res) => {
 
 
 // CRUD - Buscar
+// CRUD - Buscar
 export const BuscarA = async (req, res) => {
     try {
         const { nombre } = req.params;
+        const searchTerm = `%${nombre}%`; // Preparar el término de búsqueda para buscar coincidencias parciales
         const query = `
             SELECT a.*, v.nombre_variedad
             FROM actividad a
             INNER JOIN variedad v ON a.fk_id_variedad = v.id_variedad
-            WHERE a.nombre_actividad LIKE ?`;
-        const [result] = await pool.query(query, [`%${nombre}%`]);
+            INNER JOIN finca f ON a.fk_id_finca = f.id_finca
+            INNER JOIN lotes l ON a.fk_id_lote = l.id_lote
+            INNER JOIN tipo_recursos tr ON a.fk_id_recursos = tr.id_tipo_recursos
+            WHERE a.nombre_actividad LIKE ?
+            OR a.tiempo LIKE ?
+            OR a.observaciones LIKE ?
+            OR a.valor_actividad LIKE ?
+            OR v.nombre_variedad LIKE ?
+            OR f.nombre_finca LIKE ?
+            OR l.nombre LIKE ?
+            OR tr.nombre_recursos LIKE ?`; // Utilizar el operador LIKE para buscar coincidencias parciales en varios campos
+
+        const [result] = await pool.query(query, [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm]);
                     
         if (result.length > 0) {
             res.status(200).json(result);
@@ -169,7 +182,7 @@ export const BuscarA = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 500,
-            message: "error en el sistema"
+            message: "Error en el sistema"
         });
     }
 };

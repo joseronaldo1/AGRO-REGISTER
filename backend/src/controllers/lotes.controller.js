@@ -100,9 +100,9 @@ export const Buscarlote = async (req, res) => {
             SELECT lotes.*, finca.nombre_finca AS nombre_finca 
             FROM lotes 
             INNER JOIN finca ON lotes.fk_id_finca = finca.id_finca 
-            WHERE lotes.nombre LIKE ? OR finca.nombre_finca LIKE ?
+            WHERE lotes.nombre LIKE ? OR lotes.longitud LIKE ? OR lotes.latitud LIKE ? OR finca.nombre_finca LIKE ?
         `;
-        const [result] = await pool.query(query, [`%${nombre}%`, `%${nombre}%`]);
+        const [result] = await pool.query(query, [`%${nombre}%`, `%${nombre}%`, `%${nombre}%`, `%${nombre}%`]);
 
         if (result.length > 0) {
             res.status(200).json(result);
@@ -119,6 +119,7 @@ export const Buscarlote = async (req, res) => {
         });
     }
 };
+
 
 
 

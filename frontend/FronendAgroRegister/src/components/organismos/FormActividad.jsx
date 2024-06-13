@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-
-
 const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const [formData, setFormData] = useState({
     nombre_actividad: initialData?.nombre_actividad || '',
