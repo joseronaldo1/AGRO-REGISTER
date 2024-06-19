@@ -4,11 +4,11 @@ import { BuscarProduccion, actualizarProduccion, listarProduccion, registrarProd
 import { ValidateProduccion, actualizar } from "../../validate/ProduccionValidateDevpap.js";
 import { validarToken } from "../controllers/autenticacion.js";
 
-
-const produccion = Router()
+const produccion = Router();
 
 produccion.get('/listarProduccion', validarToken, listarProduccion);
 produccion.post('/RegistraProduccion', validarToken, ValidateProduccion, registrarProduccion);
 produccion.get('/BuscarProduccion/:nombre', validarToken, BuscarProduccion);
-produccion.put('/ActualizarProduccion/:id_produccion', validarToken, actualizar, actualizarProduccion);
-export default produccion
+produccion.put('/ActualizarProduccion/:id_producccion', validarToken, actualizar, actualizarProduccion); // Asegúrate de que el parámetro tiene 3 'c'
+
+export default produccion;

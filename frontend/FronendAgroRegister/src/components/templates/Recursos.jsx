@@ -8,7 +8,7 @@ import { GoIssueClosed } from "react-icons/go";
 import ModalRecuRegeContrasenia from '../organismos/ModalRecur';
 import Header from '../organismos/Header/Header';
 import Swal from 'sweetalert2';
-/* import Footer from '../organismos/Footer/Footer'; */
+import Footer from '../organismos/Footer/Footer'; 
 import SearchBar from '../moleculas/SearchBar';
 import '../../styles/FondoTable.css';
 
@@ -83,8 +83,8 @@ function Recursos() {
         console.error('No se encontró el token en el localStorage');
         return;
       }
-      const { id } = formData;
-      const response = await axios.put(`http://localhost:3000/actualizarRecurso/${id}`, formData, {
+      const { id_tipo_recursos } = formData;
+      const response = await axios.put(`http://localhost:3000/actualizarRecurso/${id_tipo_recursos}`, formData, {
         headers: {
           'token': token
         }

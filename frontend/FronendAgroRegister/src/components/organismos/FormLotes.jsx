@@ -4,6 +4,7 @@ import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
+    id_lote: initialData && initialData.id_lote ? initialData.id_lote : '',
     nombre: initialData && initialData.nombre ? initialData.nombre : '',
     longitud: initialData && initialData.longitud ? initialData.longitud : '',
     latitud: initialData && initialData.latitud ? initialData.latitud : '',
@@ -114,9 +115,9 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         console.log(response.data);
         onSubmit(formData);
       } else if (mode === 'update') {
-        const { id } = initialData;
+        const { id_lote } = initialData;
         await axios.put(
-          `http://localhost:3000/Actualizarlote/${id}`,
+          `http://localhost:3000/Actualizarlote/${id_lote}`,
           formData,
           {
             headers: {
@@ -138,6 +139,12 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
       console.error('Error al procesar el formulario:', error);
     }
   };
+
+  // Restablecer el formulario con los datos iniciales cuando cambia el modo o los datos iniciales
+useEffect(() => {
+  setFormData(initialFormData);
+}, [initialData, mode]);
+
 
   return (
     <form
@@ -212,22 +219,21 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
         </label>
         <br />
         <select
-          label='Nombre de Finca'
-          name='fk_id_finca'
-          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
-          id=''
-          required={true}
-          value={formData.fk_id_finca}
-          onChange={handleChange}
-        >
-          <option value="" disabled selected>Seleccione</option>
-          {/* Mapeo para crear las opciones del select */}
-          {nombre_finca.map(finca => (
-            <option key={finca.id_finca} value={finca.id_finca}>
-              {finca.nombre_finca}
-            </option>
-          ))}
-        </select>
+  label="Nombre de Finca"
+  name="fk_id_finca"
+  style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+  required={true}
+  value={formData.fk_id_finca}  // Usa value aquí en lugar de selected en option
+  onChange={handleChange}
+>
+  <option value="" disabled>Seleccione</option> {/* Removido 'selected' */}
+  {/* Mapeo para crear las opciones del select */}
+  {nombre_finca.map(finca => (
+    <option key={finca.id_finca} value={finca.id_finca}>
+      {finca.nombre_finca}
+    </option>
+  ))}
+</select>
       </div>
       {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>

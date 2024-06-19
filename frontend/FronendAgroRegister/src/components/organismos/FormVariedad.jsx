@@ -4,6 +4,7 @@ import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
+    id_variedad: initialData ? initialData.id_variedad : '',
     nombre_variedad: initialData ? initialData.nombre_variedad : '',
     tipo_cultivo: initialData ? initialData.tipo_cultivo : ''
   };
@@ -66,9 +67,9 @@ const FormularioVariedad = ({ onSubmit, className, initialData, mode, cerrarModa
         });
         onSubmit(formData);
       } else if (mode === 'update') {
-        const { id } = initialData;
+        const { id_variedad } = initialData;
         await axios.put(
-          `http://localhost:3000/actualizarVariedad/${id}`,
+          `http://localhost:3000/actualizarVariedad/${id_variedad}`,
           formData,
           {
             headers: {

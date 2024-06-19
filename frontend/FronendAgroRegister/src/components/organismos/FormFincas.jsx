@@ -4,6 +4,7 @@ import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const Formulariofinca = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
+    id_finca: initialData && initialData.id_finca ? initialData.id_finca : '',
     nombre_finca: initialData && initialData.nombre_finca ? initialData.nombre_finca : '',
     longitud: initialData && initialData.longitud ? initialData.longitud : '',
     latitud: initialData && initialData.latitud ? initialData.latitud : ''

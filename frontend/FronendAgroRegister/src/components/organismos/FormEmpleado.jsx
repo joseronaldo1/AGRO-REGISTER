@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 
 const FormularioEmpleado = ({ onSubmit, className, initialData, mode, cerrarModal}) => {
     const initialFormData = {
+        id_usuario: initialData && initialData.id_usuario? initialData.id_usuario : '',
         nombre: initialData && initialData.nombre ? initialData.nombre : '',
         apellido: initialData && initialData.apellido ? initialData.apellido : '',
         correo: initialData && initialData.correo ? initialData.correo : '',

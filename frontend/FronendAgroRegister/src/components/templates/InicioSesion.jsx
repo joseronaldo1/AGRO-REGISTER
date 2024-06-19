@@ -15,7 +15,6 @@ const IniciarSesion = () => {
     });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.correo.trim() === '' || formData.password.trim() === '') {
@@ -32,6 +31,16 @@ const IniciarSesion = () => {
             setLoading(true);
             const response = await axios.post('http://localhost:3000/validacion', formData);
             const responseData = response.data;
+    
+            if (responseData.message === 'Contraseña incorrecta') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al iniciar sesión',
+                    text: 'La contraseña ingresada es incorrecta.',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
     
             localStorage.setItem('token', responseData.token);
             localStorage.setItem('usuario', JSON.stringify({
@@ -67,7 +76,7 @@ const IniciarSesion = () => {
             setLoading(false);
         }
     };
-
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({

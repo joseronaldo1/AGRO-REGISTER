@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 
 const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
+    id_tipo_recursos: initialData ? initialData.id_tipo_recursos : '',
     nombre_recursos: initialData ? initialData.nombre_recursos : '',
     cantidad_medida: initialData ? initialData.cantidad_medida : '',
     unidades_medida: initialData ? initialData.unidades_medida : '',
@@ -63,9 +64,9 @@ const Formulario = ({ onSubmit, className, initialData, mode, cerrarModal }) => 
         });
         onSubmit(formData);
       } else if (mode === 'update') {
-        const { id } = initialData;
+        const { id_tipo_recursos } = initialData;
         await axios.put(
-          `http://localhost:3000/actualizarRecurso/${id}`,
+          `http://localhost:3000/actualizarRecurso/${id_tipo_recursos}`,
           formData,
           {
             headers: {

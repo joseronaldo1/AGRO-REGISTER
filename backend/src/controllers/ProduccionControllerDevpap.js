@@ -102,12 +102,12 @@ export const actualizarProduccion = async (req, res) => {
             return res.status(400).json(errors);
         }
 
-        const { id_producccion } = req.params;
+        const { id_producccion } = req.params; // Asegúrate de que el nombre del parámetro tenga 3 'c'
         const { cantidad_produccion, precio, fk_id_actividad } = req.body;
 
         // Verifica si al menos uno de los campos está presente en la solicitud
         if (!cantidad_produccion && !precio && !fk_id_actividad) {
-            return res.status(400).json({ message: 'Al menos uno de los campos ( cantidad_produccion, precio, fk_id_actividad) debe estar presente en la solicitud para realizar la actualización.' });
+            return res.status(400).json({ message: 'Al menos uno de los campos (cantidad_produccion, precio, fk_id_actividad) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
         console.log("Consulta SQL:", `SELECT * FROM produccion WHERE id_producccion=${id_producccion}`);
@@ -139,4 +139,3 @@ export const actualizarProduccion = async (req, res) => {
         });
     }
 };
-

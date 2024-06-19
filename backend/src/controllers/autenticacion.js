@@ -11,7 +11,6 @@ export const validar = async (req, res) => {
         if (rows.length > 0) {
             const user = rows[0];
             
-          
             if (user.estado === 'inactivo') {
                 return res.status(403).json({ message: 'El usuario se encuentra inactivo.' });
             }
@@ -20,15 +19,18 @@ export const validar = async (req, res) => {
             if (match) {
                 const token = Jwt.sign({ user }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
                 return res.status(200).json({ nombre: user.nombre, rol: user.rol, apellido: user.apellido, correo: user.correo, token: token, message: 'Token generado con éxito' , id_usuario: user.id_usuario});
+            } else {
+                return res.status(401).json({ message: 'Contraseña incorrecta' });
             }
         } else {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: 500, message: 'Error del servidor: ' + error });
+        res.status(500).json({ status: 500, message: 'Error en el sistema: ' + error });
     }
 };
+
 
 
 export const validarToken = async (req, res, next) => {

@@ -4,10 +4,12 @@ import Swal from 'sweetalert2';
 
 const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
+    id_producccion: initialData && initialData.id_producccion ? initialData.id_producccion : '', // Añadido id_producccion aquí
     cantidad_produccion: initialData && initialData.cantidad_produccion ? initialData.cantidad_produccion : '',
     precio: initialData && initialData.precio ? initialData.precio : '',
     fk_id_actividad: initialData && initialData.fk_id_actividad ? initialData.fk_id_actividad : ''
   };
+  
 
   const [formData, setFormData] = useState(initialFormData);
   const [showWarning, setShowWarning] = useState(false);
@@ -103,7 +105,7 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
         });
         onSubmit(formData);
       } else if (mode === 'update') {
-        const { id_producccion } = initialData;
+        const { id_producccion } = initialData; // Asegúrate de que aquí también se usa el nombre correcto con 3 'c'
         await axios.put(
           `http://localhost:3000/ActualizarProduccion/${id_producccion}`,
           formData,
@@ -127,6 +129,7 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
       console.error('Error al procesar el formulario:', error);
     }
   };
+
 
   return (
     <form

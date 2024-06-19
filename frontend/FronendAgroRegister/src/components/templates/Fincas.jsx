@@ -82,8 +82,8 @@ function Fincas() {
         console.error('No se encontró el token en el localStorage');
         return;
       }
-      const { id } = formData;
-      const response = await axios.put(`http://localhost:3000/actualizarFinca/${id}`, formData, {
+      const { id_finca } = formData;
+      const response = await axios.put(`http://localhost:3000/actualizarFinca/${id_finca}`, formData, {
         headers: {
           'token': token
         }

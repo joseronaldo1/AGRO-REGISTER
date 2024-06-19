@@ -60,7 +60,7 @@ function Produccion() {
   };
 
   const handleOpenActualizacionModal = (rowData) => {
-    const updatedInitialData = { ...rowData, id: rowData.id_produccion };
+    const updatedInitialData = { ...rowData, id: rowData.id_producccion };
     setInitialData(updatedInitialData);
     setMode('update');
     setShowActualizacionModal(true);
@@ -71,7 +71,6 @@ function Produccion() {
     setInitialData(null);
     setShowActualizacionModal(false);
   };
-
   const handleActualizacionFormSubmit = async (formData) => {
     try {
       console.log('Actualización de la producción:', formData);
@@ -81,8 +80,8 @@ function Produccion() {
         console.error('No se encontró el token en el localStorage');
         return;
       }
-      const { id } = formData;
-      const response = await axios.put(`http://localhost:3000/ActualizarProduccion/${id}`, formData, {
+      const { id_producccion } = formData; // Asegúrate de que aquí también se usa el nombre correcto con 3 'c'
+      const response = await axios.put(`http://localhost:3000/ActualizarProduccion/${id_producccion}`, formData, {
         headers: {
           'token': token
         }

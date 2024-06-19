@@ -82,8 +82,8 @@ function Cultivos() {
         console.error('No se encontró el token en el localStorage');
         return;
       }
-      const { id } = formData;
-      const response = await axios.put(`http://localhost:3000/actualizarCultivo/${id}`, formData, {
+      const { id_cultivo } = formData;
+      const response = await axios.put(`http://localhost:3000/actualizarCultivo/${id_cultivo}`, formData, {
         headers: {
           'token': token
         }

@@ -22,7 +22,7 @@ const SearchBar = ({ onSearch }) => {
       <div style={{ position: 'relative' }}>
         <input
           type="text"
-          placeholder="Buscar por Nombre"
+          placeholder="Buscar"
           style={{
             borderRadius: '20px',
             paddingLeft: '40px',

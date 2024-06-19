@@ -86,7 +86,6 @@ function Empleados() {
     setInitialData(null);
     setShowActualizacionModal(false);
 };
-
 const handleActualizacionFormSubmit = async (formData) => {
   try {
     console.log('Actualización de empleado:', formData);
@@ -95,8 +94,9 @@ const handleActualizacionFormSubmit = async (formData) => {
       console.error('No se encontró el token en el localStorage');
       return;
     }
-    const { id } = formData;
-    const response = await axios.put(`http://localhost:3000/actualizarEmpleado/${id}`, formData, {
+    
+    const { id_usuario } = formData;
+    const response = await axios.put(`http://localhost:3000/actualizarEmpleado/${id_usuario}`, formData, {
       headers: {
         'token': token
       }
@@ -104,23 +104,8 @@ const handleActualizacionFormSubmit = async (formData) => {
     
     if (response.status === 200) {
       console.log('Empleado actualizado exitosamente.');
-
-      // Datos actualizados desde el servidor
-      const updatedData = response.data;
-
-      // Actualizar el estado local data con los datos actualizados
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id_usuario === updatedData.id_usuario ? { ...item, ...updatedData } : item
-        )
-      );
-
-      // Si se obtiene un nuevo dato, añadirlo al estado local
-      if (updatedData) {
-        setData((prevData) => [...prevData, updatedData]);
-      }
-
-      handleCloseActualizacionModal(updatedData);
+      fetchData(); // Vuelve a cargar los datos después de la actualización
+      setShowActualizacionModal(false);
     } else {
       console.error('Error al actualizar el empleado:', response.data);
     }
@@ -129,7 +114,6 @@ const handleActualizacionFormSubmit = async (formData) => {
   }
 };
 
-  
 
   const handleSearch = async (searchTerm) => {
     try {

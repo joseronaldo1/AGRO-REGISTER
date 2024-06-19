@@ -81,8 +81,8 @@ function Variedad() {
         console.error('No se encontró el token en el localStorage');
         return;
       }
-      const { id } = formData;
-      const response = await axios.put(`http://localhost:3000/actualizarVariedad/${id}`, formData, {
+      const { id_variedad } = formData;
+      const response = await axios.put(`http://localhost:3000/actualizarVariedad/${id_variedad}`, formData, {
         headers: {
           'token': token
         }
