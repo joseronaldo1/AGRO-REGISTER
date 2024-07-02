@@ -37,21 +37,23 @@ export const registrarProgramacion = async (req, res) => {
 export const listarProgramacion = async (req, res) => {
     try {
         let sql = `SELECT 
-            p.id_programacion,
-            p.fecha_inicio,
-            p.fecha_fin,
-            u.nombre AS nombre_usuario, 
-            a.nombre_actividad,
-            v.nombre_variedad AS nombre_variedad,
-            p.estado
-        FROM 
-            programacion AS p
-        JOIN 
-            usuarios AS u ON p.fk_id_usuario = u.id_usuario
-        JOIN 
-            actividad AS a ON p.fk_id_actividad = a.id_actividad
-        JOIN 
-            variedad AS v ON p.fk_id_variedad = v.id_variedad`;
+                      p.id_programacion,
+                      p.fecha_inicio,
+                      p.fecha_fin,
+                      p.fk_id_usuario AS id_usuario,
+                      u.nombre AS nombre_usuario,
+                      a.nombre_actividad,
+                      v.nombre_variedad AS nombre_variedad,
+                      p.estado,
+                      p.*
+                   FROM 
+                      programacion AS p
+                   JOIN 
+                      usuarios AS u ON p.fk_id_usuario = u.id_usuario
+                   JOIN 
+                      actividad AS a ON p.fk_id_actividad = a.id_actividad
+                   JOIN 
+                      variedad AS v ON p.fk_id_variedad = v.id_variedad`;
 
         const [result] = await pool.query(sql);
 
@@ -68,7 +70,9 @@ export const listarProgramacion = async (req, res) => {
             message: error.message || 'Error en el sistema'
         });
     }
-}
+};
+
+
 
 
 // CRUD - Actualizar

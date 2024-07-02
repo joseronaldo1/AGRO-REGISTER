@@ -7,9 +7,11 @@ export const listarProduccion = async (req, res) => {
             produ.id_producccion,
             produ.cantidad_produccion,
             produ.precio,
-            act.nombre_actividad AS nombre_actividad
-        FROM produccion AS produ
-        JOIN actividad AS act ON produ.fk_id_actividad = act.id_actividad`;
+            produ.fk_id_actividad AS id_actividad,  
+                          act.nombre_actividad,
+                          produ.*
+                   FROM produccion AS produ
+                   JOIN actividad AS act ON produ.fk_id_actividad = act.id_actividad`;
 
 
         const [listar] = await pool.query(sql);

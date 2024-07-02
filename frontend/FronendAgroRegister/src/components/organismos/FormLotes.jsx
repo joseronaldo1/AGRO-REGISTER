@@ -8,7 +8,7 @@ const Formulariolote = ({ onSubmit, className, initialData, mode, cerrarModal })
     nombre: initialData && initialData.nombre ? initialData.nombre : '',
     longitud: initialData && initialData.longitud ? initialData.longitud : '',
     latitud: initialData && initialData.latitud ? initialData.latitud : '',
-    fk_id_finca: initialData && initialData.fk_id_finca ? initialData.fk_id_finca : ''
+    fk_id_finca: initialData?.fk_id_finca || '',
   };
 
   const [formData, setFormData] = useState(initialFormData);

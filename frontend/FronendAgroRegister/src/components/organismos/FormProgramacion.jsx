@@ -8,7 +8,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
   const [formData, setFormData] = useState({
     fecha_inicio: initialData?.fecha_inicio || '',
     fecha_fin: initialData?.fecha_fin || '',
-    fk_id_usuario: initialData?.fk_id_usuario || '',
+    fk_id_usuario: initialData && initialData.fk_id_usuario ? initialData.fk_id_usuario : '',
     fk_id_actividad: initialData?.fk_id_actividad || '',
     fk_id_variedad: initialData?.fk_id_variedad || '',
     id: initialData?.id_programacion || '' // Asegurarse de incluir el id
@@ -18,7 +18,7 @@ const FormularioProgramacion = ({ onSubmit, className, initialData, mode, cerrar
     setFormData({
       fecha_inicio: initialData?.fecha_inicio || '',
       fecha_fin: initialData?.fecha_fin || '',
-      fk_id_usuario: initialData?.fk_id_usuario || '',
+      fk_id_usuario: initialData && initialData.fk_id_usuario ? initialData.fk_id_usuario : '',
       fk_id_actividad: initialData?.fk_id_actividad || '',
       fk_id_variedad: initialData?.fk_id_variedad || '',
       id: initialData?.id_programacion || '' // Asegurarse de incluir el id

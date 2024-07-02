@@ -6,42 +6,40 @@ import { validationResult } from 'express-validator';
 export const listarA = async (req, res) => {
     try {
         let sql = `SELECT ac.id_actividad, 
-                            ac.nombre_actividad, 
-                            ac.tiempo, 
-                            ac.observaciones,
-                            ac.valor_actividad, 
-                            ac.fk_id_variedad AS id_variedad, 
-                            v.nombre_variedad,
-                            ac.fk_id_finca AS id_finca,
-                            f.nombre_finca,
-                            ac.fk_id_lote AS id_lote,
-                            l.nombre,
-                            ac.fk_id_recursos AS id_tipo_recursos,
-                            r.nombre_recursos,
-                            ac.estado
-                    FROM actividad AS ac 
-
-                    JOIN variedad AS v ON ac.fk_id_variedad = v.id_variedad
-                    
-                    JOIN finca AS f ON ac.fk_id_finca = f.id_finca
-                    
-                    JOIN lotes AS l ON ac.fk_id_lote = l.id_lote
-                    
-                    JOIN tipo_recursos AS r ON ac.fk_id_recursos = r.id_tipo_recursos`;
+                          ac.nombre_actividad, 
+                          ac.tiempo, 
+                          ac.observaciones,
+                          ac.valor_actividad, 
+                          ac.fk_id_variedad AS id_variedad, 
+                          v.nombre_variedad,
+                          ac.fk_id_finca AS id_finca,
+                          f.nombre_finca,
+                          ac.fk_id_lote AS id_lote,
+                          l.nombre,
+                          ac.fk_id_recursos AS id_tipo_recursos,
+                          r.nombre_recursos,
+                          ac.estado,
+                          ac.*
+                   FROM actividad AS ac 
+                   JOIN variedad AS v ON ac.fk_id_variedad = v.id_variedad
+                   JOIN finca AS f ON ac.fk_id_finca = f.id_finca
+                   JOIN lotes AS l ON ac.fk_id_lote = l.id_lote
+                   JOIN tipo_recursos AS r ON ac.fk_id_recursos = r.id_tipo_recursos`;
          
         const [result] = await pool.query(sql);
 
         if (result.length > 0) {
             res.status(200).json(result);
         } else {
-            res.status(400).json({
-                "Mensaje": "No hay actividades que listar"
+            res.status(404).json({
+                "message": "No hay actividades que listar"
             });
         }
     } catch (error) {
         console.error(error); 
         res.status(500).json({
-            "Mensaje": "Error en el sistema"
+            "status": 500,
+            "message": "Error en el sistema: " + error
         });
     }
 };

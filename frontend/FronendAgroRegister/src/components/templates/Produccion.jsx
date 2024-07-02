@@ -9,7 +9,7 @@ import Header from "../organismos/Header/Header";
 import Footer from '../organismos/Footer/Footer';
 import SearchBar from '../moleculas/SearchBar';
 
-function Produccion() {
+function  Produccion() {
 
 
   const [data, setData] = useState([]);
@@ -19,7 +19,7 @@ function Produccion() {
   const [mode, setMode] = useState('create');
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState([]);
-  const [error, setError] = useState(null); // Estado para manejar errores
+  const [error, setError] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
   useEffect(() => {
@@ -60,17 +60,17 @@ function Produccion() {
   };
 
   const handleOpenActualizacionModal = (rowData) => {
-    const updatedInitialData = { ...rowData, id: rowData.id_producccion };
+    const updatedInitialData = { ...rowData, id: rowData.producccion};
     setInitialData(updatedInitialData);
     setMode('update');
     setShowActualizacionModal(true);
   };
 
-
   const handleCloseActualizacionModal = () => {
     setInitialData(null);
     setShowActualizacionModal(false);
   };
+
   const handleActualizacionFormSubmit = async (formData) => {
     try {
       console.log('Actualización de la producción:', formData);
@@ -80,7 +80,7 @@ function Produccion() {
         console.error('No se encontró el token en el localStorage');
         return;
       }
-      const { id_producccion } = formData; // Asegúrate de que aquí también se usa el nombre correcto con 3 'c'
+      const { id_producccion } = formData;
       const response = await axios.put(`http://localhost:3000/ActualizarProduccion/${id_producccion}`, formData, {
         headers: {
           'token': token
@@ -88,17 +88,16 @@ function Produccion() {
       });
   
       if (response.status === 200) {
-        console.log('Producción actualizado exitosamente.');
+        console.log('Producción actualizada exitosamente.');
         fetchData();
         setShowActualizacionModal(false);
       } else {
-        console.error('Error al actualizar la producción:', response.data);
+        console.error('Error al actualizar la Producción:', response.data);
       }
     } catch (error) {
       console.error('Error al actualizar las producciones:', error);
     }
   };
-
 
   // Función para buscar fincas por nombre_actividad
   const handleSearch = async (searchTerm) => {
@@ -171,7 +170,6 @@ function Produccion() {
     
  
   ];
-
   return (
     <div>
       <div className="recursos-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -202,6 +200,7 @@ function Produccion() {
           mode="registro"
           handleSubmit={handleCloseRegistroModal}
         />
+
         <ModalRecuRegeContrasenia
           mostrar={showActualizacionModal}
           cerrarModal={handleCloseActualizacionModal}
@@ -212,6 +211,7 @@ function Produccion() {
           mode={mode}
         />
         <br />
+
       </div>
       <Footer />
     </div>

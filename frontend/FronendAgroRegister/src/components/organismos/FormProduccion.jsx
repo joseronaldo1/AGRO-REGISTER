@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'; // Importa SweetAlert
 
 const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarModal }) => {
   const initialFormData = {
     id_producccion: initialData && initialData.id_producccion ? initialData.id_producccion : '', // Añadido id_producccion aquí
     cantidad_produccion: initialData && initialData.cantidad_produccion ? initialData.cantidad_produccion : '',
     precio: initialData && initialData.precio ? initialData.precio : '',
-    fk_id_actividad: initialData && initialData.fk_id_actividad ? initialData.fk_id_actividad : ''
+    fk_id_actividad: initialData?.fk_id_actividad || '',
   };
-  
 
   const [formData, setFormData] = useState(initialFormData);
-  const [showWarning, setShowWarning] = useState(false);
-  const [nombre_actividad, setNombreActividad] = useState([]);
+  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la advertencia
+  const [nombre_actividad, setNombreFinca] = useState([]);
 
   useEffect(() => {
-    const fetchNombreActividad = async () => {
+    const fetchNombreFinca = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -29,15 +28,15 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
             'token': token
           }
         });
-        setNombreActividad(response.data);
+        setNombreFinca(response.data); // Establecer directamente los datos de la respuesta en el estado nombre_finca
       } catch (error) {
         console.error('Error al obtener los datos:', error);
       }
     };
-    fetchNombreActividad();
+  
+    fetchNombreFinca();
   }, []);
   
-
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -45,6 +44,7 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
       [name]: value
     }));
   };
+
 
   const validarCantidadProduccion = cantidad_produccion => {
     const soloNumeros = /^\d+$/;
@@ -59,9 +59,8 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Datos del formulario antes de enviar:", formData);
       if (!formData.cantidad_produccion || !formData.precio || !formData.fk_id_actividad) {
-        setShowWarning(true);
+        setShowWarning(true); // Mostrar advertencia si algún campo está vacío
         return;
       }
       if (!validarCantidadProduccion(formData.cantidad_produccion)) {
@@ -97,15 +96,17 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
               }
         }
         );
-
+        console.log(response.data);
+        // Mostrar alerta de registro exitoso
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'La Producción se ha registrado exitosamente'
+          text: 'El lote se ha registrado exitosamente'
         });
+        console.log(response.data);
         onSubmit(formData);
       } else if (mode === 'update') {
-        const { id_producccion } = initialData; // Asegúrate de que aquí también se usa el nombre correcto con 3 'c'
+        const { id_producccion } = initialData;
         await axios.put(
           `http://localhost:3000/ActualizarProduccion/${id_producccion}`,
           formData,
@@ -119,7 +120,7 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
-          text: 'La produccion se ha actualizado exitosamente'
+          text: 'El lote se ha actualizado exitosamente'
         });
       }
 
@@ -129,6 +130,11 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
       console.error('Error al procesar el formulario:', error);
     }
   };
+
+  // Restablecer el formulario con los datos iniciales cuando cambia el modo o los datos iniciales
+useEffect(() => {
+  setFormData(initialFormData);
+}, [initialData, mode]);
 
 
   return (
@@ -141,32 +147,35 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
         textAlign: 'center'
       }}
     >
-         <div className="flex flex-col">
+     
+      <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Selecciona tu Actividad:
         </label>
         <br />
         <select
-          name='fk_id_actividad'
-          style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
-          required={true}
-          value={formData.fk_id_actividad}
-          onChange={handleChange}
-        >
-          <option value="" disabled>Seleccione</option>
-          {nombre_actividad.map(actividad => (
-            <option key={actividad.id_actividad} value={actividad.id_actividad}>
-              {actividad.nombre_actividad}
-            </option>
-          ))}
-        </select>
+  label="Nombre de Actividad"
+  name="fk_id_actividad"
+  style={{ borderColor: '#1bc12e', width: '50%', height: '40px', borderRadius: '6px' }}
+  required={true}
+  value={formData.fk_id_actividad}  // Usa value aquí en lugar de selected en option
+  onChange={handleChange}
+>
+  <option value="" disabled>Seleccione</option> {/* Removido 'selected' */}
+  {/* Mapeo para crear las opciones del select */}
+  {nombre_actividad.map(actividad => (
+    <option key={actividad.id_actividad} value={actividad.id_actividad}>
+      {actividad.nombre_actividad}
+    </option>
+  ))}
+</select>
       </div>
       {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor seleccione una Actividad
+          Por favor seleccione una actividad
         </p>
       )}
-      <div className="flex flex-col">
+       <div className="flex flex-col">
         <label className="text-x1 font-bold w-80" style={{ fontWeight: 'bold' }}>
           Precio:{' '}
         </label>
@@ -204,8 +213,6 @@ const FormularioProduccion = ({ onSubmit, className, initialData, mode, cerrarMo
           onChange={handleChange}
         />
       </div>
-      
-   
       <button
         className="boton"
         type="submit"

@@ -197,7 +197,7 @@ function Cultivos() {
     },
     {
       name: 'Lote',
-      selector: (row) => row.nombre_lote,
+      selector: (row) => row.nombre,
       sortable: true,
     },
 

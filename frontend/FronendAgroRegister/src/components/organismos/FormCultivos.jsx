@@ -8,8 +8,7 @@ const Formulariocultivo = ({ onSubmit, className, initialData, mode, cerrarModal
     fecha_inicio: initialData && initialData.fecha_inicio ? initialData.fecha_inicio : '',
     cantidad_sembrada: initialData && initialData.cantidad_sembrada ? initialData.cantidad_sembrada : '',
     fk_id_lote: initialData && initialData.fk_id_lote ? initialData.fk_id_lote : '',
-    fk_id_variedad: initialData && initialData.fk_id_variedad ? initialData.fk_id_variedad : '',
-    fk_id_finca: initialData && initialData.fk_id_finca ? initialData.fk_id_finca : ''
+    fk_id_variedad: initialData && initialData.fk_id_variedad ? initialData.fk_id_variedad : ''
   };
   
 
@@ -249,7 +248,7 @@ const handleChange = e => {
 
       {showWarning && (
         <p style={{ color: 'red', marginBottom: '10px' }}>
-          Por favor seleccione una finca
+          Por favor seleccione una variedad
         </p>
       )}
             <div className="flex flex-col">

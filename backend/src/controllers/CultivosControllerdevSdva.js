@@ -5,17 +5,21 @@ import { validationResult } from 'express-validator';
 export const listar = async (req, res) => {
     try {
         let sql = `SELECT cul.id_cultivo,
-        cul.fecha_inicio,
-        fin.nombre_finca,
-        lo.nombre AS nombre_lote,
-        cul.cantidad_sembrada,
-        var.nombre_variedad,
-        cul.estado
- FROM cultivo AS cul
- JOIN lotes AS lo ON cul.fk_id_lote = lo.id_lote
- JOIN finca AS fin ON lo.fk_id_finca = fin.id_finca
- JOIN variedad AS var ON cul.fk_id_variedad = var.id_variedad;
- `;
+                          cul.fecha_inicio,
+                          cul.cantidad_sembrada,
+                          cul.estado,
+                          
+                          cul.fk_id_lote AS id_lote,
+                          lo.nombre,
+                          
+                          cul.fk_id_variedad AS id_variedad,
+                          var.nombre_variedad,
+                          
+                          cul.*
+                   FROM cultivo AS cul
+                   JOIN lotes AS lo ON cul.fk_id_lote = lo.id_lote
+                   JOIN variedad AS var ON cul.fk_id_variedad = var.id_variedad;`;
+        
         const [result] = await pool.query(sql);
         
         if (result.length > 0) {
@@ -27,6 +31,8 @@ export const listar = async (req, res) => {
         res.status(500).json({'status': 500, 'message': 'Error en el sistema: ' + error});
     }
 };
+
+
   
 export const registrar = async (req, res) => {
     try {
